@@ -210,11 +210,14 @@ export default function Home() {
       {showInput ? (
         <div className="flex flex-col gap-10 w-full max-w-2xl relative z-10">
           <div className="text-center">
-            <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight font-outfit bg-gradient-to-r from-zinc-900 to-zinc-500 dark:from-white dark:to-zinc-400 bg-clip-text text-transparent pb-2">
-              Pelatih Membaca Cepat
-            </h1>
-            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mt-4 max-w-lg mx-auto">
-              Capai 300 WPM dengan membaca berbasis ORP. Tempelkan teks, berlatih, dan pantau kemajuan Anda.
+            <div className="inline-flex items-center justify-center space-x-3 mb-2">
+              <span className="text-4xl sm:text-5xl">⚡</span>
+              <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tighter font-outfit bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-transparent pb-2 drop-shadow-sm">
+                BacaKilat
+              </h1>
+            </div>
+            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mt-2 max-w-lg mx-auto font-medium">
+              Evolusi cara Anda menyerap informasi. Capai <span className="text-amber-500 font-bold">500+ WPM</span> dengan teknologi Optimal Recognition Point.
             </p>
           </div>
 
