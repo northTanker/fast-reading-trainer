@@ -5,6 +5,7 @@ import { SAMPLE_TEXTS } from "@/lib/samples";
 import { useLibrary } from "@/hooks/useLibrary";
 import { saveTextToLibrary, removeTextFromLibrary } from "@/lib/library";
 import { parseFile } from "@/lib/fileParser";
+import CopilotModal from "./CopilotModal";
 
 interface TextInputProps {
   text: string;
@@ -30,6 +31,7 @@ export default function TextInput({
   const [isSaving, setIsSaving] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isParsing, setIsParsing] = useState(false);
+  const [isCopilotOpen, setIsCopilotOpen] = useState(false);
 
   const handleSampleClick = (content: string) => {
     onChange(content);
@@ -77,24 +79,33 @@ export default function TextInput({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2 relative">
-        <div className="flex justify-between items-center ml-1">
+        <div className="flex justify-between items-center ml-1 flex-wrap gap-2">
           <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
             Tempelkan teks atau jatuhkan berkas
           </label>
-          <label className="text-xs font-semibold text-amber-600 dark:text-amber-500 cursor-pointer hover:underline">
-            Unggah Berkas (TXT, DOCX, PDF)
-            <input 
-              type="file" 
-              accept=".txt,.md,.csv,.docx,.pdf" 
-              className="hidden" 
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) handleFileUpload(file);
-                e.target.value = ''; // Reset input
-              }}
-              disabled={disabled || isParsing}
-            />
-          </label>
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => setIsCopilotOpen(true)}
+              className="text-xs font-bold text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-500/10 px-3 py-1.5 rounded-full hover:bg-amber-100 dark:hover:bg-amber-500/20 transition-colors flex items-center gap-1"
+            >
+              <span>✨</span> AI Copilot
+            </button>
+            <label className="text-xs font-semibold text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 cursor-pointer transition-colors">
+              Unggah Berkas (TXT, DOCX, PDF)
+              <input 
+                type="file" 
+                accept=".txt,.md,.csv,.docx,.pdf" 
+                className="hidden" 
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleFileUpload(file);
+                  e.target.value = ''; // Reset input
+                }}
+                disabled={disabled || isParsing}
+              />
+            </label>
+          </div>
         </div>
         
         <div 
@@ -256,6 +267,14 @@ export default function TextInput({
       >
         Mulai Membaca
       </button>
+
+      <CopilotModal 
+        isOpen={isCopilotOpen} 
+        onClose={() => setIsCopilotOpen(false)} 
+        onApplyText={(newText) => {
+          onChange(newText);
+        }}
+      />
     </div>
   );
 }
