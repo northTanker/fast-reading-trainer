@@ -1,65 +1,327 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
+import TextInput from "@/components/TextInput";
+import Reader from "@/components/Reader";
+import Controls from "@/components/Controls";
+import ProgressPanel from "@/components/ProgressPanel";
+import SessionSummary from "@/components/SessionSummary";
+import Gamification from "@/components/Gamification";
+import History from "@/components/History";
+import AnalyticsChart from "@/components/AnalyticsChart";
+import { useReader } from "@/hooks/useReader";
+import { tokenize } from "@/lib/tokenizer";
+import { createSessionRecord } from "@/lib/session";
+import { saveSession } from "@/lib/storage";
+import type { SessionRecord } from "@/types";
 
 export default function Home() {
+  const [text, setText] = useState("");
+  const [currentWpm, setCurrentWpm] = useState(200);
+  const [showInput, setShowInput] = useState(true);
+  const [elapsedMs, setElapsedMs] = useState(0);
+  const [lastSession, setLastSession] = useState<SessionRecord | null>(null);
+  const [gamificationKey, setGamificationKey] = useState(0);
+  const [historyKey, setHistoryKey] = useState(0);
+  const [countdown, setCountdown] = useState<number | null>(null);
+
+  const elapsedAccumulatedRef = useRef(0);
+  const elapsedStartRef = useRef(0);
+  const elapsedIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const countdownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const wordCount = useMemo(() => tokenize(text).length, [text]);
+
+  const handleFinish = useCallback(
+    (durationMs: number, completed: boolean) => {
+      const words = tokenize(text);
+      const record = createSessionRecord({
+        text,
+        words,
+        wpmSetting: currentWpm,
+        durationMs,
+        completed,
+      });
+      saveSession(record);
+      setLastSession(record);
+      setGamificationKey((k) => k + 1);
+      setHistoryKey((k) => k + 1);
+
+      if (elapsedIntervalRef.current !== null) {
+        clearInterval(elapsedIntervalRef.current);
+        elapsedIntervalRef.current = null;
+      }
+    },
+    [text, currentWpm]
+  );
+
+  const reader = useReader({
+    text,
+    initialWpm: currentWpm,
+    onFinish: handleFinish,
+  });
+
+  const startElapsedTimer = useCallback(() => {
+    if (elapsedIntervalRef.current !== null) return;
+    elapsedAccumulatedRef.current = 0;
+    setElapsedMs(0);
+    elapsedStartRef.current = performance.now();
+    elapsedIntervalRef.current = setInterval(() => {
+      setElapsedMs(
+        elapsedAccumulatedRef.current + (performance.now() - elapsedStartRef.current)
+      );
+    }, 50);
+  }, []);
+
+  const pauseElapsedTimer = useCallback(() => {
+    if (elapsedIntervalRef.current !== null) {
+      // Accumulate time before clearing
+      elapsedAccumulatedRef.current += performance.now() - elapsedStartRef.current;
+      setElapsedMs(elapsedAccumulatedRef.current);
+      clearInterval(elapsedIntervalRef.current);
+      elapsedIntervalRef.current = null;
+    }
+  }, []);
+
+  const resumeElapsedTimer = useCallback(() => {
+    if (elapsedIntervalRef.current !== null) return;
+    elapsedStartRef.current = performance.now();
+    elapsedIntervalRef.current = setInterval(() => {
+      setElapsedMs(
+        elapsedAccumulatedRef.current + (performance.now() - elapsedStartRef.current)
+      );
+    }, 50);
+  }, []);
+
+  const clearCountdown = useCallback(() => {
+    if (countdownTimerRef.current !== null) {
+      clearTimeout(countdownTimerRef.current);
+      countdownTimerRef.current = null;
+    }
+    setCountdown(null);
+  }, []);
+
+  const handleStart = useCallback(() => {
+    setShowInput(false);
+    setLastSession(null);
+    setCountdown(3);
+
+    // Countdown: 3 → 2 → 1 → start
+    let count = 3;
+    const tick = () => {
+      count--;
+      if (count > 0) {
+        setCountdown(count);
+        countdownTimerRef.current = setTimeout(tick, 700);
+      } else {
+        setCountdown(null);
+        reader.start();
+        startElapsedTimer();
+      }
+    };
+    countdownTimerRef.current = setTimeout(tick, 700);
+  }, [reader, startElapsedTimer]);
+
+  const handlePause = useCallback(() => {
+    reader.pause();
+    pauseElapsedTimer();
+  }, [reader, pauseElapsedTimer]);
+
+  const handleResume = useCallback(() => {
+    reader.resume();
+    resumeElapsedTimer();
+  }, [reader, resumeElapsedTimer]);
+
+  const handleStop = useCallback(() => {
+    reader.stop();
+    pauseElapsedTimer();
+  }, [reader, pauseElapsedTimer]);
+
+  const handleNewSession = useCallback(() => {
+    setShowInput(true);
+    setLastSession(null);
+    setText("");
+    setElapsedMs(0);
+    elapsedAccumulatedRef.current = 0;
+  }, []);
+
+  const handleWpmChange = useCallback(
+    (wpm: number) => {
+      setCurrentWpm(wpm);
+      reader.setWpm(wpm);
+    },
+    [reader]
+  );
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement) return;
+
+      switch (e.key) {
+        case " ":
+          e.preventDefault();
+          if (reader.sessionState === "reading") handlePause();
+          else if (reader.sessionState === "paused") handleResume();
+          break;
+        case "Escape":
+          e.preventDefault();
+          if (reader.sessionState === "reading" || reader.sessionState === "paused") {
+            handleStop();
+          }
+          break;
+        case "ArrowRight":
+          e.preventDefault();
+          if (
+            reader.sessionState === "reading" ||
+            reader.sessionState === "paused"
+          ) {
+            reader.skipForward(1);
+          }
+          break;
+        case "ArrowLeft":
+          e.preventDefault();
+          if (
+            reader.sessionState === "reading" ||
+            reader.sessionState === "paused"
+          ) {
+            reader.skipBack(1);
+          }
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [reader.sessionState, handlePause, handleResume, handleStop, reader]);
+
+  useEffect(() => {
+    return () => {
+      if (elapsedIntervalRef.current !== null) {
+        clearInterval(elapsedIntervalRef.current);
+      }
+      clearCountdown();
+    };
+  }, [clearCountdown]);
+
+  const isActive = reader.sessionState === "reading" || reader.sessionState === "paused";
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="flex flex-col flex-1 items-center justify-center px-4 py-8 sm:py-12 min-h-screen">
+      {showInput ? (
+        <div className="flex flex-col gap-10 w-full max-w-2xl relative z-10">
+          <div className="text-center">
+            <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight font-outfit bg-gradient-to-r from-zinc-900 to-zinc-500 dark:from-white dark:to-zinc-400 bg-clip-text text-transparent pb-2">
+              Pelatih Membaca Cepat
+            </h1>
+            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mt-4 max-w-lg mx-auto">
+              Capai 300 WPM dengan membaca berbasis ORP. Tempelkan teks, berlatih, dan pantau kemajuan Anda.
+            </p>
+          </div>
+
+          <div className="glass-panel rounded-3xl p-6 sm:p-8">
+            <TextInput
+              text={text}
+              onChange={setText}
+              onStart={handleStart}
+              wordCount={wordCount}
+              disabled={false}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
+
+          <div className="space-y-8">
+            <div key={`gamification-${gamificationKey}`} className="glass-panel rounded-3xl p-6 sm:p-8">
+              <Gamification />
+            </div>
+            
+            <div key={`analytics-${historyKey}`} className="glass-panel rounded-3xl p-6 sm:p-8">
+              <AnalyticsChart />
+            </div>
+
+            <div key={`history-${historyKey}`} className="glass-panel rounded-3xl p-6 sm:p-8">
+              <History />
+            </div>
+
+            <div className="glass-panel rounded-3xl p-6 sm:p-8">
+              <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">
+                Mengapa Aplikasi Ini Dibuat?
+              </h3>
+              <div className="space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
+                <p>
+                  Seringkali kita kesulitan fokus atau terjebak dalam kebiasaan membaca sambil &quot;menggumam&quot; dalam hati (subvokalisasi). Hal ini memperlambat kecepatan membaca kita secara drastis.
+                </p>
+                <p>
+                  Aplikasi ini dikembangkan untuk memecahkan masalah tersebut dengan teknologi <strong>RSVP (Rapid Serial Visual Presentation)</strong> dan <strong>ORP (Optimal Recognition Point)</strong>. Dengan menyorot titik fokus spesifik pada setiap kata dan menampilkannya satu per satu, mata Anda tidak perlu repot-repot bergerak dari kiri ke kanan.
+                </p>
+                <p>
+                  Hasilnya? Anda bisa menyerap informasi jauh lebih cepat, mengurangi kelelahan mata, dan melatih otak memutus kebiasaan subvokalisasi. Aplikasi ini bersifat 100% aman (privasi teks dijamin karena diproses secara lokal di peramban Anda) dan bisa diunduh sebagai aplikasi luring (offline) kapan saja.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
+      ) : (
+        <div className="flex flex-col gap-8 w-full max-w-2xl relative z-10">
+          <div className="glass-panel rounded-3xl p-6 shadow-sm transition-all duration-500">
+            <ProgressPanel
+              wpm={currentWpm}
+              wordIndex={reader.wordIndex}
+              totalWords={reader.words.length}
+              elapsedMs={elapsedMs}
+              sessionState={reader.sessionState}
+            />
+          </div>
+          {countdown !== null ? (
+            <div className="flex items-center justify-center w-full min-h-[40vh] select-none">
+              <span className="text-8xl sm:text-9xl font-mono font-bold text-amber-400 animate-pulse tabular-nums">
+                {countdown}
+              </span>
+            </div>
+          ) : (
+            <Reader
+              word={
+                reader.sessionState === "idle"
+                  ? "Siap"
+                  : reader.sessionState === "finished"
+                  ? "Selesai"
+                  : reader.words[reader.wordIndex] ?? ""
+              }
+              isPaused={reader.sessionState === "paused"}
+              isFinished={reader.sessionState === "finished"}
+            />
+          )}
+
+          {reader.sessionState === "finished" && lastSession ? (
+            <SessionSummary
+              wordCount={lastSession.wordCount}
+              actualWpm={lastSession.actualWpm}
+              durationMs={lastSession.durationMs}
+              onNewSession={handleNewSession}
+            />
+          ) : countdown === null ? (
+            <Controls
+              sessionState={reader.sessionState}
+              wpm={currentWpm}
+              progress={reader.progress}
+              wordIndex={reader.wordIndex}
+              totalWords={reader.words.length}
+              onPlay={handleStart}
+              onPause={handlePause}
+              onResume={handleResume}
+              onStop={handleStop}
+              onWpmChange={handleWpmChange}
+              onSkipForward={() => reader.skipForward(1)}
+              onSkipBack={() => reader.skipBack(1)}
+            />
+          ) : null}
+
+          {isActive && (
+            <p className="text-center text-xs text-zinc-600">
+              Spasi untuk jeda/lanjut &middot; Panah untuk lewati &middot; Esc untuk akhiri sesi
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
+
