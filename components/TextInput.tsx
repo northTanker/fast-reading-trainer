@@ -10,6 +10,8 @@ interface TextInputProps {
   onChange: (text: string) => void;
   onStart: () => void;
   wordCount: number;
+  wpm: number;
+  onWpmChange: (wpm: number) => void;
   disabled: boolean;
 }
 
@@ -18,6 +20,8 @@ export default function TextInput({
   onChange,
   onStart,
   wordCount,
+  wpm,
+  onWpmChange,
   disabled,
 }: TextInputProps) {
   const library = useLibrary();
@@ -147,6 +151,27 @@ export default function TextInput({
             </div>
           </div>
         )}
+      </div>
+
+      <div className="flex flex-col gap-3 mt-2 border-t border-zinc-200/50 dark:border-zinc-700/50 pt-6">
+        <div className="flex items-center justify-between text-xs font-semibold text-zinc-500 uppercase tracking-widest ml-1">
+          <span>Kecepatan Awal</span>
+          <span className="text-amber-500 font-bold">{wpm} WPM</span>
+        </div>
+        <input
+          type="range"
+          min="100"
+          max="1000"
+          step="50"
+          value={wpm}
+          onChange={(e) => onWpmChange(parseInt(e.target.value))}
+          className="w-full accent-amber-500 h-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer hover:accent-amber-400 transition-all"
+        />
+        <div className="flex justify-between text-[10px] text-zinc-400 font-mono px-1">
+          <span>100</span>
+          <span>550</span>
+          <span>1000</span>
+        </div>
       </div>
 
       <button

@@ -224,6 +224,8 @@ export default function Home() {
               onChange={setText}
               onStart={handleStart}
               wordCount={wordCount}
+              wpm={currentWpm}
+              onWpmChange={handleWpmChange}
               disabled={false}
             />
           </div>
