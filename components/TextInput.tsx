@@ -4,6 +4,7 @@ import { useState } from "react";
 import { SAMPLE_TEXTS } from "@/lib/samples";
 import { useLibrary } from "@/hooks/useLibrary";
 import { saveTextToLibrary, removeTextFromLibrary } from "@/lib/library";
+import { parseFile } from "@/lib/fileParser";
 
 interface TextInputProps {
   text: string;
@@ -27,6 +28,8 @@ export default function TextInput({
   const library = useLibrary();
   const [saveTitle, setSaveTitle] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isParsing, setIsParsing] = useState(false);
 
   const handleSampleClick = (content: string) => {
     onChange(content);
@@ -39,19 +42,90 @@ export default function TextInput({
     setIsSaving(false);
   };
 
+  const handleFileUpload = async (file: File) => {
+    try {
+      setIsParsing(true);
+      const extractedText = await parseFile(file);
+      onChange(extractedText);
+    } catch (err: any) {
+      alert(err.message || "Gagal mengurai berkas.");
+    } finally {
+      setIsParsing(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    if (disabled || isParsing) return;
+    
+    const file = e.dataTransfer.files[0];
+    if (file) handleFileUpload(file);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (!disabled && !isParsing) setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 ml-1">
-          Tempelkan teks Anda di sini
-        </label>
-        <textarea
-          className="w-full h-48 p-4 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md border border-zinc-200/80 dark:border-zinc-700/50 rounded-2xl text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 resize-none transition-all duration-300 shadow-inner"
-          placeholder="Tempelkan artikel, esai, atau kutipan buku..."
-          value={text}
-          onChange={(e) => onChange(e.target.value)}
-          disabled={disabled}
-        />
+      <div className="flex flex-col gap-2 relative">
+        <div className="flex justify-between items-center ml-1">
+          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            Tempelkan teks atau jatuhkan berkas
+          </label>
+          <label className="text-xs font-semibold text-amber-600 dark:text-amber-500 cursor-pointer hover:underline">
+            Unggah Berkas (TXT, DOCX, PDF)
+            <input 
+              type="file" 
+              accept=".txt,.md,.csv,.docx,.pdf" 
+              className="hidden" 
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleFileUpload(file);
+                e.target.value = ''; // Reset input
+              }}
+              disabled={disabled || isParsing}
+            />
+          </label>
+        </div>
+        
+        <div 
+          className="relative group"
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+        >
+          <textarea
+            className={`w-full h-48 p-4 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md border ${isDragging ? 'border-amber-500 ring-2 ring-amber-500/50 bg-amber-50/50 dark:bg-amber-900/10' : 'border-zinc-200/80 dark:border-zinc-700/50'} rounded-2xl text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 resize-none transition-all duration-300 shadow-inner`}
+            placeholder="Tempelkan artikel, atau drag & drop berkas TXT, PDF, Word ke sini..."
+            value={text}
+            onChange={(e) => onChange(e.target.value)}
+            disabled={disabled || isParsing}
+          />
+          {isDragging && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm rounded-2xl border-2 border-dashed border-amber-500 z-10 pointer-events-none">
+              <span className="text-amber-600 dark:text-amber-500 font-bold text-lg animate-pulse">
+                Lepaskan berkas di sini...
+              </span>
+            </div>
+          )}
+          {isParsing && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm rounded-2xl z-10 pointer-events-none gap-3">
+              <div className="w-8 h-8 border-4 border-amber-200 border-t-amber-500 rounded-full animate-spin"></div>
+              <span className="text-zinc-600 dark:text-zinc-400 font-medium text-sm animate-pulse">
+                Mengekstrak teks...
+              </span>
+            </div>
+          )}
+        </div>
         
         <div className="flex justify-between items-center px-1 flex-wrap gap-2">
           <span className="text-xs text-zinc-500 font-medium">
