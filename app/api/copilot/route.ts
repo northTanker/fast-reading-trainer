@@ -55,7 +55,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ text: generatedText });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Copilot Backend Error:", error);
     return NextResponse.json(
       { error: "Terjadi kesalahan internal peladen." },

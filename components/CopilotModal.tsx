@@ -17,7 +17,9 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
 
   useEffect(() => {
     const savedKey = localStorage.getItem("deepseek-private-key");
-    if (savedKey) setPrivateKey(savedKey);
+    if (savedKey) {
+      setTimeout(() => setPrivateKey(savedKey), 0);
+    }
   }, []);
 
   const handleSaveKey = (key: string) => {
@@ -57,8 +59,8 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
       onApplyText(data.text);
       onClose();
       setPrompt("");
-    } catch (err: any) {
-      setErrorMsg(err.message);
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : "Terjadi kesalahan yang tidak diketahui");
     } finally {
       setIsLoading(false);
     }

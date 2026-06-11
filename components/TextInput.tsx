@@ -49,8 +49,8 @@ export default function TextInput({
       setIsParsing(true);
       const extractedText = await parseFile(file);
       onChange(extractedText);
-    } catch (err: any) {
-      alert(err.message || "Gagal mengurai berkas.");
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : "Gagal mengurai berkas.");
     } finally {
       setIsParsing(false);
     }
