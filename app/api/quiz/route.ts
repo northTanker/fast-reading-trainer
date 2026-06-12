@@ -18,9 +18,9 @@ export async function POST(req: Request) {
     }
 
     const wordCount = text.trim().split(/\s+/).length;
-    let questionCount = 3;
-    if (wordCount > 500) questionCount = 5;
-    if (wordCount > 1000) questionCount = 7;
+    let questionCount = 5;
+    if (wordCount > 500) questionCount = 7;
+    if (wordCount > 1000) questionCount = 10;
 
     const systemPrompt = `Anda adalah asisten pembuat kuis pemahaman membaca. Buatlah ${questionCount} pertanyaan pilihan ganda berdasarkan teks yang diberikan.
 Kembalikan dalam format JSON murni dengan struktur persis seperti berikut:
