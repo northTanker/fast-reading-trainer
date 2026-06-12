@@ -1,7 +1,9 @@
+const CACHE_NAME = 'speed-reading-v2';
+
 self.addEventListener('install', (e) => {
   self.skipWaiting();
   e.waitUntil(
-    caches.open('speed-reading-v1').then((cache) => cache.addAll([
+    caches.open(CACHE_NAME).then((cache) => cache.addAll([
       '/',
       '/manifest.json'
     ]))
@@ -13,7 +15,7 @@ self.addEventListener('activate', (e) => {
     caches.keys().then((keyList) => {
       return Promise.all(
         keyList.map((key) => {
-          if (key !== 'speed-reading-v1') {
+          if (key !== CACHE_NAME) {
             return caches.delete(key);
           }
         })
@@ -37,7 +39,21 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
+  // Network-first strategy
   e.respondWith(
-    caches.match(e.request).then((response) => response || fetch(e.request))
+    fetch(e.request)
+      .then((networkResponse) => {
+        // Update cache
+        if (e.request.method === 'GET' && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(e.request, responseClone);
+          });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        return caches.match(e.request);
+      })
   );
 });
