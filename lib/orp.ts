@@ -1,8 +1,15 @@
 export function getOrpIndex(word: string): number {
   const letters = word.replace(/[^a-zA-Z0-9]/g, "");
-  if (letters.length <= 1) return 0;
+  return getOrpIndexFromTable(letters.length);
+}
 
-  return Math.floor(letters.length * 0.35);
+function getOrpIndexFromTable(len: number): number {
+  if (len <= 1) return 0;
+  if (len <= 3) return 1;
+  if (len <= 5) return 2;
+  if (len <= 9) return 3;
+  if (len <= 13) return 4;
+  return Math.floor(len / 3); // Fallback for very long words
 }
 
 export function splitAtOrp(word: string): {
@@ -15,7 +22,7 @@ export function splitAtOrp(word: string): {
     return { before: "", pivot: word, after: "" };
   }
 
-  const orpIdx = Math.floor(letters.length * 0.35);
+  const orpIdx = getOrpIndexFromTable(letters.length);
   let letterCount = 0;
   let splitIndex = 0;
 
@@ -36,3 +43,4 @@ export function splitAtOrp(word: string): {
     after: word.slice(splitIndex + 1),
   };
 }
+

@@ -8,24 +8,24 @@ describe('orp', () => {
       expect(getOrpIndex('a')).toBe(0);
     });
 
-    test('calculates ~35% index for longer words', () => {
-      expect(getOrpIndex('Hello')).toBe(1); // 5 * 0.35 = 1.75 -> 1
-      expect(getOrpIndex('testing')).toBe(2); // 7 * 0.35 = 2.45 -> 2
+    test('calculates correct index using lookup table', () => {
+      expect(getOrpIndex('Hello')).toBe(2); // length 5 -> index 2
+      expect(getOrpIndex('testing')).toBe(3); // length 7 -> index 3
     });
 
     test('ignores punctuation in length calculation', () => {
-      expect(getOrpIndex('Hello,')).toBe(1); // 5 letters
+      expect(getOrpIndex('Hello,')).toBe(2); // 5 letters
     });
   });
 
   describe('splitAtOrp', () => {
     test('splits at the correct pivot', () => {
-      expect(splitAtOrp('Hello')).toEqual({ before: 'H', pivot: 'e', after: 'llo' });
-      expect(splitAtOrp('testing')).toEqual({ before: 'te', pivot: 's', after: 'ting' });
+      expect(splitAtOrp('Hello')).toEqual({ before: 'He', pivot: 'l', after: 'lo' });
+      expect(splitAtOrp('testing')).toEqual({ before: 'tes', pivot: 't', after: 'ing' });
     });
 
     test('handles punctuation', () => {
-      expect(splitAtOrp('"Hello"')).toEqual({ before: '"H', pivot: 'e', after: 'llo"' });
+      expect(splitAtOrp('"Hello"')).toEqual({ before: '"He', pivot: 'l', after: 'lo"' });
     });
 
     test('handles short words', () => {

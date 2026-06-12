@@ -57,13 +57,17 @@ export function useReader({
     const baseIntervalMs = Math.max(20, Math.round(60000 / wpmRef.current));
     if (!word) return baseIntervalMs;
     
+    const isParagraphBreak = word === "\n\n";
     const isEndOfSentence = /[.!?]["']?$/.test(word);
     const isPausePunctuation = /[,;:]["']?$/.test(word);
+    const hasQuotesOrParentheses = /['"()[\]]/.test(word);
     const isLongWord = word.length > 8;
 
     let multiplier = 1;
-    if (isEndOfSentence) multiplier = 2; // 2x delay untuk akhir kalimat
+    if (isParagraphBreak) multiplier = 3.5; // 3.5x delay untuk paragraf baru
+    else if (isEndOfSentence) multiplier = 2.0; // 2x delay untuk akhir kalimat
     else if (isPausePunctuation) multiplier = 1.5; // 1.5x delay untuk koma/jeda
+    else if (hasQuotesOrParentheses) multiplier = 1.3; // 1.3x delay untuk kutipan/kurung
     else if (isLongWord) multiplier = 1.2; // 1.2x delay untuk kata panjang
 
     return baseIntervalMs * multiplier;
