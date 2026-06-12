@@ -9,6 +9,7 @@ export default function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const savedTheme = localStorage.getItem("theme") as Theme;
     if (savedTheme === "light" || savedTheme === "dark") {
@@ -39,7 +40,7 @@ export default function ThemeToggle() {
   }, [theme, mounted]);
 
   if (!mounted) {
-    return <div className="w-9 h-9" />; // Placeholder
+    return <div className="h-10 px-4" />; // Placeholder with same height
   }
 
   const cycleTheme = () => {
@@ -51,13 +52,13 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={cycleTheme}
-      className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300 transition-colors shadow-sm border border-zinc-200 dark:border-zinc-700"
+      className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 h-10 px-4 flex items-center justify-center gap-2 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition-colors shadow-sm border border-zinc-200 dark:border-zinc-700 font-medium text-sm"
       aria-label="Toggle theme"
       title={`Tema saat ini: ${theme === "system" ? "Sistem" : theme === "light" ? "Terang" : "Gelap"}`}
     >
-      {theme === "light" && <span className="text-lg">☀️</span>}
-      {theme === "dark" && <span className="text-lg">🌙</span>}
-      {theme === "system" && <span className="text-lg">💻</span>}
+      {theme === "light" && <><span className="text-base">☀️</span> <span>Terang</span></>}
+      {theme === "dark" && <><span className="text-base">🌙</span> <span>Gelap</span></>}
+      {theme === "system" && <><span className="text-base">💻</span> <span>Sistem</span></>}
     </button>
   );
 }
