@@ -94,12 +94,14 @@ export function useReader({
       wordIndexRef.current = next;
       setWordIndex(next);
       
+      const oldDelay = nextDelayRef.current;
+      
       // Hitung jeda untuk kata saat ini
       const currentWord = words[next];
       nextDelayRef.current = calculateDelay(currentWord);
       
-      // Simpan sisa waktu agar rAF tidak drift
-      lastTickRef.current = time - (elapsed - nextDelayRef.current);
+      // Simpan sisa waktu agar rAF tidak drift menggunakan oldDelay
+      lastTickRef.current = time - (elapsed - oldDelay);
     }
 
     rafRef.current = requestAnimationFrame(tickLoop);
