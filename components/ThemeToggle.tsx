@@ -52,13 +52,13 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={cycleTheme}
-      className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 h-10 px-4 flex items-center justify-center gap-2 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition-colors shadow-sm border border-zinc-200 dark:border-zinc-700 font-medium text-sm"
+      className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 h-10 w-10 sm:w-auto px-0 sm:px-4 flex items-center justify-center gap-2 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition-colors shadow-sm border border-zinc-200 dark:border-zinc-700 font-medium text-sm"
       aria-label="Toggle theme"
       title={`Tema saat ini: ${theme === "system" ? "Sistem" : theme === "light" ? "Terang" : "Gelap"}`}
     >
-      {theme === "light" && <><span className="text-base">☀️</span> <span>Terang</span></>}
-      {theme === "dark" && <><span className="text-base">🌙</span> <span>Gelap</span></>}
-      {theme === "system" && <><span className="text-base">💻</span> <span>Sistem</span></>}
+      {theme === "light" && <><span className="text-base">☀️</span> <span className="hidden sm:inline">Terang</span></>}
+      {theme === "dark" && <><span className="text-base">🌙</span> <span className="hidden sm:inline">Gelap</span></>}
+      {theme === "system" && <><span className="text-base">💻</span> <span className="hidden sm:inline">Sistem</span></>}
     </button>
   );
 }
