@@ -64,12 +64,12 @@ export default function SessionSummary({
           Mulai Sesi Baru
         </button>
 
-        {onTakeQuiz && !!process.env.NEXT_PUBLIC_DEEPSEEK_API_KEY && (
+        {onTakeQuiz && (
           <button
             className="w-full py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/20 font-bold text-base transition-all duration-300 active:scale-[0.98]"
             onClick={() => onTakeQuiz("default")}
           >
-            Ikuti Tes Pemahaman (Gratis)
+            Ikuti Tes Pemahaman (AI)
           </button>
         )}
 
