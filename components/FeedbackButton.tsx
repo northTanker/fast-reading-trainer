@@ -6,7 +6,7 @@ declare const Tally: any;
 export default function FeedbackButton() {
   const openTally = () => {
     if (typeof Tally !== 'undefined') {
-      Tally.openPopup('wzVvXX', { // Ganti 'wzVvXX' dengan ID Form Tally Anda nanti
+      Tally.openPopup('7RPxoa', { // Menggunakan ID Form asli milik Anda
         layout: 'modal',
         width: 700,
         emoji: {
@@ -16,7 +16,7 @@ export default function FeedbackButton() {
       });
     } else {
       // Jika Tally belum dimuat (fallback)
-      window.open('https://tally.so', '_blank');
+      window.open('https://tally.so/r/7RPxoa', '_blank');
     }
   };
 
