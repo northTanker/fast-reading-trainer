@@ -9,6 +9,7 @@ import SessionSummary from "@/components/SessionSummary";
 import Gamification from "@/components/Gamification";
 import History from "@/components/History";
 import AnalyticsChart from "@/components/AnalyticsChart";
+import EduModal from "@/components/EduModal";
 import QuizPanel from "@/components/QuizPanel";
 import { useReader } from "@/hooks/useReader";
 import { tokenize } from "@/lib/tokenizer";
@@ -26,6 +27,7 @@ export default function Home() {
   const [historyKey, setHistoryKey] = useState(0);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [quizMode, setQuizMode] = useState<"default" | "custom" | false>(false);
+  const [showEduModal, setShowEduModal] = useState(false);
 
   const elapsedAccumulatedRef = useRef(0);
   const elapsedStartRef = useRef(0);
@@ -219,6 +221,10 @@ export default function Home() {
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center px-4 py-8 sm:py-12 min-h-screen">
+      <EduModal 
+        isOpen={showEduModal}
+        onClose={() => setShowEduModal(false)}
+      />
       {showInput ? (
         <div className="flex flex-col gap-10 w-full max-w-2xl relative z-10">
           <div className="text-center">
@@ -258,21 +264,20 @@ export default function Home() {
               <History />
             </div>
 
-            <div className="glass-panel rounded-3xl p-6 sm:p-8">
-              <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">
-                Mengapa Aplikasi Ini Dibuat?
+            <div className="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center text-center">
+              <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
+                Ingin Belajar Lebih Lanjut?
               </h3>
-              <div className="space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
-                <p>
-                  Seringkali kita kesulitan fokus atau terjebak dalam kebiasaan membaca sambil &quot;menggumam&quot; dalam hati (subvokalisasi). Hal ini memperlambat kecepatan membaca kita secara drastis.
-                </p>
-                <p>
-                  Aplikasi ini dikembangkan untuk memecahkan masalah tersebut dengan teknologi <strong>RSVP (Rapid Serial Visual Presentation)</strong> dan <strong>ORP (Optimal Recognition Point)</strong>. Dengan menyorot titik fokus spesifik pada setiap kata dan menampilkannya satu per satu, mata Anda tidak perlu repot-repot bergerak dari kiri ke kanan.
-                </p>
-                <p>
-                  Hasilnya? Anda bisa menyerap informasi jauh lebih cepat, mengurangi kelelahan mata, dan melatih otak memutus kebiasaan subvokalisasi. Aplikasi ini bersifat 100% aman (privasi teks dijamin karena diproses secara lokal di peramban Anda) dan bisa diunduh sebagai aplikasi luring (offline) kapan saja.
-                </p>
-              </div>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
+                Pelajari mengapa aplikasi ini dibuat, cara memaksimalkannya, dan manfaat membaca cepat untuk otak Anda.
+              </p>
+              <button
+                onClick={() => setShowEduModal(true)}
+                className="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold transition-all shadow-md active:scale-[0.98] flex items-center gap-2"
+              >
+                <span>Buka Pusat Edukasi</span>
+                <span>📚</span>
+              </button>
             </div>
           </div>
         </div>
