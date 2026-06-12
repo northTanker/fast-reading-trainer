@@ -124,7 +124,7 @@ export default function TextInput({
               onClick={() => setIsCopilotOpen(true)}
               className="text-xs font-bold text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-500/10 px-3 py-1.5 rounded-full hover:bg-amber-100 dark:hover:bg-amber-500/20 transition-colors flex items-center gap-1"
             >
-              <span>✨</span> AI Copilot
+              <span>✨</span> Buat Teks dengan AI
             </button>
             <label className="text-xs font-semibold text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 cursor-pointer transition-colors">
               Unggah Berkas (TXT, DOCX, PDF)

@@ -83,7 +83,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <span className="text-2xl">✨</span>
-            <h2 className="text-xl font-bold font-outfit text-zinc-900 dark:text-zinc-100">AI Copilot</h2>
+            <h2 className="text-xl font-bold font-outfit text-zinc-900 dark:text-zinc-100">Buat Teks dengan AI</h2>
           </div>
           <button 
             onClick={onClose}
