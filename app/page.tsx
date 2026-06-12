@@ -9,6 +9,7 @@ import SessionSummary from "@/components/SessionSummary";
 import Gamification from "@/components/Gamification";
 import History from "@/components/History";
 import AnalyticsChart from "@/components/AnalyticsChart";
+import QuizPanel from "@/components/QuizPanel";
 import { useReader } from "@/hooks/useReader";
 import { tokenize } from "@/lib/tokenizer";
 import { createSessionRecord } from "@/lib/session";
@@ -24,6 +25,7 @@ export default function Home() {
   const [gamificationKey, setGamificationKey] = useState(0);
   const [historyKey, setHistoryKey] = useState(0);
   const [countdown, setCountdown] = useState<number | null>(null);
+  const [showQuiz, setShowQuiz] = useState(false);
 
   const elapsedAccumulatedRef = useRef(0);
   const elapsedStartRef = useRef(0);
@@ -139,11 +141,21 @@ export default function Home() {
 
   const handleNewSession = useCallback(() => {
     setShowInput(true);
+    setShowQuiz(false);
     setLastSession(null);
     setText("");
     setElapsedMs(0);
     elapsedAccumulatedRef.current = 0;
   }, []);
+
+  const handleTakeQuiz = useCallback(() => {
+    setShowQuiz(true);
+  }, []);
+
+  const handleCloseQuiz = useCallback(() => {
+    setShowQuiz(false);
+    handleNewSession();
+  }, [handleNewSession]);
 
   const handleWpmChange = useCallback(
     (wpm: number) => {
@@ -264,6 +276,10 @@ export default function Home() {
             </div>
           </div>
         </div>
+      ) : showQuiz ? (
+        <div className="w-full relative z-10 flex flex-col items-center">
+          <QuizPanel text={text} onClose={handleCloseQuiz} />
+        </div>
       ) : (
         <div className="flex flex-col gap-8 w-full max-w-2xl relative z-10">
           <div className="glass-panel rounded-3xl p-6 shadow-sm transition-all duration-500">
@@ -301,6 +317,7 @@ export default function Home() {
               actualWpm={lastSession.actualWpm}
               durationMs={lastSession.durationMs}
               onNewSession={handleNewSession}
+              onTakeQuiz={handleTakeQuiz}
             />
           ) : countdown === null ? (
             <Controls

@@ -14,7 +14,8 @@ export default function SessionSummary({
   actualWpm,
   durationMs,
   onNewSession,
-}: SessionSummaryProps) {
+  onTakeQuiz,
+}: SessionSummaryProps & { onTakeQuiz?: () => void }) {
   return (
     <div className="glass-panel flex flex-col gap-8 items-center rounded-3xl p-8 sm:p-10 transition-all duration-500 mt-4 relative overflow-hidden w-full max-w-2xl mx-auto">
       <div className="text-center relative z-10">
@@ -55,12 +56,23 @@ export default function SessionSummary({
         </div>
       </div>
 
-      <button
-        className="w-full py-4 rounded-2xl bg-gradient-to-r from-zinc-900 to-zinc-700 text-white hover:from-zinc-800 hover:to-zinc-600 dark:from-zinc-100 dark:to-zinc-300 dark:text-zinc-900 dark:hover:from-white dark:hover:to-zinc-200 font-bold text-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg shadow-zinc-900/20 dark:shadow-white/10 relative z-10"
-        onClick={onNewSession}
-      >
-        Mulai Sesi Baru
-      </button>
+      <div className="w-full flex flex-col gap-3 relative z-10">
+        <button
+          className="w-full py-4 rounded-2xl bg-gradient-to-r from-zinc-900 to-zinc-700 text-white hover:from-zinc-800 hover:to-zinc-600 dark:from-zinc-100 dark:to-zinc-300 dark:text-zinc-900 dark:hover:from-white dark:hover:to-zinc-200 font-bold text-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg shadow-zinc-900/20 dark:shadow-white/10"
+          onClick={onNewSession}
+        >
+          Mulai Sesi Baru
+        </button>
+
+        {onTakeQuiz && (
+          <button
+            className="w-full py-4 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-500 border border-amber-500/30 font-bold text-base transition-all duration-300 active:scale-[0.98]"
+            onClick={onTakeQuiz}
+          >
+            Ikuti Tes Pemahaman (AI)
+          </button>
+        )}
+      </div>
     </div>
   );
 }

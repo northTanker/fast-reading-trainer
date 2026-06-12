@@ -40,3 +40,9 @@ export interface SavedText {
   content: string;
   createdAt: string;
 }
+
+export interface QuizQuestion {
+  question: string;
+  options: string[];
+  correctAnswerIndex: number;
+}
