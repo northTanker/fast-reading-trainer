@@ -227,16 +227,24 @@ export default function Home() {
       />
       {showInput ? (
         <div className="flex flex-col gap-10 w-full max-w-2xl relative z-10">
-          <div className="text-center">
+          <div className="text-center flex flex-col items-center">
             <div className="inline-flex items-center justify-center space-x-3 mb-2">
               <span className="text-4xl sm:text-5xl">⚡</span>
               <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tighter font-outfit bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-transparent pb-2 drop-shadow-sm">
                 BacaKilat
               </h1>
             </div>
-            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mt-2 max-w-lg mx-auto font-medium">
+            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mt-2 max-w-lg mx-auto font-medium mb-6">
               Evolusi cara Anda menyerap informasi. Capai <span className="text-amber-500 font-bold">500+ WPM</span> dengan teknologi Optimal Recognition Point.
             </p>
+            
+            <button
+              onClick={() => setShowEduModal(true)}
+              className="px-5 py-2 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 rounded-full font-bold text-sm transition-all shadow-sm flex items-center gap-2 mb-2"
+            >
+              <span>📚</span>
+              <span>Buka Pusat Edukasi</span>
+            </button>
           </div>
 
           <div className="glass-panel rounded-3xl p-6 sm:p-8">
@@ -262,22 +270,6 @@ export default function Home() {
 
             <div key={`history-${historyKey}`} className="glass-panel rounded-3xl p-6 sm:p-8">
               <History />
-            </div>
-
-            <div className="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center text-center">
-              <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-                Ingin Belajar Lebih Lanjut?
-              </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
-                Pelajari mengapa aplikasi ini dibuat, cara memaksimalkannya, dan manfaat membaca cepat untuk otak Anda.
-              </p>
-              <button
-                onClick={() => setShowEduModal(true)}
-                className="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold transition-all shadow-md active:scale-[0.98] flex items-center gap-2"
-              >
-                <span>Buka Pusat Edukasi</span>
-                <span>📚</span>
-              </button>
             </div>
           </div>
         </div>
