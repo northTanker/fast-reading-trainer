@@ -15,7 +15,7 @@ export default function SessionSummary({
   durationMs,
   onNewSession,
   onTakeQuiz,
-}: SessionSummaryProps & { onTakeQuiz?: () => void }) {
+}: SessionSummaryProps & { onTakeQuiz?: (mode: "default" | "custom") => void }) {
   return (
     <div className="glass-panel flex flex-col gap-8 items-center rounded-3xl p-8 sm:p-10 transition-all duration-500 mt-4 relative overflow-hidden w-full max-w-2xl mx-auto">
       <div className="text-center relative z-10">
@@ -64,12 +64,21 @@ export default function SessionSummary({
           Mulai Sesi Baru
         </button>
 
+        {onTakeQuiz && !!process.env.NEXT_PUBLIC_DEEPSEEK_API_KEY && (
+          <button
+            className="w-full py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/20 font-bold text-base transition-all duration-300 active:scale-[0.98]"
+            onClick={() => onTakeQuiz("default")}
+          >
+            Ikuti Tes Pemahaman (Gratis)
+          </button>
+        )}
+
         {onTakeQuiz && (
           <button
-            className="w-full py-4 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-500 border border-amber-500/30 font-bold text-base transition-all duration-300 active:scale-[0.98]"
-            onClick={onTakeQuiz}
+            className="w-full py-3 rounded-2xl bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300 font-bold text-sm transition-all duration-300"
+            onClick={() => onTakeQuiz("custom")}
           >
-            Ikuti Tes Pemahaman (AI)
+            Punya API Key Sendiri? Tes di sini
           </button>
         )}
       </div>

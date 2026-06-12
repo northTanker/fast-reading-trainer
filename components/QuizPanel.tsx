@@ -6,11 +6,14 @@ import type { QuizQuestion } from "@/types";
 
 interface QuizPanelProps {
   text: string;
+  initialMode: "default" | "custom";
   onClose: () => void;
 }
 
-export default function QuizPanel({ text, onClose }: QuizPanelProps) {
-  const [step, setStep] = useState<"setup" | "loading" | "playing" | "result">("setup");
+export default function QuizPanel({ text, initialMode, onClose }: QuizPanelProps) {
+  const [step, setStep] = useState<"setup" | "loading" | "playing" | "result">(
+    initialMode === "default" ? "loading" : "setup"
+  );
   const [apiKeyInput, setApiKeyInput] = useState("");
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -19,14 +22,28 @@ export default function QuizPanel({ text, onClose }: QuizPanelProps) {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
 
-  const hasDefaultApi = !!process.env.NEXT_PUBLIC_DEEPSEEK_API_KEY;
-
   useEffect(() => {
     const savedKey = localStorage.getItem("deepseek_api_key");
     if (savedKey) {
       setTimeout(() => setApiKeyInput(savedKey), 0);
     }
   }, []);
+
+  useEffect(() => {
+    if (initialMode === "default" && step === "loading") {
+      generateQuiz(text, undefined)
+        .then((generatedQuestions) => {
+          setQuestions(generatedQuestions);
+          setStep("playing");
+        })
+        .catch((err: unknown) => {
+          const msg = err instanceof Error ? err.message : "Gagal memuat kuis.";
+          setError(msg);
+          setStep("setup");
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialMode, text]);
 
   const handleStartQuiz = async (useDefault: boolean) => {
     setError("");
@@ -78,7 +95,7 @@ export default function QuizPanel({ text, onClose }: QuizPanelProps) {
         <div className="text-center">
           <h2 className="text-3xl font-extrabold font-outfit mb-2">Kuis Pemahaman (AI)</h2>
           <p className="text-zinc-600 dark:text-zinc-400 text-sm">
-            Teks Anda akan dianalisis oleh AI untuk menghasilkan soal-soal kuis.
+            Masukkan API Key Deepseek Anda untuk membuat kuis.
           </p>
         </div>
 
@@ -87,21 +104,6 @@ export default function QuizPanel({ text, onClose }: QuizPanelProps) {
             {error}
           </div>
         )}
-
-        {hasDefaultApi && (
-          <button
-            onClick={() => handleStartQuiz(true)}
-            className="w-full py-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold transition-all shadow-md active:scale-[0.98]"
-          >
-            Mulai dengan API Bawaan
-          </button>
-        )}
-
-        <div className="flex items-center gap-4">
-          <div className="h-px bg-zinc-200 dark:bg-zinc-700 flex-1"></div>
-          <span className="text-xs font-bold text-zinc-400 uppercase">ATAU</span>
-          <div className="h-px bg-zinc-200 dark:bg-zinc-700 flex-1"></div>
-        </div>
 
         <div className="flex flex-col gap-2">
           <label className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
@@ -126,7 +128,7 @@ export default function QuizPanel({ text, onClose }: QuizPanelProps) {
           onClick={onClose}
           className="text-sm font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors mt-2"
         >
-          Kembali
+          Batal
         </button>
       </div>
     );

@@ -25,7 +25,7 @@ export default function Home() {
   const [gamificationKey, setGamificationKey] = useState(0);
   const [historyKey, setHistoryKey] = useState(0);
   const [countdown, setCountdown] = useState<number | null>(null);
-  const [showQuiz, setShowQuiz] = useState(false);
+  const [quizMode, setQuizMode] = useState<"default" | "custom" | false>(false);
 
   const elapsedAccumulatedRef = useRef(0);
   const elapsedStartRef = useRef(0);
@@ -141,19 +141,19 @@ export default function Home() {
 
   const handleNewSession = useCallback(() => {
     setShowInput(true);
-    setShowQuiz(false);
+    setQuizMode(false);
     setLastSession(null);
     setText("");
     setElapsedMs(0);
     elapsedAccumulatedRef.current = 0;
   }, []);
 
-  const handleTakeQuiz = useCallback(() => {
-    setShowQuiz(true);
+  const handleTakeQuiz = useCallback((mode: "default" | "custom") => {
+    setQuizMode(mode);
   }, []);
 
   const handleCloseQuiz = useCallback(() => {
-    setShowQuiz(false);
+    setQuizMode(false);
     handleNewSession();
   }, [handleNewSession]);
 
@@ -276,9 +276,9 @@ export default function Home() {
             </div>
           </div>
         </div>
-      ) : showQuiz ? (
+      ) : quizMode ? (
         <div className="w-full relative z-10 flex flex-col items-center">
-          <QuizPanel text={text} onClose={handleCloseQuiz} />
+          <QuizPanel text={text} initialMode={quizMode} onClose={handleCloseQuiz} />
         </div>
       ) : (
         <div className="flex flex-col gap-8 w-full max-w-2xl relative z-10">
