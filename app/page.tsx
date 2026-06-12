@@ -10,6 +10,7 @@ import Gamification from "@/components/Gamification";
 import History from "@/components/History";
 import AnalyticsChart from "@/components/AnalyticsChart";
 import EduModal from "@/components/EduModal";
+import ThemeToggle from "@/components/ThemeToggle";
 import QuizPanel from "@/components/QuizPanel";
 import { useReader } from "@/hooks/useReader";
 import { tokenize } from "@/lib/tokenizer";
@@ -220,7 +221,8 @@ export default function Home() {
   const isActive = reader.sessionState === "reading" || reader.sessionState === "paused";
 
   return (
-    <div className="flex flex-col flex-1 items-center justify-center px-4 py-8 sm:py-12 min-h-screen">
+    <div className="flex flex-col flex-1 items-center justify-center px-4 py-8 sm:py-12 min-h-screen relative">
+      <ThemeToggle />
       <EduModal 
         isOpen={showEduModal}
         onClose={() => setShowEduModal(false)}

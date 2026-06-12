@@ -10,7 +10,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     --background: #09090b;
     --foreground: #f8fafc;
     --bg-gradient: radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 100%);
@@ -18,6 +18,15 @@
     --card-border: rgba(255, 255, 255, 0.05);
     --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   }
+}
+
+:root.dark {
+  --background: #09090b;
+  --foreground: #f8fafc;
+  --bg-gradient: radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 100%);
+  --card-bg: rgba(15, 23, 42, 0.4);
+  --card-border: rgba(255, 255, 255, 0.05);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 @theme inline {

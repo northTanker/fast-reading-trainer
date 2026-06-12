@@ -66,6 +66,26 @@ export default function RootLayout({
                   }
                 });
               }
+
+              // Theme Initialization Script
+              (function() {
+                try {
+                  var savedTheme = localStorage.getItem('theme');
+                  var isDark = false;
+                  if (savedTheme === 'dark') {
+                    isDark = true;
+                  } else if (savedTheme === 'light') {
+                    isDark = false;
+                  } else {
+                    isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  }
+                  if (isDark) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.add('light');
+                  }
+                } catch (e) {}
+              })();
             `,
           }}
         />
