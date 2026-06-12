@@ -11,6 +11,7 @@ import History from "@/components/History";
 import AnalyticsChart from "@/components/AnalyticsChart";
 import EduModal from "@/components/EduModal";
 import ThemeToggle from "@/components/ThemeToggle";
+import FeedbackButton from "@/components/FeedbackButton";
 import QuizPanel from "@/components/QuizPanel";
 import { useReader } from "@/hooks/useReader";
 import { tokenize } from "@/lib/tokenizer";
@@ -342,6 +343,7 @@ export default function Home() {
           )}
         </div>
       )}
+      <FeedbackButton />
     </div>
   );
 }
