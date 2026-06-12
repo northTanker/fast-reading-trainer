@@ -31,6 +31,7 @@ export default function TextInput({
   const [isSaving, setIsSaving] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isParsing, setIsParsing] = useState(false);
+  const [isFormatting, setIsFormatting] = useState(false);
   const [isCopilotOpen, setIsCopilotOpen] = useState(false);
 
   const handleSampleClick = (content: string) => {
@@ -53,6 +54,40 @@ export default function TextInput({
       alert(err instanceof Error ? err.message : "Gagal mengurai berkas.");
     } finally {
       setIsParsing(false);
+    }
+  };
+
+  const handleFormatText = async () => {
+    if (!text.trim() || isFormatting) return;
+    
+    try {
+      setIsFormatting(true);
+      
+      const apiKey = localStorage.getItem("deepseek_api_key") || "";
+      
+      const res = await fetch("/api/copilot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          prompt: text, 
+          apiKey,
+          mode: "format"
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Gagal merapikan teks");
+      }
+
+      const data = await res.json();
+      if (data.text) {
+        onChange(data.text);
+      }
+    } catch (error: unknown) {
+      alert(error instanceof Error ? error.message : "Gagal merapikan teks");
+    } finally {
+      setIsFormatting(false);
     }
   };
 
@@ -136,6 +171,14 @@ export default function TextInput({
               </span>
             </div>
           )}
+          {isFormatting && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm rounded-2xl z-10 pointer-events-none gap-3">
+              <div className="w-8 h-8 border-4 border-amber-200 border-t-amber-500 rounded-full animate-spin"></div>
+              <span className="text-zinc-600 dark:text-zinc-400 font-medium text-sm animate-pulse">
+                AI sedang merapikan teks Anda...
+              </span>
+            </div>
+          )}
         </div>
         
         <div className="flex justify-between items-center px-1 flex-wrap gap-2">
@@ -144,13 +187,24 @@ export default function TextInput({
           </span>
           <div className="flex items-center gap-3">
             {text.trim().length > 0 && !isSaving && (
-              <button
-                type="button"
-                className="text-xs text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 font-medium transition-colors"
-                onClick={() => setIsSaving(true)}
-              >
-                Simpan ke Pustaka
-              </button>
+              <>
+                <button
+                  type="button"
+                  className="text-xs text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 font-medium transition-colors"
+                  onClick={() => setIsSaving(true)}
+                  disabled={isFormatting}
+                >
+                  Simpan ke Pustaka
+                </button>
+                <button
+                  type="button"
+                  className="text-xs text-emerald-600 dark:text-emerald-500 hover:text-emerald-700 dark:hover:text-emerald-400 font-medium transition-colors flex items-center gap-1"
+                  onClick={handleFormatText}
+                  disabled={isFormatting || isParsing}
+                >
+                  <span>✨</span> Rapikan Teks (AI)
+                </button>
+              </>
             )}
             <button
               type="button"
