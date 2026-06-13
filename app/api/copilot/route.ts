@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+export const runtime = 'edge';
+
 // Fungsi utilitas untuk melakukan pencarian web menggunakan Tavily API
 async function fetchTavilySearch(query: string): Promise<string> {
   const apiKey = process.env.TAVILY_API_KEY;
@@ -84,6 +86,7 @@ export async function POST(req: Request) {
       },
       body: JSON.stringify({
         model: "deepseek-chat", // DeepSeek standard model, we'll try to use chat or reasoner
+        stream: true,
         messages: [
           {
             role: "system",
@@ -108,10 +111,39 @@ export async function POST(req: Request) {
       );
     }
 
-    const data = await response.json();
-    const generatedText = data.choices[0]?.message?.content || "";
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+    let buffer = "";
 
-    return NextResponse.json({ text: generatedText });
+    const stream = new TransformStream({
+      transform(chunk, controller) {
+        buffer += decoder.decode(chunk, { stream: true });
+        const lines = buffer.split("\n");
+        // Keep the last partial line in the buffer
+        buffer = lines.pop() || "";
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (trimmed.startsWith("data: ") && !trimmed.includes("[DONE]")) {
+            try {
+              const parsed = JSON.parse(trimmed.slice(6));
+              const content = parsed.choices[0]?.delta?.content || "";
+              if (content) {
+                controller.enqueue(encoder.encode(content));
+              }
+            } catch (e) {
+              // Ignore partial or invalid JSON
+            }
+          }
+        }
+      }
+    });
+
+    return new Response(response.body?.pipeThrough(stream), {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache",
+      }
+    });
 
   } catch (error: unknown) {
     console.error("Copilot Backend Error:", error);

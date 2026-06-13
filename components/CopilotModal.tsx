@@ -15,6 +15,8 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
   const [privateKey, setPrivateKey] = useState("");
   const [useSearch, setUseSearch] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [generatedText, setGeneratedText] = useState("");
+  const [isStreaming, setIsStreaming] = useState(false);
 
   useEffect(() => {
     const savedKey = localStorage.getItem("deepseek-private-key");
@@ -39,6 +41,8 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
     }
 
     setIsLoading(true);
+    setIsStreaming(true);
+    setGeneratedText("");
     setErrorMsg("");
 
     try {
@@ -52,10 +56,30 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
         }),
       });
 
-      const data = await res.json();
-
+      const contentType = res.headers.get("content-type");
       if (!res.ok) {
-        throw new Error(data.error || "Gagal menghubungi AI");
+        if (contentType && contentType.includes("application/json")) {
+           const data = await res.json();
+           throw new Error(data.error || "Gagal menghubungi AI");
+        }
+        throw new Error(`Gagal menghubungi AI (Status: ${res.status})`);
+      }
+
+      if (!res.body) throw new Error("Tidak ada stream dari server.");
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+      let finalString = "";
+
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        if (value) {
+          const chunk = decoder.decode(value, { stream: true });
+          finalString += chunk;
+          setGeneratedText(finalString);
+        }
       }
 
       // Save to library if logged in
@@ -66,18 +90,19 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
         if (auth.currentUser) {
           await saveAIText(auth.currentUser.uid, {
             title: prompt,
-            content: data.text
+            content: finalString
           });
         }
       } catch (err) {
         console.error("Failed to save text to library", err);
       }
 
-      onApplyText(data.text);
+      onApplyText(finalString);
       onClose();
       setPrompt("");
     } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : "Terjadi kesalahan yang tidak diketahui");
+      setIsStreaming(false);
     } finally {
       setIsLoading(false);
     }
@@ -103,14 +128,21 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
             <h2 className="text-xl font-bold font-outfit text-zinc-900 dark:text-zinc-100">Buat Teks dengan AI</h2>
           </div>
           <button 
-            onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-500 transition-colors"
+            onClick={() => {
+              if (isLoading) return; // Prevent close during generation
+              onClose();
+            }}
+            disabled={isLoading}
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-500 transition-colors disabled:opacity-50"
           >
             ✕
           </button>
         </div>
 
-        {/* Input */}
+        {/* Input & Settings / Streaming View */}
+        {!isStreaming ? (
+          <>
+            {/* Input */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
             Topik apa yang ingin Anda baca hari ini?
@@ -172,8 +204,20 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
             <p className="text-xs text-zinc-500 dark:text-zinc-400 ml-7">
               Menggunakan akses publik server (DeepSeek v4 Flash).
             </p>
-          )}
-        </div>
+            )}
+          </div>
+          </>
+        ) : (
+          /* Streaming Preview */
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              Menulis...
+            </label>
+            <div className="w-full h-48 overflow-y-auto p-4 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl text-zinc-900 dark:text-zinc-100 whitespace-pre-wrap font-serif text-base leading-relaxed">
+              {generatedText || <span className="animate-pulse text-zinc-400">Membaca konteks...</span>}
+            </div>
+          </div>
+        )}
 
         {/* Error */}
         {errorMsg && (
@@ -183,23 +227,26 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
         )}
 
         {/* Action Button */}
-        <button
-          onClick={handleGenerate}
-          disabled={isLoading || !prompt.trim()}
-          className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-        >
-          {isLoading ? (
-            <>
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              <span>Menulis Artikel...</span>
-            </>
-          ) : (
-            <>
-              <span>Mulai Tulis</span>
-              <span>✨</span>
-            </>
-          )}
-        </button>
+        {!isStreaming && (
+          <button
+            onClick={handleGenerate}
+            disabled={isLoading || !prompt.trim()}
+            className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            <span>Mulai Tulis</span>
+            <span>✨</span>
+          </button>
+        )}
+        
+        {isStreaming && (
+          <button
+            disabled={true}
+            className="w-full py-3 bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 rounded-xl font-bold transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            <div className="w-5 h-5 border-2 border-zinc-400 border-t-zinc-600 rounded-full animate-spin"></div>
+            <span>Sedang Mengetik...</span>
+          </button>
+        )}
       </div>
     </div>
   );
