@@ -13,6 +13,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
   const [isLoading, setIsLoading] = useState(false);
   const [usePrivateKey, setUsePrivateKey] = useState(false);
   const [privateKey, setPrivateKey] = useState("");
+  const [useSearch, setUseSearch] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
@@ -47,6 +48,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
         body: JSON.stringify({
           prompt,
           apiKey: usePrivateKey ? privateKey : undefined,
+          useSearch,
         }),
       });
 
@@ -124,7 +126,26 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
 
         {/* Settings Toggle */}
         <div className="flex flex-col gap-3 p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+          
           <label className="flex items-center gap-3 cursor-pointer">
+            <input 
+              type="checkbox"
+              className="w-4 h-4 text-amber-500 rounded border-zinc-300 focus:ring-amber-500"
+              checked={useSearch}
+              onChange={(e) => setUseSearch(e.target.checked)}
+              disabled={isLoading}
+            />
+            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              Cari Topik di Internet (Realtime)
+            </span>
+          </label>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 ml-7 mb-2">
+            Anda bisa memuat informasi dan kejadian terkini dengan fitur ini.
+          </p>
+
+          <div className="h-px bg-zinc-200 dark:bg-zinc-700/50 w-full" />
+
+          <label className="flex items-center gap-3 cursor-pointer mt-1">
             <input 
               type="checkbox"
               className="w-4 h-4 text-amber-500 rounded border-zinc-300 focus:ring-amber-500"
@@ -144,7 +165,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
               value={privateKey}
               onChange={(e) => handleSaveKey(e.target.value)}
               disabled={isLoading}
-              className="w-full p-2 text-sm bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-500 text-zinc-900 dark:text-zinc-100"
+              className="w-full p-2 text-sm bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-500 text-zinc-900 dark:text-zinc-100 mt-1"
             />
           )}
           {!usePrivateKey && (
