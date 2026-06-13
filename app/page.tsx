@@ -18,10 +18,12 @@ import AuthButton from "@/components/AuthButton";
 import BigAuthButton from "@/components/BigAuthButton";
 import LibraryModal from "@/components/LibraryModal";
 import ProgressModal from "@/components/ProgressModal";
+import AchievementToast from "@/components/AchievementToast";
 import { useReader } from "@/hooks/useReader";
 import { tokenize } from "@/lib/tokenizer";
 import { createSessionRecord } from "@/lib/session";
-import { saveSession } from "@/lib/storage";
+import { getHistory, saveSession } from "@/lib/storage";
+import { computeGamification } from "@/lib/gamification";
 import type { SessionRecord } from "@/types";
 
 export default function Home() {
@@ -37,6 +39,7 @@ export default function Home() {
   const [showEduModal, setShowEduModal] = useState(false);
   const [showLibraryModal, setShowLibraryModal] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
+  const [unlockedBadges, setUnlockedBadges] = useState<string[]>([]);
 
   const elapsedAccumulatedRef = useRef(0);
   const elapsedStartRef = useRef(0);
@@ -55,7 +58,22 @@ export default function Home() {
         durationMs,
         completed,
       });
+      const oldHistory = getHistory();
+      const oldGamification = computeGamification(oldHistory);
+      
       saveSession(record);
+      
+      const newHistory = getHistory();
+      const newGamification = computeGamification(newHistory);
+      
+      const newlyUnlocked = newGamification.unlockedBadges.filter(
+        (id) => !oldGamification.unlockedBadges.includes(id)
+      );
+
+      if (newlyUnlocked.length > 0) {
+        setUnlockedBadges(newlyUnlocked);
+      }
+
       setLastSession(record);
       setGamificationKey((k) => k + 1);
       setHistoryKey((k) => k + 1);
@@ -363,6 +381,7 @@ export default function Home() {
       )}
       <FeedbackButton />
       <DonationButton />
+      <AchievementToast badgeIds={unlockedBadges} onClose={() => setUnlockedBadges([])} />
     </div>
   );
 }

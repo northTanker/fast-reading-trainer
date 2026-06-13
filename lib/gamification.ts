@@ -153,6 +153,9 @@ export function computeGamification(
     longestStreak = Math.max(longestStreak, streak);
   }
 
+  const xp = totalWordsRead + (totalSessions * 50);
+  const level = Math.floor(xp / 1000) + 1;
+
   const baseStats: GamificationData = {
     currentStreak,
     longestStreak,
@@ -160,6 +163,8 @@ export function computeGamification(
     totalWordsRead,
     bestWpm,
     unlockedBadges: [],
+    xp,
+    level,
   };
 
   const unlockedBadges = BADGES

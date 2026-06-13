@@ -18,6 +18,8 @@ export interface GamificationData {
   totalWordsRead: number;
   bestWpm: number;
   unlockedBadges: string[];
+  xp: number;
+  level: number;
 }
 
 export interface BadgeDefinition {

@@ -24,6 +24,8 @@ export const gamificationDataSchema = z.object({
   totalWordsRead: z.number(),
   bestWpm: z.number(),
   unlockedBadges: z.array(z.string()),
+  xp: z.number().default(0),
+  level: z.number().default(1),
 });
 
 export function getHistory(): SessionRecord[] {
