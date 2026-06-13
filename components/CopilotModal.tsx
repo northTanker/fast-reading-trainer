@@ -56,6 +56,21 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
         throw new Error(data.error || "Gagal menghubungi AI");
       }
 
+      // Save to library if logged in
+      try {
+        const { getAuth } = await import("firebase/auth");
+        const { saveAIText } = await import("@/lib/db");
+        const auth = getAuth();
+        if (auth.currentUser) {
+          await saveAIText(auth.currentUser.uid, {
+            title: prompt,
+            content: data.text
+          });
+        }
+      } catch (err) {
+        console.error("Failed to save text to library", err);
+      }
+
       onApplyText(data.text);
       onClose();
       setPrompt("");

@@ -1,5 +1,7 @@
 import { z } from "zod";
 import type { SessionRecord, GamificationData } from "@/types";
+import { getAuth } from "firebase/auth";
+import { saveSessionToCloud, syncGamificationToCloud } from "./db";
 
 const HISTORY_KEY = "reading-history";
 const GAMIFICATION_KEY = "gamification-data";
@@ -48,6 +50,11 @@ export function saveSession(record: SessionRecord): void {
   const history = getHistory();
   history.push(record);
   localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+
+  const auth = getAuth();
+  if (auth.currentUser) {
+    saveSessionToCloud(auth.currentUser.uid, record);
+  }
 }
 
 export function clearHistory(): void {
@@ -77,4 +84,9 @@ export function getGamificationData(): GamificationData | null {
 export function saveGamificationData(data: GamificationData): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(GAMIFICATION_KEY, JSON.stringify(data));
+
+  const auth = getAuth();
+  if (auth.currentUser) {
+    syncGamificationToCloud(auth.currentUser.uid, data);
+  }
 }

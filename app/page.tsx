@@ -14,6 +14,8 @@ import ThemeToggle from "@/components/ThemeToggle";
 import FeedbackButton from "@/components/FeedbackButton";
 import DonationButton from "@/components/DonationButton";
 import QuizPanel from "@/components/QuizPanel";
+import AuthButton from "@/components/AuthButton";
+import LibraryModal from "@/components/LibraryModal";
 import { useReader } from "@/hooks/useReader";
 import { tokenize } from "@/lib/tokenizer";
 import { createSessionRecord } from "@/lib/session";
@@ -31,6 +33,7 @@ export default function Home() {
   const [countdown, setCountdown] = useState<number | null>(null);
   const [quizMode, setQuizMode] = useState<"default" | "custom" | false>(false);
   const [showEduModal, setShowEduModal] = useState(false);
+  const [showLibraryModal, setShowLibraryModal] = useState(false);
 
   const elapsedAccumulatedRef = useRef(0);
   const elapsedStartRef = useRef(0);
@@ -224,10 +227,28 @@ export default function Home() {
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center px-4 py-8 sm:py-12 min-h-screen relative">
-      <ThemeToggle />
+      <div className="absolute top-6 right-6 z-50 flex items-center gap-2">
+        <button 
+          onClick={() => setShowLibraryModal(true)}
+          className="flex items-center justify-center w-9 h-9 rounded-full bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors shadow-sm"
+          title="Perpustakaan Saya"
+        >
+          📚
+        </button>
+        <AuthButton />
+        <ThemeToggle />
+      </div>
       <EduModal 
         isOpen={showEduModal}
         onClose={() => setShowEduModal(false)}
+      />
+      <LibraryModal 
+        isOpen={showLibraryModal}
+        onClose={() => setShowLibraryModal(false)}
+        onSelectText={(txt) => {
+          setText(txt);
+          setShowInput(true);
+        }}
       />
       {showInput ? (
         <div className="flex flex-col gap-10 w-full max-w-2xl relative z-10">
