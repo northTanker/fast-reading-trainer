@@ -15,7 +15,9 @@ import FeedbackButton from "@/components/FeedbackButton";
 import DonationButton from "@/components/DonationButton";
 import QuizPanel from "@/components/QuizPanel";
 import AuthButton from "@/components/AuthButton";
+import BigAuthButton from "@/components/BigAuthButton";
 import LibraryModal from "@/components/LibraryModal";
+import ProgressModal from "@/components/ProgressModal";
 import { useReader } from "@/hooks/useReader";
 import { tokenize } from "@/lib/tokenizer";
 import { createSessionRecord } from "@/lib/session";
@@ -34,6 +36,7 @@ export default function Home() {
   const [quizMode, setQuizMode] = useState<"default" | "custom" | false>(false);
   const [showEduModal, setShowEduModal] = useState(false);
   const [showLibraryModal, setShowLibraryModal] = useState(false);
+  const [showProgressModal, setShowProgressModal] = useState(false);
 
   const elapsedAccumulatedRef = useRef(0);
   const elapsedStartRef = useRef(0);
@@ -235,12 +238,18 @@ export default function Home() {
         >
           📚
         </button>
-        <AuthButton />
+        <AuthButton onCheckProgress={() => setShowProgressModal(true)} />
         <ThemeToggle />
       </div>
       <EduModal 
         isOpen={showEduModal}
         onClose={() => setShowEduModal(false)}
+      />
+      <ProgressModal
+        isOpen={showProgressModal}
+        onClose={() => setShowProgressModal(false)}
+        gamificationKey={gamificationKey}
+        historyKey={historyKey}
       />
       <LibraryModal 
         isOpen={showLibraryModal}
@@ -265,11 +274,12 @@ export default function Home() {
             
             <button
               onClick={() => setShowEduModal(true)}
-              className="px-5 py-2 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 rounded-full font-bold text-sm transition-all shadow-sm flex items-center gap-2 mb-2"
+              className="px-5 py-2 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 rounded-full font-bold text-sm transition-all shadow-sm flex items-center gap-2 mb-4"
             >
               <span>📚</span>
               <span>Buka Pusat Edukasi</span>
             </button>
+            <BigAuthButton />
           </div>
 
           <div className="glass-panel rounded-3xl p-6 sm:p-8">
@@ -282,20 +292,6 @@ export default function Home() {
               onWpmChange={handleWpmChange}
               disabled={false}
             />
-          </div>
-
-          <div className="space-y-8">
-            <div key={`gamification-${gamificationKey}`} className="glass-panel rounded-3xl p-6 sm:p-8">
-              <Gamification />
-            </div>
-            
-            <div key={`analytics-${historyKey}`} className="glass-panel rounded-3xl p-6 sm:p-8">
-              <AnalyticsChart />
-            </div>
-
-            <div key={`history-${historyKey}`} className="glass-panel rounded-3xl p-6 sm:p-8">
-              <History />
-            </div>
           </div>
         </div>
       ) : quizMode ? (

@@ -135,6 +135,10 @@ export default function EduModal({ isOpen, onClose }: EduModalProps) {
                   <span className="text-amber-600 dark:text-amber-400">Evaluasi Pemahaman:</span>
                   <p className="font-normal text-sm mt-1">Setelah selesai membaca, gunakan fitur <strong>Tes Pemahaman AI</strong> untuk memastikan kecepatan Anda berbanding lurus dengan kemampuan menyerap informasi.</p>
                 </li>
+                <li>
+                  <span className="text-amber-600 dark:text-amber-400">Simpan Progres di Cloud:</span>
+                  <p className="font-normal text-sm mt-1">Jangan lupa untuk <strong>Login dengan Google</strong>! Semua teks yang Anda unggah, riwayat membaca, poin gamifikasi, dan rentetan harian (streak) akan otomatis disinkronkan ke Cloud agar tidak hilang meskipun Anda berganti perangkat.</p>
+                </li>
               </ol>
             </div>
           )}
