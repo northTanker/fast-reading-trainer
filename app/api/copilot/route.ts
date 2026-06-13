@@ -141,7 +141,9 @@ export async function POST(req: Request) {
     return new Response(response.body?.pipeThrough(stream), {
       headers: {
         "Content-Type": "text/plain; charset=utf-8",
-        "Cache-Control": "no-cache",
+        "Cache-Control": "no-cache, no-transform",
+        "X-Accel-Buffering": "no",
+        "Connection": "keep-alive"
       }
     });
 

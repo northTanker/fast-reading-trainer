@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface CopilotModalProps {
   isOpen: boolean;
@@ -17,6 +17,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
   const [errorMsg, setErrorMsg] = useState("");
   const [generatedText, setGeneratedText] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const savedKey = localStorage.getItem("deepseek-private-key");
@@ -45,6 +46,9 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
     setGeneratedText("");
     setErrorMsg("");
 
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
     try {
       const res = await fetch("/api/copilot", {
         method: "POST",
@@ -54,6 +58,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
           apiKey: usePrivateKey ? privateKey : undefined,
           useSearch,
         }),
+        signal: abortController.signal,
       });
 
       const contentType = res.headers.get("content-type");
@@ -100,8 +105,27 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
       onApplyText(finalString);
       onClose();
       setPrompt("");
-    } catch (err: unknown) {
-      setErrorMsg(err instanceof Error ? err.message : "Terjadi kesalahan yang tidak diketahui");
+    } catch (err: any) {
+      if (err.name === "AbortError") {
+        // User aborted, let's just apply the text generated so far
+        try {
+          const { getAuth } = await import("firebase/auth");
+          const { saveAIText } = await import("@/lib/db");
+          const auth = getAuth();
+          if (auth.currentUser) {
+            await saveAIText(auth.currentUser.uid, {
+              title: prompt,
+              content: generatedText || "Teks belum selesai dibuat."
+            });
+          }
+        } catch (e) {}
+
+        onApplyText(generatedText || "Teks belum selesai dibuat.");
+        onClose();
+        setPrompt("");
+      } else {
+        setErrorMsg(err instanceof Error ? err.message : "Terjadi kesalahan yang tidak diketahui");
+      }
       setIsStreaming(false);
     } finally {
       setIsLoading(false);
@@ -240,11 +264,15 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
         
         {isStreaming && (
           <button
-            disabled={true}
-            className="w-full py-3 bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 rounded-xl font-bold transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            onClick={() => {
+              if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+              }
+            }}
+            className="w-full py-3 bg-amber-500/20 hover:bg-amber-500/30 text-amber-600 dark:text-amber-400 border border-amber-500/30 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
           >
-            <div className="w-5 h-5 border-2 border-zinc-400 border-t-zinc-600 rounded-full animate-spin"></div>
-            <span>Sedang Mengetik...</span>
+            <div className="w-4 h-4 rounded-sm bg-amber-600 dark:bg-amber-400 animate-pulse"></div>
+            <span>Berhenti & Gunakan Teks</span>
           </button>
         )}
       </div>
