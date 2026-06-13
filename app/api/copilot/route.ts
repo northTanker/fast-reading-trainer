@@ -1,32 +1,47 @@
 import { NextResponse } from "next/server";
 
-// Fungsi utilitas untuk melakukan scraping pencarian DuckDuckGo (Tanpa API Key)
-async function scrapeDuckDuckGo(query: string): Promise<string> {
+// Fungsi utilitas untuk melakukan pencarian web menggunakan Tavily API
+async function fetchTavilySearch(query: string): Promise<string> {
+  const apiKey = process.env.TAVILY_API_KEY;
+  if (!apiKey) {
+    console.error("TAVILY_API_KEY tidak dikonfigurasi.");
+    return "";
+  }
+  
   try {
-    const res = await fetch(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
+    const res = await fetch("https://api.tavily.com/search", {
+      method: "POST",
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-      }
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        api_key: apiKey,
+        query: query,
+        search_depth: "basic",
+        include_answer: true,
+        max_results: 5
+      })
     });
-    if (!res.ok) return "";
     
-    const html = await res.text();
-    // Gunakan regex untuk mengambil teks di dalam <a class="result__snippet"...>...</a>
-    const snippetMatches = html.matchAll(/<a class="result__snippet[^>]*>(.*?)<\/a>/gi);
-    const snippets: string[] = [];
-    
-    for (const match of snippetMatches) {
-      let cleanText = match[1].replace(/<[^>]*>?/gm, ''); // Hapus sisa tag HTML
-      cleanText = cleanText.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-      if (cleanText.trim().length > 10) {
-         snippets.push("- " + cleanText.trim());
-      }
-      if (snippets.length >= 5) break; // Ambil 5 potongan terbaik
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      console.error("Tavily API error:", errorData);
+      return "";
     }
     
-    return snippets.join("\n\n");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data: any = await res.json();
+    let context = "";
+    if (data.answer) {
+      context += `Ringkasan Cepat: ${data.answer}\n\n`;
+    }
+    if (data.results && data.results.length > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      context += "Sumber Utama:\n" + data.results.map((r: any) => `- ${r.title}: ${r.content}`).join("\n");
+    }
+    return context;
   } catch (err) {
-    console.error("DDG Scrape error:", err);
+    console.error("Tavily Search error:", err);
     return "";
   }
 }
@@ -53,11 +68,11 @@ export async function POST(req: Request) {
       ? "Anda adalah asisten pemformatan teks tingkat lanjut. Tugas Anda adalah merapikan teks mentah hasil ekstraksi dokumen (PDF/Word) yang berantakan. Hapus jeda baris (enter) yang terpotong di tengah kalimat, gabungkan paragraf yang terputus, perbaiki tanda baca yang cacat, dan buang karakter sampah. JANGAN merangkum, memotong, atau mengubah makna asli teks. Kembalikan seluruh teks aslinya dengan format paragraf yang sangat rapi."
       : "Anda adalah Copilot AI untuk aplikasi Speed Reading. Tugas Anda adalah menulis artikel pendek, cerita, atau merangkum topik dengan bahasa yang jelas, format paragraf yang rapi, dan mudah dibaca cepat. Jangan gunakan format markdown yang rumit (hindari tebal/miring berlebihan, tabel, atau daftar kompleks). Hanya teks murni yang mengalir.";
 
-    // Jika pengguna mengaktifkan pencarian web, ambil konteks dari DuckDuckGo
+    // Jika pengguna mengaktifkan pencarian web, ambil konteks dari Tavily
     if (useSearch && mode !== "format") {
-      const searchContext = await scrapeDuckDuckGo(prompt);
+      const searchContext = await fetchTavilySearch(prompt);
       if (searchContext) {
-        systemPrompt += `\n\nPENTING: Berikut adalah konteks informasi terbaru dari internet yang relevan dengan permintaan pengguna. Gunakan informasi ini untuk menjawab agar akurat dan up-to-date:\n\n${searchContext}`;
+        systemPrompt += `\n\nPENTING: Berikut adalah konteks informasi terbaru dari internet yang relevan dengan permintaan pengguna (Hasil Pencarian Tavily). Gunakan informasi ini untuk menjawab agar akurat dan up-to-date:\n\n${searchContext}`;
       }
     }
 
