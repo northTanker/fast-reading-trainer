@@ -276,7 +276,7 @@ export default function Home() {
 
   return (
     <div className={`flex flex-col flex-1 items-center px-4 min-h-screen relative transition-colors duration-1000 ${isActive ? 'bg-zinc-50 dark:bg-black' : ''}`}>
-      <header className={`sticky top-4 w-full max-w-5xl mx-auto flex justify-between items-center py-3 px-5 sm:px-6 z-50 rounded-2xl transition-all duration-500 shadow-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 translate-y-0'}`}>
+      <header className={`sticky top-0 pt-4 pb-2 w-full max-w-5xl mx-auto flex justify-between items-center px-4 sm:px-6 z-50 transition-all duration-500 ${scrolled ? 'bg-white/40 dark:bg-black/40 backdrop-blur-md shadow-sm border-b border-zinc-200/50 dark:border-zinc-800/50 rounded-b-2xl' : 'bg-transparent border-transparent'} ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 translate-y-0'}`}>
         {/* Logo Mobile / Desktop on Scroll */}
         <div className={`flex items-center gap-2 mt-1 transition-all duration-500 ${scrolled ? 'opacity-100 translate-y-0' : 'sm:opacity-0 sm:-translate-y-2'}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -434,7 +434,7 @@ export default function Home() {
         </div>
       )}
       </div>
-      <footer className={`sticky bottom-4 w-full max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 py-3 px-5 sm:px-6 mt-auto z-50 rounded-2xl transition-all duration-500 shadow-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100 hover:opacity-100'}`}>
+      <footer className={`w-full max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 py-6 px-5 sm:px-6 mt-auto z-50 bg-transparent transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100 hover:opacity-100'}`}>
         <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium text-center sm:text-left">
           &copy; 2026 <span className="font-bold text-zinc-700 dark:text-zinc-300">Edwigar Annas Akbar</span>
         </p>
