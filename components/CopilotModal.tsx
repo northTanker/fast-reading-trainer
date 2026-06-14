@@ -250,6 +250,9 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
               if (abortControllerRef.current) {
                 abortControllerRef.current.abort();
               }
+              onApplyText(generatedText || "Teks belum selesai dibuat.");
+              onClose();
+              setPrompt("");
             }}
             className="w-full py-3 bg-amber-500/20 hover:bg-amber-500/30 text-amber-600 dark:text-amber-400 border border-amber-500/30 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
           >
