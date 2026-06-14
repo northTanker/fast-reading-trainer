@@ -280,12 +280,16 @@ export default function Home() {
       {showInput ? (
         <div className="flex flex-col gap-10 w-full max-w-2xl relative z-10">
           <div className="text-center flex flex-col items-center">
-            <div className="inline-flex items-center justify-center space-x-3 mb-2">
+            <div className="inline-flex items-center justify-center space-x-4 mb-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src="/logo.png" 
+                alt="BacaKilat Logo" 
+                className="w-12 h-12 sm:w-16 sm:h-16 object-contain bg-white/90 dark:bg-white p-2 rounded-2xl shadow-lg dark:shadow-amber-500/20" 
+              />
               <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tighter font-outfit bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-transparent pb-2 drop-shadow-sm">
                 BacaKilat
               </h1>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt="BacaKilat Logo" className="w-10 h-10 sm:w-14 sm:h-14 object-contain -mt-2" />
             </div>
             <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mt-2 max-w-lg mx-auto font-medium mb-6">
               Baca lebih cepat tanpa kehilangan makna. Tembus <span className="text-amber-500 font-bold">500+ WPM</span> pakai metode Optimal Recognition Point.
