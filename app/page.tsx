@@ -285,7 +285,7 @@ export default function Home() {
                 BacaKilat
               </h1>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.ico" alt="BacaKilat Logo" className="w-10 h-10 sm:w-14 sm:h-14 object-contain -mt-2" />
+              <img src="/logo.png" alt="BacaKilat Logo" className="w-10 h-10 sm:w-14 sm:h-14 object-contain -mt-2" />
             </div>
             <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mt-2 max-w-lg mx-auto font-medium mb-6">
               Baca lebih cepat tanpa kehilangan makna. Tembus <span className="text-amber-500 font-bold">500+ WPM</span> pakai metode Optimal Recognition Point.
