@@ -77,8 +77,12 @@ async function run() {
 
   console.log(`Katalog saat ini memiliki ${catalog.length} artikel.`);
   
-  const countToGenerate = 3; // Generate 3 at a time to avoid rate limits/timeouts
-  console.log(`Sedang membangkitkan ${countToGenerate} artikel baru... (Ini mungkin memakan waktu 1-2 menit)`);
+  // Ambil argumen angka dari command line (misal: node scripts/generate-catalog.js 100)
+  // Jika tidak ada argumen yang diberikan, default-nya adalah 100 artikel
+  const argCount = parseInt(process.argv[2], 10);
+  const countToGenerate = isNaN(argCount) ? 100 : argCount;
+  
+  console.log(`Sedang membangkitkan ${countToGenerate} artikel baru... (Ini mungkin memakan waktu lama)`);
   
   for (let i = 0; i < countToGenerate; i++) {
     try {
