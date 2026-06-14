@@ -115,12 +115,12 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
           if (auth.currentUser) {
             await saveAIText(auth.currentUser.uid, {
               title: prompt,
-              content: currentGeneratedText || "Teks belum selesai dibuat."
+              content: currentGeneratedText || "Teks belum selesai."
             });
           }
         } catch (e) {}
 
-        onApplyText(currentGeneratedText || "Teks belum selesai dibuat.");
+        onApplyText(currentGeneratedText || "Teks belum selesai.");
         onClose();
         setPrompt("");
       } else {
@@ -149,7 +149,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <span className="text-2xl">✨</span>
-            <h2 className="text-xl font-bold font-outfit text-zinc-900 dark:text-zinc-100">Buat Teks dengan AI</h2>
+            <h2 className="text-xl font-bold font-outfit text-zinc-900 dark:text-zinc-100">Minta AI Buatkan Teks</h2>
           </div>
           <button 
             onClick={() => {
@@ -169,11 +169,11 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
             {/* Input */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            Topik apa yang ingin Anda baca hari ini?
+            Mau baca tentang apa hari ini?
           </label>
           <textarea
             className="w-full h-24 p-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 resize-none"
-            placeholder="Contoh: Buatkan cerita sci-fi pendek tentang koloni di Mars..."
+            placeholder="Contoh: Bikin cerita pendek soal koloni pertama di Mars..."
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             disabled={isLoading}
@@ -192,7 +192,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
               disabled={isLoading}
             />
             <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              Gunakan API Key Pribadi (Opsi B)
+              Pakai API Key Sendiri (Opsional)
             </span>
           </label>
           
@@ -208,7 +208,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
           )}
           {!usePrivateKey && (
             <p className="text-xs text-zinc-500 dark:text-zinc-400 ml-7">
-              Menggunakan akses publik server (DeepSeek v4 Flash).
+              Memakai kuota publik server kami (DeepSeek v4 Flash).
             </p>
             )}
           </div>
@@ -239,7 +239,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
             disabled={isLoading || !prompt.trim()}
             className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            <span>Mulai Tulis</span>
+            <span>Minta AI Tuliskan</span>
             <span>✨</span>
           </button>
         )}
@@ -250,14 +250,14 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
               if (abortControllerRef.current) {
                 abortControllerRef.current.abort();
               }
-              onApplyText(generatedText || "Teks belum selesai dibuat.");
+              onApplyText(generatedText || "Teks belum selesai.");
               onClose();
               setPrompt("");
             }}
             className="w-full py-3 bg-amber-500/20 hover:bg-amber-500/30 text-amber-600 dark:text-amber-400 border border-amber-500/30 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
           >
             <div className="w-4 h-4 rounded-sm bg-amber-600 dark:bg-amber-400 animate-pulse"></div>
-            <span>Berhenti & Gunakan Teks</span>
+            <span>Setop & Pakai Teksnya</span>
           </button>
         )}
       </div>

@@ -287,7 +287,7 @@ export default function Home() {
               </h1>
             </div>
             <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mt-2 max-w-lg mx-auto font-medium mb-6">
-              Evolusi cara Anda menyerap informasi. Capai <span className="text-amber-500 font-bold">500+ WPM</span> dengan teknologi Optimal Recognition Point.
+              Baca lebih cepat tanpa kehilangan makna. Tembus <span className="text-amber-500 font-bold">500+ WPM</span> pakai metode Optimal Recognition Point.
             </p>
             
             <button
@@ -295,7 +295,7 @@ export default function Home() {
               className="px-5 py-2 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 rounded-full font-bold text-sm transition-all shadow-sm flex items-center gap-2 mb-4"
             >
               <span>📚</span>
-              <span>Buka Pusat Edukasi</span>
+              <span>Pelajari Caranya</span>
             </button>
             <BigAuthButton />
           </div>

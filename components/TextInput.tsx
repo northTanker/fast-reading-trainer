@@ -116,7 +116,7 @@ export default function TextInput({
       <div className="flex flex-col gap-2 relative">
         <div className="flex justify-between items-center ml-1 flex-wrap gap-2">
           <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            Tempelkan teks atau jatuhkan berkas
+            Masukkan teks atau seret dokumen ke sini
           </label>
           <div className="flex items-center gap-4">
             <button
@@ -124,10 +124,10 @@ export default function TextInput({
               onClick={() => setIsCopilotOpen(true)}
               className="text-xs font-bold text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-500/10 px-3 py-1.5 rounded-full hover:bg-amber-100 dark:hover:bg-amber-500/20 transition-colors flex items-center gap-1"
             >
-              <span>✨</span> Buat Teks dengan AI
+              <span>✨</span> Minta AI Buatkan Teks
             </button>
             <label className="text-xs font-semibold text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 cursor-pointer transition-colors">
-              Unggah Berkas (TXT, DOCX, PDF)
+              Unggah Dokumen (TXT, DOCX, PDF)
               <input 
                 type="file" 
                 accept=".txt,.md,.csv,.docx,.pdf" 
@@ -151,7 +151,7 @@ export default function TextInput({
         >
           <textarea
             className={`w-full h-48 p-4 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md border ${isDragging ? 'border-amber-500 ring-2 ring-amber-500/50 bg-amber-50/50 dark:bg-amber-900/10' : 'border-zinc-200/80 dark:border-zinc-700/50'} rounded-2xl text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 resize-none transition-all duration-300 shadow-inner`}
-            placeholder="Tempelkan artikel, atau drag & drop berkas TXT, PDF, Word ke sini..."
+            placeholder="Tempelkan artikel, atau tarik dokumen TXT, PDF, atau Word ke sini..."
             value={text}
             onChange={(e) => onChange(e.target.value)}
             disabled={disabled || isParsing}
@@ -159,7 +159,7 @@ export default function TextInput({
           {isDragging && (
             <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm rounded-2xl border-2 border-dashed border-amber-500 z-10 pointer-events-none">
               <span className="text-amber-600 dark:text-amber-500 font-bold text-lg animate-pulse">
-                Lepaskan berkas di sini...
+                Lepaskan dokumen di sini...
               </span>
             </div>
           )}
@@ -246,7 +246,7 @@ export default function TextInput({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="flex flex-col gap-3">
           <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider ml-1">
-            Atau coba contoh teks
+            Atau gunakan teks contoh
           </label>
           <div className="flex flex-wrap gap-2">
             {SAMPLE_TEXTS.map((sample) => (
@@ -266,7 +266,7 @@ export default function TextInput({
         {library.length > 0 && (
           <div className="flex flex-col gap-3">
             <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider ml-1">
-              Pustakaku
+              Pustaka Tersimpan
             </label>
             <div className="flex flex-col gap-2 max-h-32 overflow-y-auto pr-2">
               {library.map((item) => (
@@ -294,7 +294,7 @@ export default function TextInput({
 
       <div className="flex flex-col gap-3 mt-2 border-t border-zinc-200/50 dark:border-zinc-700/50 pt-6">
         <div className="flex items-center justify-between text-xs font-semibold text-zinc-500 uppercase tracking-widest ml-1">
-          <span>Kecepatan Awal</span>
+          <span>Kecepatan (WPM)</span>
           <span className="text-amber-500 font-bold">{wpm} WPM</span>
         </div>
         <input
@@ -319,7 +319,7 @@ export default function TextInput({
         onClick={onStart}
         disabled={disabled || !text.trim()}
       >
-        Mulai Membaca
+        Mulai Baca
       </button>
 
       <CopilotModal 
