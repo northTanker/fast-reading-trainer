@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { SAMPLE_TEXTS } from "@/lib/samples";
 import { useLibrary } from "@/hooks/useLibrary";
 import { saveTextToLibrary, removeTextFromLibrary } from "@/lib/library";
 import { parseFile } from "@/lib/fileParser";
 import CopilotModal from "./CopilotModal";
+import CatalogModal from "./CatalogModal";
 
 interface TextInputProps {
   text: string;
@@ -33,6 +33,7 @@ export default function TextInput({
   const [isParsing, setIsParsing] = useState(false);
   const [isFormatting, setIsFormatting] = useState(false);
   const [isCopilotOpen, setIsCopilotOpen] = useState(false);
+  const [isCatalogOpen, setIsCatalogOpen] = useState(false);
 
   const handleSampleClick = (content: string) => {
     onChange(content);
@@ -248,19 +249,15 @@ export default function TextInput({
           <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider ml-1">
             Atau gunakan teks contoh
           </label>
-          <div className="flex flex-wrap gap-2">
-            {SAMPLE_TEXTS.map((sample) => (
-              <button
-                key={sample.id}
-                type="button"
-                className="text-xs px-4 py-2 rounded-full border border-zinc-200/80 dark:border-zinc-700/50 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 hover:bg-amber-50 dark:hover:bg-amber-500/10 hover:border-amber-500/30 hover:text-amber-600 dark:hover:text-amber-400 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-95 disabled:opacity-50"
-                onClick={() => handleSampleClick(sample.content)}
-                disabled={disabled}
-              >
-                {sample.title}
-              </button>
-            ))}
-          </div>
+          <button
+            type="button"
+            onClick={() => setIsCatalogOpen(true)}
+            disabled={disabled}
+            className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl border-2 border-dashed border-amber-500/50 bg-amber-50/30 dark:bg-amber-900/10 text-amber-600 dark:text-amber-500 font-semibold hover:bg-amber-100/50 dark:hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 disabled:opacity-50"
+          >
+            <span className="text-xl">📚</span>
+            Jelajahi Katalog Teks (500+)
+          </button>
         </div>
 
         {library.length > 0 && (
@@ -328,6 +325,12 @@ export default function TextInput({
         onApplyText={(newText) => {
           onChange(newText);
         }}
+      />
+
+      <CatalogModal 
+        isOpen={isCatalogOpen}
+        onClose={() => setIsCatalogOpen(false)}
+        onSelect={(content) => handleSampleClick(content)}
       />
     </div>
   );
