@@ -125,7 +125,7 @@ export default function QuizPanel({ text, initialMode, onClose }: QuizPanelProps
         </div>
 
         <button
-          onClick={onClose}
+          onClick={() => onClose()}
           className="text-sm font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors mt-2"
         >
           Batal
