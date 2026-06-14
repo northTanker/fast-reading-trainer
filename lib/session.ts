@@ -6,8 +6,10 @@ export function createSessionRecord(params: {
   wpmSetting: number;
   durationMs: number;
   completed: boolean;
+  source?: "manual" | "catalog" | "ai";
+  title?: string;
 }): SessionRecord {
-  const { text, words, wpmSetting, durationMs, completed } = params;
+  const { text, words, wpmSetting, durationMs, completed, source, title } = params;
 
   const actualWpm = durationMs > 0
     ? Math.round((words.length / (durationMs / 1000)) * 60)
@@ -22,5 +24,7 @@ export function createSessionRecord(params: {
     actualWpm,
     durationMs,
     completed,
+    source,
+    title,
   };
 }

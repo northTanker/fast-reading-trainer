@@ -24,7 +24,7 @@ const ProgressModal = dynamic(() => import("@/components/ProgressModal"), { ssr:
 import { useReader } from "@/hooks/useReader";
 import { tokenize } from "@/lib/tokenizer";
 import { createSessionRecord } from "@/lib/session";
-import { getHistory, saveSession } from "@/lib/storage";
+import { getHistory, saveSession, updateLatestSessionQuizScore } from "@/lib/storage";
 import { computeGamification } from "@/lib/gamification";
 import type { SessionRecord } from "@/types";
 
@@ -42,6 +42,8 @@ export default function Home() {
   const [showLibraryModal, setShowLibraryModal] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [unlockedBadges, setUnlockedBadges] = useState<string[]>([]);
+  const [textSource, setTextSource] = useState<"manual" | "catalog" | "ai">("manual");
+  const [textTitle, setTextTitle] = useState<string | undefined>(undefined);
 
   const elapsedAccumulatedRef = useRef(0);
   const elapsedStartRef = useRef(0);
@@ -59,6 +61,8 @@ export default function Home() {
         wpmSetting: currentWpm,
         durationMs,
         completed,
+        source: textSource,
+        title: textTitle,
       });
       const oldHistory = getHistory();
       const oldGamification = computeGamification(oldHistory);
@@ -183,10 +187,26 @@ export default function Home() {
     setQuizMode(mode);
   }, []);
 
-  const handleCloseQuiz = useCallback(() => {
+  const handleCloseQuiz = useCallback((scorePercentage?: number) => {
+    if (scorePercentage !== undefined) {
+      updateLatestSessionQuizScore(scorePercentage);
+      // Re-trigger gamification and history refresh
+      setGamificationKey((k) => k + 1);
+      setHistoryKey((k) => k + 1);
+      
+      // Check if critical_thinker badge was unlocked
+      const newHistory = getHistory();
+      const newGamification = computeGamification(newHistory);
+      const newlyUnlocked = newGamification.unlockedBadges.filter(
+        (id) => !unlockedBadges.includes(id)
+      );
+      if (newlyUnlocked.length > 0) {
+        setUnlockedBadges((prev) => [...prev, ...newlyUnlocked]);
+      }
+    }
     setQuizMode(false);
     handleNewSession();
-  }, [handleNewSession]);
+  }, [handleNewSession, unlockedBadges]);
 
   const handleWpmChange = useCallback(
     (wpm: number) => {
@@ -335,6 +355,10 @@ export default function Home() {
               wpm={currentWpm}
               onWpmChange={handleWpmChange}
               disabled={false}
+              onSourceChange={(source, title) => {
+                setTextSource(source);
+                setTextTitle(title);
+              }}
             />
           </div>
         </div>

@@ -17,6 +17,7 @@ interface TextInputProps {
   wpm: number;
   onWpmChange: (wpm: number) => void;
   disabled: boolean;
+  onSourceChange?: (source: "manual" | "catalog" | "ai", title?: string) => void;
 }
 
 export default function TextInput({
@@ -27,6 +28,7 @@ export default function TextInput({
   wpm,
   onWpmChange,
   disabled,
+  onSourceChange,
 }: TextInputProps) {
   const library = useLibrary();
   const [saveTitle, setSaveTitle] = useState("");
@@ -37,8 +39,11 @@ export default function TextInput({
   const [isCopilotOpen, setIsCopilotOpen] = useState(false);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
 
-  const handleSampleClick = (content: string) => {
+  const handleSampleClick = (content: string, title?: string) => {
     onChange(content);
+    if (onSourceChange) {
+      onSourceChange("catalog", title);
+    }
   };
 
   const handleSave = () => {
@@ -134,9 +139,12 @@ export default function TextInput({
         >
           <textarea
             className={`w-full h-48 p-5 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md border ${isDragging ? 'border-amber-500 ring-2 ring-amber-500/50 bg-amber-50/50 dark:bg-amber-900/10' : 'border-zinc-200/80 dark:border-zinc-700/50'} rounded-t-2xl border-b-0 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-0 resize-none transition-all duration-300 shadow-inner`}
-            placeholder="Tempelkan artikel, atau tarik dokumen TXT, PDF, atau Word ke sini..."
+            placeholder="Ketik atau tempel teks di sini..."
             value={text}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => {
+              onChange(e.target.value);
+              if (onSourceChange) onSourceChange("manual");
+            }}
             disabled={disabled || isParsing}
           />
           {/* Action Toolbar */}
@@ -335,15 +343,16 @@ export default function TextInput({
       <CopilotModal 
         isOpen={isCopilotOpen} 
         onClose={() => setIsCopilotOpen(false)} 
-        onApplyText={(newText) => {
+        onApplyText={(newText, title) => {
           onChange(newText);
+          if (onSourceChange) onSourceChange("ai", title);
         }}
       />
 
       <CatalogModal 
         isOpen={isCatalogOpen}
         onClose={() => setIsCatalogOpen(false)}
-        onSelect={(content) => handleSampleClick(content)}
+        onSelect={(content, title) => handleSampleClick(content, title)}
       />
     </div>
   );

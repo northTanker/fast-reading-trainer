@@ -97,6 +97,24 @@ export const BADGES: BadgeDefinition[] = [
     description: "Membaca total 100.000 kata",
     check: (stats) => stats.totalWordsRead >= 100000,
   },
+  {
+    id: "catalog_fan",
+    label: "Penggemar Katalog",
+    description: "Membaca 5 teks dari katalog",
+    check: (_, history) => history.filter((r) => r.source === "catalog").length >= 5,
+  },
+  {
+    id: "ai_explorer",
+    label: "Penjelajah AI",
+    description: "Membaca 3 teks yang dibangkitkan AI",
+    check: (_, history) => history.filter((r) => r.source === "ai").length >= 3,
+  },
+  {
+    id: "critical_thinker",
+    label: "Pemikir Kritis",
+    description: "Mendapat skor kuis 100%",
+    check: (_, history) => history.some((r) => r.quizScore === 100),
+  },
 ];
 
 export function computeGamification(
@@ -153,7 +171,15 @@ export function computeGamification(
     longestStreak = Math.max(longestStreak, streak);
   }
 
-  const xp = totalWordsRead + (totalSessions * 50);
+  let xp = totalWordsRead + (totalSessions * 50);
+  
+  // Bonus XP from quizzes
+  history.forEach(r => {
+    if (r.quizScore) {
+      xp += Math.round(r.quizScore / 2); // 100% gives 50 bonus XP
+    }
+  });
+
   const level = Math.floor(xp / 1000) + 1;
 
   const baseStats: GamificationData = {

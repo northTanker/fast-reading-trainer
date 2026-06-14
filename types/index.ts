@@ -9,6 +9,9 @@ export interface SessionRecord {
   actualWpm: number;
   durationMs: number;
   completed: boolean;
+  source?: "manual" | "catalog" | "ai";
+  title?: string;
+  quizScore?: number; // 0-100 percentage
 }
 
 export interface GamificationData {

@@ -13,7 +13,7 @@ export interface CatalogItem {
 interface CatalogModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (content: string) => void;
+  onSelect: (content: string, title?: string) => void;
 }
 
 export default function CatalogModal({ isOpen, onClose, onSelect }: CatalogModalProps) {
@@ -133,7 +133,7 @@ export default function CatalogModal({ isOpen, onClose, onSelect }: CatalogModal
                 <div 
                   key={item.id}
                   onClick={() => {
-                    onSelect(item.content);
+                    onSelect(item.content, item.title);
                     onClose();
                   }}
                   className="group relative bg-white dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 p-5 rounded-3xl cursor-pointer hover:border-amber-500/50 hover:shadow-[0_8px_30px_rgba(245,158,11,0.12)] transition-all duration-300 hover:-translate-y-1.5 overflow-hidden"

@@ -7,7 +7,7 @@ import type { QuizQuestion } from "@/types";
 interface QuizPanelProps {
   text: string;
   initialMode: "default" | "custom";
-  onClose: () => void;
+  onClose: (scorePercentage?: number) => void;
 }
 
 export default function QuizPanel({ text, initialMode, onClose }: QuizPanelProps) {
@@ -159,7 +159,7 @@ export default function QuizPanel({ text, initialMode, onClose }: QuizPanelProps
           Anda menjawab benar {score} dari {questions.length} soal.
         </p>
         <button
-          onClick={onClose}
+          onClick={() => onClose(percentage)}
           className="w-full py-4 mt-4 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold hover:-translate-y-1 transition-transform shadow-lg active:scale-[0.98]"
         >
           Tutup Kuis

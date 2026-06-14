@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 interface CopilotModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onApplyText: (text: string) => void;
+  onApplyText: (text: string, title?: string) => void;
 }
 
 export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotModalProps) {
@@ -102,7 +102,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
         console.error("Failed to save text to library", err);
       }
 
-      onApplyText(finalString);
+      onApplyText(finalString, prompt);
       onClose();
       setPrompt("");
     } catch (err: any) {
@@ -120,7 +120,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
           }
         } catch (e) {}
 
-        onApplyText(currentGeneratedText || "Teks belum selesai.");
+        onApplyText(currentGeneratedText || "Teks belum selesai.", prompt);
         onClose();
         setPrompt("");
       } else {
@@ -250,7 +250,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
               if (abortControllerRef.current) {
                 abortControllerRef.current.abort();
               }
-              onApplyText(generatedText || "Teks belum selesai.");
+              onApplyText(generatedText || "Teks belum selesai.", prompt);
               onClose();
               setPrompt("");
             }}

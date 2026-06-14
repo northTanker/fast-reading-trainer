@@ -15,6 +15,9 @@ export const sessionRecordSchema = z.object({
   actualWpm: z.number(),
   durationMs: z.number(),
   completed: z.boolean(),
+  source: z.enum(["manual", "catalog", "ai"]).optional(),
+  title: z.string().optional(),
+  quizScore: z.number().optional(),
 });
 
 export const gamificationDataSchema = z.object({
@@ -56,6 +59,23 @@ export function saveSession(record: SessionRecord): void {
   const auth = getAuth();
   if (auth.currentUser) {
     saveSessionToCloud(auth.currentUser.uid, record);
+  }
+}
+
+export function updateLatestSessionQuizScore(score: number): void {
+  if (typeof window === "undefined") return;
+
+  const history = getHistory();
+  if (history.length === 0) return;
+
+  const latestSession = history[history.length - 1];
+  latestSession.quizScore = score;
+
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+
+  const auth = getAuth();
+  if (auth.currentUser) {
+    saveSessionToCloud(auth.currentUser.uid, latestSession);
   }
 }
 
