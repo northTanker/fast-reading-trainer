@@ -267,7 +267,7 @@ export default function Home() {
 
   return (
     <div className={`flex flex-col flex-1 items-center px-4 min-h-screen relative transition-colors duration-1000 ${isActive ? 'bg-zinc-50 dark:bg-black' : ''}`}>
-      <header className={`sticky top-0 w-full max-w-5xl flex justify-between items-center py-4 px-4 sm:px-6 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50 transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 translate-y-0'}`}>
+      <header className={`sticky top-4 w-full max-w-5xl mx-auto flex justify-between items-center py-3 px-5 sm:px-6 z-50 glass-panel rounded-2xl transition-all duration-500 shadow-sm ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 translate-y-0'}`}>
         {/* Logo Mobile (Sembunyi di Desktop) */}
         <div className="flex sm:hidden items-center gap-2 mt-1">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -282,15 +282,11 @@ export default function Home() {
         </div>
         <div className="hidden sm:block"></div>
         <div className="flex items-center gap-2 sm:gap-3 ml-auto">
-          <button 
-            onClick={() => setShowLibraryModal(true)}
-            className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors shadow-sm text-sm sm:text-base"
-            title="Perpustakaan Saya"
-          >
-            📚
-          </button>
           <ThemeToggle />
-          <AuthButton onCheckProgress={() => setShowProgressModal(true)} />
+          <AuthButton 
+            onCheckProgress={() => setShowProgressModal(true)} 
+            onOpenLibrary={() => setShowLibraryModal(true)}
+          />
         </div>
       </header>
 
@@ -308,13 +304,15 @@ export default function Home() {
       <LibraryModal 
         isOpen={showLibraryModal}
         onClose={() => setShowLibraryModal(false)}
-        onSelectText={(txt) => {
+        onSelectText={(txt, title, source) => {
           setText(txt);
+          setTextTitle(title);
+          setTextSource(source || "ai");
           setShowInput(true);
         }}
       />
       {showInput ? (
-        <div className="flex flex-col gap-8 w-full max-w-2xl relative z-10">
+        <div className="flex flex-col gap-6 sm:gap-8 w-full max-w-2xl relative z-10">
           <div className="text-center flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Logo Desktop (Sembunyi di Mobile) */}
             <div className="hidden sm:inline-flex items-center justify-center space-x-4 mb-2">
@@ -343,7 +341,7 @@ export default function Home() {
             <BigAuthButton />
           </div>
 
-          <div className="glass-panel rounded-3xl p-6 sm:p-8">
+          <div className="glass-panel rounded-3xl p-4 sm:p-8">
             <TextInput
               text={text}
               onChange={setText}
@@ -364,8 +362,8 @@ export default function Home() {
           <QuizPanel text={text} initialMode={quizMode} onClose={handleCloseQuiz} />
         </div>
       ) : (
-        <div className="flex flex-col gap-8 w-full max-w-2xl relative z-10">
-          <div className="glass-panel rounded-3xl p-6 shadow-sm transition-all duration-500">
+        <div className="flex flex-col gap-6 sm:gap-8 w-full max-w-2xl relative z-10">
+          <div className="glass-panel rounded-3xl p-4 sm:p-6 shadow-sm transition-all duration-500">
             <ProgressPanel
               wpm={currentWpm}
               wordIndex={reader.wordIndex}
@@ -427,9 +425,9 @@ export default function Home() {
         </div>
       )}
       </div>
-      <footer className={`sticky bottom-0 w-full max-w-5xl flex flex-col sm:flex-row justify-between items-center gap-4 py-4 px-4 sm:px-6 mt-auto z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-t border-zinc-200/50 dark:border-zinc-800/50 transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100 hover:opacity-100'}`}>
+      <footer className={`sticky bottom-4 w-full max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 py-3 px-5 sm:px-6 mt-auto z-50 glass-panel rounded-2xl transition-all duration-500 shadow-sm ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100 hover:opacity-100'}`}>
         <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium text-center sm:text-left">
-          Dibuat dengan ❤️ oleh <span className="font-bold text-amber-600 dark:text-amber-500">Edwigar Annas Akbar</span>
+          &copy; 2026 <span className="font-bold text-zinc-700 dark:text-zinc-300">Edwigar Annas Akbar</span>
         </p>
         <div className="flex flex-wrap justify-center items-center gap-4">
           <FeedbackButton />

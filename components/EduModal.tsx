@@ -112,32 +112,32 @@ export default function EduModal({ isOpen, onClose }: EduModalProps) {
           {activeTab === "how" && (
             <div className="animate-in fade-in slide-in-from-right-4 duration-300 space-y-4">
               <p>
-                Untuk memaksimalkan penggunaan aplikasi ini, ikuti langkah-langkah berikut:
+                Panduan lengkap menggunakan BacaKilat untuk melatih kecepatan membaca Anda:
               </p>
               <ol className="list-decimal pl-5 space-y-3 font-medium">
                 <li>
-                  <span className="text-amber-600 dark:text-amber-400">Pilih Teks yang Sesuai:</span>
-                  <p className="font-normal text-sm mt-1">Mulai dengan artikel ringan atau berita. Hindari menguji coba dengan teks akademis atau jurnal yang terlalu berat pada tahap awal.</p>
+                  <span className="text-amber-600 dark:text-amber-400">Pilih Teks & Sumber:</span>
+                  <p className="font-normal text-sm mt-1">Gunakan fitur <b>✨ AI Buatkan Teks</b> untuk membuat artikel sesuai minat Anda, jelajahi <b>Katalog Teks</b>, atau cukup tempelkan teks yang ingin Anda baca dengan cepat.</p>
                 </li>
                 <li>
-                  <span className="text-amber-600 dark:text-amber-400">Atur WPM (Words Per Minute):</span>
-                  <p className="font-normal text-sm mt-1">Gunakan kecepatan default (250 WPM) sebagai awalan. Tingkatkan kecepatan secara bertahap (+50 WPM) ketika Anda merasa sudah mulai terbiasa dan tidak lagi &quot;menggumam&quot; (subvokalisasi).</p>
+                  <span className="text-amber-600 dark:text-amber-400">Atur Kecepatan (WPM):</span>
+                  <p className="font-normal text-sm mt-1">Gunakan kecepatan default (250 WPM) sebagai awalan. Tingkatkan kecepatan perlahan jika Anda sudah merasa nyaman. Jangan terlalu memaksakan diri di awal.</p>
                 </li>
                 <li>
-                  <span className="text-amber-600 dark:text-amber-400">Fokus pada Titik Emas:</span>
-                  <p className="font-normal text-sm mt-1">Jangan mencoba memindai seluruh kata. Tatap mata Anda tepat pada satu huruf yang diwarnai emas. Percayalah bahwa periferal mata dan otak Anda dapat mengenali kata tersebut secara utuh.</p>
+                  <span className="text-amber-600 dark:text-amber-400">Fokus pada Titik Merah/Emas:</span>
+                  <p className="font-normal text-sm mt-1">Saat membaca, fokuskan mata Anda HANYA pada huruf yang diwarnai terang. Jangan gerakkan mata Anda ke kiri dan kanan. Biarkan kata-kata berganti dengan sendirinya.</p>
                 </li>
                 <li>
-                  <span className="text-amber-600 dark:text-amber-400">Gunakan Shortcut Keyboard:</span>
-                  <p className="font-normal text-sm mt-1">Tekan <kbd className="bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded">Spasi</kbd> untuk Jeda/Lanjut, Panah Kanan/Kiri untuk WPM, dan Panah Atas/Bawah untuk Ukuran Teks.</p>
+                  <span className="text-amber-600 dark:text-amber-400">Gunakan Shortcut Keyboard (Desktop):</span>
+                  <p className="font-normal text-sm mt-1">Tekan <kbd className="bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded">Spasi</kbd> untuk Jeda/Lanjut, <kbd className="bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded">Panah Kanan/Kiri</kbd> untuk melompati kata, dan <kbd className="bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded">Esc</kbd> untuk mengakhiri sesi lebih awal.</p>
                 </li>
                 <li>
-                  <span className="text-amber-600 dark:text-amber-400">Evaluasi Pemahaman:</span>
-                  <p className="font-normal text-sm mt-1">Setelah selesai membaca, gunakan fitur <strong>Tes Pemahaman AI</strong> untuk memastikan kecepatan Anda berbanding lurus dengan kemampuan menyerap informasi.</p>
+                  <span className="text-amber-600 dark:text-amber-400">Uji Pemahaman & Dapatkan Badge:</span>
+                  <p className="font-normal text-sm mt-1">Setiap selesai membaca, Anda bisa menguji pemahaman Anda. Selesaikan kuis untuk mendapatkan skor dan membuka berbagai Badge (Pencapaian) menarik!</p>
                 </li>
                 <li>
-                  <span className="text-amber-600 dark:text-amber-400">Simpan Progres di Cloud:</span>
-                  <p className="font-normal text-sm mt-1">Jangan lupa untuk <strong>Login dengan Google</strong>! Semua teks yang Anda unggah, riwayat membaca, poin gamifikasi, dan rentetan harian (streak) akan otomatis disinkronkan ke Cloud agar tidak hilang meskipun Anda berganti perangkat.</p>
+                  <span className="text-amber-600 dark:text-amber-400">Simpan Progres di Profil:</span>
+                  <p className="font-normal text-sm mt-1">Pastikan Anda <b>Login</b>! Semua riwayat bacaan, skor kuis, teks tersimpan di perpustakaan, serta koleksi lencana Anda akan aman tersimpan dan bisa diakses dari perangkat manapun.</p>
                 </li>
               </ol>
             </div>

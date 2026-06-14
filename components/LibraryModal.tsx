@@ -12,7 +12,7 @@ export default function LibraryModal({
 }: { 
   isOpen: boolean; 
   onClose: () => void;
-  onSelectText: (text: string) => void;
+  onSelectText: (text: string, title?: string, source?: "ai" | "catalog" | "manual") => void;
 }) {
   const { user } = useAuth();
   const [library, setLibrary] = useState<SavedText[]>([]);
@@ -89,7 +89,7 @@ export default function LibraryModal({
                   </p>
                   <button
                     onClick={() => {
-                      onSelectText(item.content);
+                      onSelectText(item.content, item.title, "ai");
                       onClose();
                     }}
                     className="text-xs font-semibold px-3 py-1.5 bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 rounded-full hover:bg-amber-200 dark:hover:bg-amber-500/30 transition-colors"

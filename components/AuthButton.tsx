@@ -5,9 +5,10 @@ import { useAuth } from "@/hooks/useAuth";
 
 interface AuthButtonProps {
   onCheckProgress: () => void;
+  onOpenLibrary?: () => void;
 }
 
-export default function AuthButton({ onCheckProgress }: AuthButtonProps) {
+export default function AuthButton({ onCheckProgress, onOpenLibrary }: AuthButtonProps) {
   const { user, loading, signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -66,6 +67,17 @@ export default function AuthButton({ onCheckProgress }: AuthButtonProps) {
             >
               <span>📊</span> Cek Progress
             </button>
+            {onOpenLibrary && (
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  onOpenLibrary();
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition-colors mt-1"
+              >
+                <span>📚</span> Perpustakaan
+              </button>
+            )}
             <button
               onClick={() => {
                 setIsOpen(false);
