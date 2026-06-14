@@ -5,8 +5,19 @@ import { useAuth } from "@/hooks/useAuth";
 export default function BigAuthButton() {
   const { user, loading, signInWithGoogle } = useAuth();
 
-  if (loading || user) return null; // Only show if not logged in
+  if (user) return null;
 
+  if (loading) {
+    return (
+      <button
+        disabled
+        className="px-5 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 text-zinc-400 dark:text-zinc-500 border border-zinc-200 dark:border-zinc-700 rounded-full font-bold text-sm flex items-center justify-center gap-2 mb-6 cursor-wait animate-pulse"
+      >
+        <div className="w-5 h-5 rounded-full border-2 border-zinc-300 dark:border-zinc-600 border-t-zinc-500 animate-spin" />
+        <span>Memeriksa sesi...</span>
+      </button>
+    );
+  }
   return (
     <button
       onClick={signInWithGoogle}
