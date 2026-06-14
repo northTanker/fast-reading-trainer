@@ -27,7 +27,7 @@ Aturan wajib:
       'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
     },
     body: JSON.stringify({
-      model: "deepseek-chat",
+      model: "deepseek-v4-pro",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
       response_format: { type: "json_object" }
@@ -63,6 +63,8 @@ Aturan wajib:
   };
 }
 
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 async function run() {
   console.log("Membaca katalog saat ini...");
   let catalog = [];
@@ -83,6 +85,12 @@ async function run() {
       const newArticle = await generateNewArticle();
       catalog.push(newArticle);
       console.log(`[${i+1}/${countToGenerate}] + Berhasil: "${newArticle.title}" (${newArticle.wordCount} kata) [${newArticle.category}]`);
+      
+      // Jeda waktu (delay) 3 detik sebelum pemanggilan API berikutnya agar tidak melanggar batas rate limit
+      if (i < countToGenerate - 1) {
+        console.log(`⏳ Menunggu 3 detik sebelum melanjutkan...`);
+        await delay(3000);
+      }
     } catch (err) {
       console.error(`[${i+1}/${countToGenerate}] - Gagal membangkitkan artikel: ${err.message}`);
     }
