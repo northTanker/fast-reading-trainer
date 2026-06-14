@@ -23,20 +23,23 @@ export default function CatalogModal({ isOpen, onClose, onSelect }: CatalogModal
   const [selectedCategory, setSelectedCategory] = useState<string>("Semua");
 
   useEffect(() => {
-    if (isOpen && items.length === 0) {
-      setIsLoading(true);
-      fetch(`/catalog.json?v=${new Date().getTime()}`)
-        .then(res => res.json())
-        .then(data => {
-          setItems(data);
-        })
-        .catch(err => {
+    let active = true;
+    const fetchCatalog = async () => {
+      if (isOpen && items.length === 0) {
+        setIsLoading(true);
+        try {
+          const res = await fetch(`/catalog.json?v=${new Date().getTime()}`);
+          const data = await res.json();
+          if (active) setItems(data);
+        } catch (err) {
           console.error("Gagal memuat katalog:", err);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
+        } finally {
+          if (active) setIsLoading(false);
+        }
+      }
+    };
+    fetchCatalog();
+    return () => { active = false; };
   }, [isOpen, items.length]);
 
   if (!isOpen) return null;

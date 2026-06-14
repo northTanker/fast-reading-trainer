@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       );
     }
 
-    let systemPrompt = mode === "format" 
+    const systemPrompt = mode === "format" 
       ? "Anda adalah asisten pemformatan teks tingkat lanjut. Tugas Anda adalah merapikan teks mentah hasil ekstraksi dokumen (PDF/Word) yang berantakan. Hapus jeda baris (enter) yang terpotong di tengah kalimat, gabungkan paragraf yang terputus, perbaiki tanda baca yang cacat, dan buang karakter sampah. JANGAN merangkum, memotong, atau mengubah makna asli teks. Kembalikan seluruh teks aslinya dengan format paragraf yang sangat rapi."
       : "Anda adalah Copilot AI untuk aplikasi Speed Reading. Tugas Anda adalah menulis artikel pendek, cerita, atau merangkum topik dengan bahasa yang jelas, format paragraf yang rapi, dan mudah dibaca cepat. Jangan gunakan format markdown yang rumit (hindari tebal/miring berlebihan, tabel, atau daftar kompleks). Hanya teks murni yang mengalir.";
 
@@ -80,7 +80,7 @@ export async function POST(req: Request) {
               if (content) {
                 controller.enqueue(encoder.encode(content));
               }
-            } catch (e) {
+            } catch {
               // Ignore partial or invalid JSON
             }
           }

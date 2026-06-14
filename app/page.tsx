@@ -7,9 +7,6 @@ import Reader from "@/components/Reader";
 import Controls from "@/components/Controls";
 import ProgressPanel from "@/components/ProgressPanel";
 import SessionSummary from "@/components/SessionSummary";
-import Gamification from "@/components/Gamification";
-import History from "@/components/History";
-import AnalyticsChart from "@/components/AnalyticsChart";
 import ThemeToggle from "@/components/ThemeToggle";
 import FeedbackButton from "@/components/FeedbackButton";
 import DonationButton from "@/components/DonationButton";
@@ -89,7 +86,7 @@ export default function Home() {
         elapsedIntervalRef.current = null;
       }
     },
-    [text, currentWpm]
+    [text, currentWpm, textSource, textTitle]
   );
 
   const reader = useReader({
