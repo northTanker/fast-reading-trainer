@@ -72,13 +72,9 @@ export default function RootLayout({
               (function() {
                 try {
                   var savedTheme = localStorage.getItem('theme');
-                  var isDark = false;
-                  if (savedTheme === 'dark') {
-                    isDark = true;
-                  } else if (savedTheme === 'light') {
+                  var isDark = true; // Default is dark
+                  if (savedTheme === 'light') {
                     isDark = false;
-                  } else {
-                    isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                   }
                   if (isDark) {
                     document.documentElement.classList.add('dark');
