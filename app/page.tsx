@@ -281,7 +281,7 @@ export default function Home() {
 
   return (
     <div className={`flex flex-col flex-1 items-center px-4 min-h-screen relative transition-colors duration-1000 ${isActive ? 'bg-zinc-50 dark:bg-black' : ''}`}>
-      <header className={`sticky top-0 z-50 w-full max-w-5xl mx-auto flex justify-between items-center py-4 px-4 sm:px-8 transition-all duration-500 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50 rounded-b-2xl ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 hover:opacity-100'}`}>
+      <header className={`sticky top-0 z-50 w-full max-w-5xl mx-auto flex justify-between items-center py-4 px-4 sm:px-8 transition-all duration-500 bg-transparent backdrop-blur-lg ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 hover:opacity-100'}`}>
         <div className="flex items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
@@ -435,7 +435,7 @@ export default function Home() {
         </div>
       )}
       </div>
-      <footer className={`sticky bottom-0 z-50 w-full max-w-5xl mx-auto flex flex-col justify-center items-center gap-4 py-4 sm:py-6 px-4 mt-auto bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border-t border-zinc-200/50 dark:border-zinc-800/50 rounded-t-2xl transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100'}`}>
+      <footer className={`sticky bottom-0 z-50 w-full max-w-5xl mx-auto flex flex-col justify-center items-center gap-4 py-4 sm:py-6 px-4 mt-auto bg-transparent backdrop-blur-lg transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100'}`}>
         <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6">
           <div className="flex flex-col items-center gap-1">
             <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">Saran & Kritik</span>
