@@ -9,14 +9,16 @@ const CATEGORIES = ["Sains", "Teknologi", "Matematika", "Bisnis", "Sejarah", "Fi
 async function generateNewArticle() {
   const randomCategory = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
   
-  const prompt = `Tuliskan satu artikel edukatif dan menarik berbahasa Indonesia tentang topik yang spesifik di bidang ${randomCategory}.
-Aturan wajib:
+  const prompt = `Tuliskan satu artikel berbahasa Indonesia tentang sub-topik yang SANGAT SPESIFIK dan unik (jarang dibahas) di bidang ${randomCategory}. (Jangan bahas topik umum!).
+Aturan gaya penulisan (ANTI-AI SLOP):
 1. Panjang artikel HARUS lebih dari 300 kata.
-2. Gaya bahasa formal tapi santai, lugas, langsung ke intinya. Gunakan kalimat-kalimat pendek.
-3. DILARANG KERAS menggunakan frasa klise AI seperti "Di era digital yang serba cepat ini", "Penting untuk diingat", "Kesimpulannya", "Tidak dapat dipungkiri".
-4. Kembalikan respons murni dalam format JSON (tanpa tag markdown \`\`\`json) dengan struktur:
+2. Gaya bahasa: Kasual, mengalir, bercerita (storytelling), dan asyik dibaca seperti artikel blog Medium atau majalah anak muda. HINDARI bahasa kaku, terlalu formal, atau akademis. Gunakan analogi sehari-hari untuk konsep rumit.
+3. Struktur: Variasikan panjang kalimat. Hindari pola paragraf yang repetitif atau menggunakan kata hubung transisi secara kaku di awal kalimat.
+4. DILARANG KERAS menggunakan kata/frasa klise AI: "Di era digital yang serba cepat ini", "Penting untuk diingat", "Kesimpulannya", "Tidak dapat dipungkiri", "Secara esensial", "Mengingat hal tersebut", "Pada akhirnya". 
+5. Jangan berikan pengantar atau penutup klise. Langsung masuk ke inti cerita sejak kalimat pertama dan akhiri dengan tajam tanpa merangkum ulang.
+6. Kembalikan respons murni dalam format JSON (tanpa tag markdown \`\`\`json) dengan struktur:
 {
-  "title": "Judul Menarik",
+  "title": "Judul Menarik (Gaya Clickbait Edukatif/Santai)",
   "content": "Isi artikel lengkap di sini..."
 }`;
 
