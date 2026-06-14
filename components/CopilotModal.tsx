@@ -106,7 +106,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
       onClose();
       setPrompt("");
     } catch (err: any) {
-      if (err.name === "AbortError") {
+      if (err.name === "AbortError" || abortControllerRef.current?.signal.aborted) {
         // User aborted, let's just apply the text generated so far
         try {
           const { getAuth } = await import("firebase/auth");

@@ -101,7 +101,7 @@ export default function Home() {
       setElapsedMs(
         elapsedAccumulatedRef.current + (performance.now() - elapsedStartRef.current)
       );
-    }, 50);
+    }, 1000);
   }, []);
 
   const pauseElapsedTimer = useCallback(() => {
@@ -121,7 +121,7 @@ export default function Home() {
       setElapsedMs(
         elapsedAccumulatedRef.current + (performance.now() - elapsedStartRef.current)
       );
-    }, 50);
+    }, 1000);
   }, []);
 
   const clearCountdown = useCallback(() => {
