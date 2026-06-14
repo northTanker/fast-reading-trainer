@@ -1,12 +1,33 @@
 import { NextResponse } from "next/server";
+import { adminAuth } from "@/lib/firebaseAdmin";
+import { z } from "zod";
+
+const quizSchema = z.object({
+  text: z.string().min(1, "Teks tidak boleh kosong").max(50000),
+  apiKey: z.string().optional(),
+});
 
 export async function POST(req: Request) {
   try {
-    const { text, apiKey } = await req.json();
-
-    if (!text) {
-      return NextResponse.json({ error: "Teks tidak boleh kosong" }, { status: 400 });
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const idToken = authHeader.split("Bearer ")[1];
+    try {
+      await adminAuth.verifyIdToken(idToken);
+    } catch (err) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const parsed = quizSchema.safeParse(body);
+    
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
+    }
+
+    const { text, apiKey } = parsed.data;
 
     const token = apiKey || process.env.DEEPSEEK_API_KEY;
 
@@ -64,12 +85,12 @@ Pastikan hanya mengembalikan JSON yang valid tanpa markdown block (\`\`\`json).`
     const data = await response.json();
     const content = data.choices[0]?.message?.content || "";
     
-    const parsed = JSON.parse(content);
-    if (!parsed.questions || !Array.isArray(parsed.questions)) {
+    const quizData = JSON.parse(content);
+    if (!quizData.questions || !Array.isArray(quizData.questions)) {
       throw new Error("Format JSON tidak valid");
     }
 
-    return NextResponse.json({ questions: parsed.questions });
+    return NextResponse.json({ questions: quizData.questions });
 
   } catch (error: unknown) {
     console.error("Quiz Backend Error:", error);

@@ -1,4 +1,4 @@
-# Pelatih Membaca Cepat (Speed Reading Trainer)
+# BacaKilat - Pelatih Membaca Cepat (Speed Reading Trainer)
 
 Aplikasi web inovatif yang dirancang untuk membantu Anda meningkatkan kecepatan membaca secara drastis menggunakan teknik **ORP (Optimal Recognition Point)**.
 
@@ -10,26 +10,26 @@ Aplikasi ini dikembangkan untuk memecahkan masalah tersebut dengan menggabungkan
 
 Hasilnya, Anda dapat menyerap informasi lebih cepat, mengurangi kelelahan mata, dan memutus rantai kebiasaan subvokalisasi secara efektif. Peningkatan kemampuan membaca ini sangat berharga untuk pelajar, profesional, maupun siapa saja yang ingin mengkonsumsi literatur dengan efisien.
 
-## 🚀 Manfaat Web App Ini
+## 🚀 Fitur Utama & Manfaat
 
 1. **Meningkatkan Kecepatan Membaca (WPM)**
-   Dengan memusatkan fokus pada satu titik per kata (ORP), mata Anda tidak perlu repot-repot bergerak dari kiri ke kanan. Hal ini secara signifikan memangkas waktu transisi dan membuat kecepatan membaca (*Words Per Minute* / WPM) bisa melesat tinggi (hingga 300-500 WPM atau lebih).
+   Dengan memusatkan fokus pada satu titik per kata (ORP), mata Anda tidak perlu repot-repot bergerak dari kiri ke kanan. Hal ini secara signifikan memangkas waktu transisi dan membuat kecepatan membaca (*Words Per Minute* / WPM) bisa melesat tinggi (hingga 300-500+ WPM).
    
 2. **Mengurangi Subvokalisasi**
-   Menampilkan kata per kata secara berurutan (*RSVP / Rapid Serial Visual Presentation*) mencegah Anda menggumamkan kata-kata dalam pikiran, kebiasaan yang sering menghambat kecepatan membaca.
+   Menampilkan kata per kata secara berurutan (*RSVP*) mencegah Anda menggumamkan kata-kata dalam pikiran, kebiasaan yang sering menghambat kecepatan membaca.
 
-3. **Gamifikasi untuk Motivasi**
-   Dilengkapi dengan pencapaian (*achievements*), pelacakan rekor beruntun (*day streak*), dan akumulasi total kata yang dibaca untuk menjaga motivasi berlatih setiap hari.
+3. **Gamifikasi & Pelacakan Progres**
+   Dilengkapi dengan pencapaian (*achievements/badges*), pelacakan rekor beruntun (*day streak*), dan akumulasi total kata yang dibaca untuk menjaga motivasi berlatih setiap hari.
 
-4. **Kenyamanan Privasi (Client-Side)**
-   Semua teks dan riwayat sesi membaca hanya disimpan secara lokal di peramban Anda (*localStorage*). Anda bebas menempelkan teks atau buku apapun tanpa perlu khawatir data Anda terekam di server.
+4. **✨ AI-Powered: Asisten Copilot & Generator Kuis**
+   Terintegrasi dengan **DeepSeek AI**! Anda bisa meminta AI untuk membuatkan ringkasan artikel, teks latihan khusus, atau bahkan membuat kuis pemahaman bacaan (reading comprehension quiz) langsung dari teks yang baru saja Anda baca.
 
-5. **Aksesibilitas dan Dukungan Luring (Offline)**
-   - Mendukung aksesibilitas (*A11y*) penuh untuk perangkat pembaca layar (*screen-reader*).
-   - Mendukung fitur **PWA (Progressive Web App)** sehingga Anda bisa menginstal aplikasi ini ke layar beranda perangkat (ponsel/laptop) dan menggunakannya tanpa koneksi internet.
+5. **Cloud Sync & Pustaka Pribadi (My Library)**
+   Dengan integrasi **Firebase Authentication & Firestore**, progres membaca, lencana (badges), dan teks tersimpan Anda akan tersinkronisasi dengan aman di cloud. Anda bisa melanjutkannya dari perangkat mana saja. Semua materi bacaan, esai, atau dokumen panjang dapat Anda simpan di Pustaka Pribadi.
 
-6. **Pustaka Pribadi (My Library)**
-   Simpan materi bacaan panjang, esai, atau draf dokumen yang ingin Anda baca di sesi-sesi selanjutnya, lalu atur pustaka tersebut dengan rapi.
+6. **Aksesibilitas dan Dukungan Mobile-First**
+   - Responsif dan elegan baik di Desktop maupun Mobile.
+   - Mendukung aksesibilitas (*A11y*) penuh untuk perangkat pembaca layar dan navigasi keyboard.
 
 ---
 
@@ -40,9 +40,10 @@ Aplikasi ini dibangun di atas infrastruktur modern dengan prinsip **Harness-Nati
 - **Framework**: Next.js 16.2 (App Router) + React 19.2
 - **Bahasa**: TypeScript 5 (Strict Mode)
 - **Styling**: Tailwind CSS v4 (menggunakan format impor CSS dan `@theme`)
-- **Validasi Data**: Zod (memastikan integritas data dari dan ke `localStorage` agar tidak menyebabkan *crash*).
-- **Pengujian (TDD)**: Vitest (menguji algoritma tokenizer dan logika pemisah ORP).
-- **State Management**: `useSyncExternalStore` Hook dari React 18+ (menjamin antarmuka reaktif pada saat sinkronisasi data dengan *localStorage* antar-tab, tanpa terjebak *infinite loop* re-render).
+- **Backend & Auth**: Firebase Admin SDK & Firebase Client (Authentication, Firestore, Storage)
+- **AI Integration**: REST API DeepSeek
+- **Validasi Data**: Zod
+- **Pengujian (TDD)**: Vitest
 - **Bundler**: Turbopack
 
 ## 💻 Cara Menjalankan Secara Lokal
@@ -51,16 +52,36 @@ Aplikasi ini dibangun di atas infrastruktur modern dengan prinsip **Harness-Nati
    ```bash
    npm install
    ```
-2. **Jalankan Server Development**
+
+2. **Pengaturan Environment Variables**
+   Buat file `.env.local` di *root directory* dan tambahkan kunci berikut:
+   ```env
+   # API Keys
+   DEEPSEEK_API_KEY=your_deepseek_api_key
+
+   # Firebase Client Config
+   NEXT_PUBLIC_FIREBASE_API_KEY=xxx
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=xxx
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=xxx
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=xxx
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=xxx
+   NEXT_PUBLIC_FIREBASE_APP_ID=xxx
+
+   # Firebase Admin Config (untuk verifikasi token di backend)
+   GOOGLE_APPLICATION_CREDENTIALS=./serviceAccountKey.json
+   ```
+
+3. **Jalankan Server Development**
    ```bash
    npm run dev
    ```
-3. Buka [http://localhost:3000](http://localhost:3000) di peramban Anda.
-4. **Jalankan Validasi Linter & Tipe**
+
+4. Buka [http://localhost:3000](http://localhost:3000) di peramban Anda.
+5. **Jalankan Validasi Linter & Tipe**
    ```bash
    npm run lint && npx tsc --noEmit
    ```
-5. **Jalankan Pengujian (Testing)**
-   ```bash
-   npx vitest run
-   ```
+
+---
+
+Dibuat dengan ❤️ oleh Edwigar Annas Akbar.

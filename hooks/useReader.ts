@@ -73,6 +73,11 @@ export function useReader({
     return baseIntervalMs * multiplier;
   }, []);
 
+  const onFinishRef = useRef(onFinish);
+  useEffect(() => {
+    onFinishRef.current = onFinish;
+  }, [onFinish]);
+
   const loop = useCallback(function tickLoop(time: number) {
     if (lastTickRef.current === 0) {
       lastTickRef.current = time;
@@ -87,7 +92,7 @@ export function useReader({
         setSessionState("finished");
         const end = performance.now();
         const duration = end - startTimeRef.current - totalPausedRef.current;
-        onFinish(duration, true);
+        onFinishRef.current(duration, true);
         return;
       }
 
@@ -105,7 +110,7 @@ export function useReader({
     }
 
     rafRef.current = requestAnimationFrame(tickLoop);
-  }, [words, clearTimer, onFinish, calculateDelay]);
+  }, [words, clearTimer, calculateDelay]);
 
   const startTimer = useCallback(() => {
     clearTimer();
@@ -154,9 +159,9 @@ export function useReader({
     setSessionState("finished");
     if (!hasFinishedRef.current) {
       hasFinishedRef.current = true;
-      onFinish(duration, false);
+      onFinishRef.current(duration, false);
     }
-  }, [clearTimer, onFinish, sessionState]);
+  }, [clearTimer, sessionState]);
 
   const setWpm = useCallback(
     (newWpm: number) => {

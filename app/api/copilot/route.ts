@@ -1,16 +1,34 @@
 import { NextResponse } from "next/server";
+import { adminAuth } from "@/lib/firebaseAdmin";
+import { z } from "zod";
 
-export const runtime = 'edge';
-
-
+const copilotSchema = z.object({
+  prompt: z.string().min(1, "Prompt tidak boleh kosong").max(10000),
+  apiKey: z.string().optional(),
+  mode: z.enum(["generate", "format"]).default("generate"),
+});
 
 export async function POST(req: Request) {
   try {
-    const { prompt, apiKey, mode = "generate" } = await req.json();
-
-    if (!prompt) {
-      return NextResponse.json({ error: "Prompt tidak boleh kosong" }, { status: 400 });
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const idToken = authHeader.split("Bearer ")[1];
+    try {
+      await adminAuth.verifyIdToken(idToken);
+    } catch (err) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const parsed = copilotSchema.safeParse(body);
+    
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
+    }
+
+    const { prompt, apiKey, mode } = parsed.data;
 
     // Gunakan Kunci Pribadi (Option B) atau Kunci Server (Option C)
     const token = apiKey || process.env.DEEPSEEK_API_KEY;

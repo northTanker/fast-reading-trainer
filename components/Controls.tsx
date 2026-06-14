@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import type { SessionState } from "@/types";
 
 interface ControlsProps {
@@ -17,7 +18,7 @@ interface ControlsProps {
   onSkipBack: () => void;
 }
 
-export default function Controls({
+export default memo(function Controls({
   sessionState,
   wpm,
   progress,
@@ -146,4 +147,4 @@ export default function Controls({
       </div>
     </div>
   );
-}
+});

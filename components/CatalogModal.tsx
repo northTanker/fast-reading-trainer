@@ -42,6 +42,16 @@ export default function CatalogModal({ isOpen, onClose, onSelect }: CatalogModal
     return () => { active = false; };
   }, [isOpen, items.length]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const categories = ["Semua", ...Array.from(new Set(items.map(item => item.category)))].sort();
@@ -54,7 +64,7 @@ export default function CatalogModal({ isOpen, onClose, onSelect }: CatalogModal
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-zinc-900/40 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-zinc-900/40 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="catalog-title">
       <div 
         className="absolute inset-0" 
         onClick={onClose}
@@ -64,7 +74,7 @@ export default function CatalogModal({ isOpen, onClose, onSelect }: CatalogModal
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-zinc-100 dark:border-zinc-800">
           <div>
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-amber-500 to-rose-500 bg-clip-text text-transparent">
+            <h2 id="catalog-title" className="text-2xl font-bold bg-gradient-to-r from-amber-500 to-rose-500 bg-clip-text text-transparent">
               Katalog Teks (500+)
             </h2>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">

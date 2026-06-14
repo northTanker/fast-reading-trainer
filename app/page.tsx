@@ -11,10 +11,10 @@ import ThemeToggle from "@/components/ThemeToggle";
 import FeedbackButton from "@/components/FeedbackButton";
 import DonationButton from "@/components/DonationButton";
 import QuizPanel from "@/components/QuizPanel";
-import AuthButton from "@/components/AuthButton";
-import BigAuthButton from "@/components/BigAuthButton";
 import AchievementToast from "@/components/AchievementToast";
 
+const AuthButton = dynamic(() => import("@/components/AuthButton"), { ssr: false });
+const BigAuthButton = dynamic(() => import("@/components/BigAuthButton"), { ssr: false });
 const EduModal = dynamic(() => import("@/components/EduModal"), { ssr: false });
 const LibraryModal = dynamic(() => import("@/components/LibraryModal"), { ssr: false });
 const ProgressModal = dynamic(() => import("@/components/ProgressModal"), { ssr: false });
@@ -136,6 +136,11 @@ export default function Home() {
     setCountdown(null);
   }, []);
 
+  const readerStart = reader.start;
+  const readerPause = reader.pause;
+  const readerResume = reader.resume;
+  const readerStop = reader.stop;
+
   const handleStart = useCallback(() => {
     setShowInput(false);
     setLastSession(null);
@@ -150,27 +155,27 @@ export default function Home() {
         countdownTimerRef.current = setTimeout(tick, 700);
       } else {
         setCountdown(null);
-        reader.start();
+        readerStart();
         startElapsedTimer();
       }
     };
     countdownTimerRef.current = setTimeout(tick, 700);
-  }, [reader, startElapsedTimer]);
+  }, [readerStart, startElapsedTimer]);
 
   const handlePause = useCallback(() => {
-    reader.pause();
+    readerPause();
     pauseElapsedTimer();
-  }, [reader, pauseElapsedTimer]);
+  }, [readerPause, pauseElapsedTimer]);
 
   const handleResume = useCallback(() => {
-    reader.resume();
+    readerResume();
     resumeElapsedTimer();
-  }, [reader, resumeElapsedTimer]);
+  }, [readerResume, resumeElapsedTimer]);
 
   const handleStop = useCallback(() => {
-    reader.stop();
+    readerStop();
     pauseElapsedTimer();
-  }, [reader, pauseElapsedTimer]);
+  }, [readerStop, pauseElapsedTimer]);
 
   const handleNewSession = useCallback(() => {
     setShowInput(true);
@@ -276,21 +281,19 @@ export default function Home() {
 
   return (
     <div className={`flex flex-col flex-1 items-center px-4 min-h-screen relative transition-colors duration-1000 ${isActive ? 'bg-zinc-50 dark:bg-black' : ''}`}>
-      <header className={`sticky top-0 pt-4 pb-2 w-full max-w-5xl mx-auto flex justify-between items-center px-4 sm:px-6 z-50 transition-all duration-500 ${scrolled ? 'bg-white/40 dark:bg-black/40 backdrop-blur-md shadow-sm border-b border-zinc-200/50 dark:border-zinc-800/50 rounded-b-2xl' : 'bg-transparent border-transparent'} ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 translate-y-0'}`}>
-        {/* Logo Mobile / Desktop on Scroll */}
-        <div className={`flex items-center gap-2 mt-1 transition-all duration-500 ${scrolled ? 'opacity-100 translate-y-0' : 'sm:opacity-0 sm:-translate-y-2'}`}>
+      <header className={`sticky top-0 z-50 w-full max-w-5xl mx-auto flex justify-between items-center py-4 px-4 sm:px-8 transition-all duration-500 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50 rounded-b-2xl ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 hover:opacity-100'}`}>
+        <div className="flex items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src="/logo.png" 
             alt="BacaKilat Logo" 
-            className="w-8 h-8 object-contain bg-zinc-100 dark:bg-white p-1.5 rounded-xl shadow-sm dark:shadow-amber-500/20" 
+            className="w-8 h-8 sm:w-10 sm:h-10 object-contain bg-zinc-100 dark:bg-white p-1.5 rounded-xl" 
           />
-          <h1 className="text-xl font-extrabold tracking-tighter font-outfit bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-transparent pb-1 drop-shadow-sm">
+          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tighter font-outfit bg-gradient-to-r from-amber-500 to-rose-500 bg-clip-text text-transparent">
             BacaKilat
           </h1>
         </div>
-        
-        <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+        <div className="flex items-center gap-2 sm:gap-4">
           <ThemeToggle />
           <AuthButton 
             onCheckProgress={() => setShowProgressModal(true)} 
@@ -403,9 +406,7 @@ export default function Home() {
 
           {reader.sessionState === "finished" && lastSession ? (
             <SessionSummary
-              wordCount={lastSession.wordCount}
-              actualWpm={lastSession.actualWpm}
-              durationMs={lastSession.durationMs}
+              session={lastSession}
               onNewSession={handleNewSession}
               onTakeQuiz={handleTakeQuiz}
             />
@@ -434,14 +435,20 @@ export default function Home() {
         </div>
       )}
       </div>
-      <footer className={`w-full max-w-5xl mx-auto flex flex-col-reverse sm:flex-row justify-between items-center gap-3 sm:gap-4 py-4 sm:py-6 px-4 sm:px-6 mt-auto z-50 bg-transparent transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100 hover:opacity-100'}`}>
-        <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 font-medium text-center sm:text-left">
-          &copy; 2026 <span className="font-bold text-zinc-700 dark:text-zinc-300">Edwigar Annas Akbar</span>
-        </p>
-        <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-4">
-          <FeedbackButton />
-          <DonationButton />
+      <footer className={`sticky bottom-0 z-50 w-full max-w-5xl mx-auto flex flex-col justify-center items-center gap-4 py-4 sm:py-6 px-4 mt-auto bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border-t border-zinc-200/50 dark:border-zinc-800/50 rounded-t-2xl transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100'}`}>
+        <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6">
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">Saran & Kritik</span>
+            <FeedbackButton />
+          </div>
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">Dukung Kami</span>
+            <DonationButton />
+          </div>
         </div>
+        <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium text-center">
+          &copy; {new Date().getFullYear()} Edwigar Annas Akbar
+        </p>
       </footer>
       <AchievementToast badgeIds={unlockedBadges} onClose={() => setUnlockedBadges([])} />
     </div>

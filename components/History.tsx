@@ -68,55 +68,59 @@ export default function History() {
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:shadow-md">
-        <table className="w-full text-sm">
-          <thead className="bg-zinc-50/50 dark:bg-zinc-800/30">
-            <tr className="text-[10px] sm:text-xs text-zinc-500 uppercase tracking-widest border-b border-zinc-200/50 dark:border-zinc-800/50">
-              <th className="py-3 px-4 text-left font-bold">Teks & Sumber</th>
-              <th className="py-3 px-4 text-right font-bold">Kata</th>
-              <th className="py-3 px-4 text-right font-bold">WPM (Aktual)</th>
-              <th className="py-3 px-4 text-center font-bold">Kuis</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
-            {history
-              .slice()
-              .reverse()
-              .map((s, idx) => {
-                const getSourceIcon = () => {
-                  if (s.source === "ai") return "🤖";
-                  if (s.source === "catalog") return "📚";
-                  return "✏️";
-                };
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {history
+          .slice()
+          .reverse()
+          .map((s) => {
+            const getSourceIcon = () => {
+              if (s.source === "ai") return "🤖";
+              if (s.source === "catalog") return "📚";
+              return "✏️";
+            };
 
-                const getSourceLabel = () => {
-                  if (s.source === "ai") return "AI Generated";
-                  if (s.source === "catalog") return "Katalog";
-                  return "Manual";
-                };
+            const getSourceLabel = () => {
+              if (s.source === "ai") return "AI Generated";
+              if (s.source === "catalog") return "Katalog";
+              return "Manual";
+            };
 
-                return (
-                  <tr 
-                    key={s.id} 
-                    className={`text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-200 transition-colors ${idx % 2 === 0 ? 'bg-transparent' : 'bg-zinc-50/50 dark:bg-zinc-800/20'}`}
-                  >
-                    <td className="py-3 px-4">
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2">
-                          <span title={getSourceLabel()}>{getSourceIcon()}</span>
-                          <span className="font-bold text-zinc-900 dark:text-zinc-100 line-clamp-1 max-w-[200px] sm:max-w-[300px]">
-                            {s.title || "Teks Kustom"}
-                          </span>
-                        </div>
-                        <span className="font-mono text-[10px] sm:text-xs text-zinc-400">
-                          {new Date(s.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 text-right font-mono tabular-nums whitespace-nowrap">
-                      {s.wordCount}
-                    </td>
-                    <td className="py-3 px-4 text-right font-mono tabular-nums whitespace-nowrap">
+            return (
+              <div 
+                key={s.id} 
+                className="flex flex-col gap-3 p-4 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:shadow-md hover:border-amber-500/30"
+              >
+                <div className="flex justify-between items-start gap-2">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <span title={getSourceLabel()} className="text-lg">{getSourceIcon()}</span>
+                      <span className="font-bold text-zinc-900 dark:text-zinc-100 line-clamp-1">
+                        {s.title || "Teks Kustom"}
+                      </span>
+                    </div>
+                    <span className="font-mono text-[10px] sm:text-xs text-zinc-400">
+                      {new Date(s.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                  {s.quizScore !== undefined && (
+                    <span className={`shrink-0 inline-flex items-center justify-center px-2 py-1 rounded-full text-[10px] font-bold ${
+                      s.quizScore >= 80 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                      s.quizScore >= 50 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
+                      'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                    }`}>
+                      {s.quizScore}% Kuis
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex justify-between items-center mt-auto pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Kata</span>
+                    <span className="font-mono font-medium text-zinc-700 dark:text-zinc-300">{s.wordCount}</span>
+                  </div>
+                  <div className="flex flex-col text-right">
+                    <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">WPM Aktual</span>
+                    <div className="font-mono">
                       {s.completed ? (
                         <span>
                           <span className="font-bold text-amber-600 dark:text-amber-500">{s.actualWpm}</span>
@@ -125,25 +129,12 @@ export default function History() {
                       ) : (
                         <span className="text-zinc-400 dark:text-zinc-600">&mdash;</span>
                       )}
-                    </td>
-                    <td className="py-3 px-4 text-center">
-                      {s.quizScore !== undefined ? (
-                        <span className={`inline-flex items-center justify-center px-2 py-1 rounded-full text-[10px] font-bold ${
-                          s.quizScore >= 80 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
-                          s.quizScore >= 50 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
-                          'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                        }`}>
-                          {s.quizScore}%
-                        </span>
-                      ) : (
-                        <span className="text-zinc-300 dark:text-zinc-700">&mdash;</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
       </div>
     </div>
   );

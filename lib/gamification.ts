@@ -117,6 +117,14 @@ export const BADGES: BadgeDefinition[] = [
   },
 ];
 
+function getLocalISODate(d: string | Date = new Date()): string {
+  const date = new Date(d);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export function computeGamification(
   history: SessionRecord[]
 ): GamificationData {
@@ -128,23 +136,23 @@ export function computeGamification(
   );
 
   const dates = history
-    .map((r) => r.date.slice(0, 10))
+    .map((r) => getLocalISODate(r.date))
     .filter((d, i, arr) => arr.indexOf(d) === i)
     .sort()
     .reverse();
 
   let currentStreak = 0;
-  const today = new Date().toISOString().slice(0, 10);
-
+  const checkDate = new Date();
+  
+  if (!dates.includes(getLocalISODate(checkDate))) {
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+  
   for (let i = 0; i < dates.length; i++) {
-    const expected = new Date();
-    expected.setDate(expected.getDate() - i);
-    const expectedStr = expected.toISOString().slice(0, 10);
-
-    if (dates[i] === expectedStr) {
+    const expectedStr = getLocalISODate(checkDate);
+    if (dates.includes(expectedStr)) {
       currentStreak++;
-    } else if (i === 0 && dates[i] !== today) {
-      break;
+      checkDate.setDate(checkDate.getDate() - 1);
     } else {
       break;
     }
@@ -159,9 +167,11 @@ export function computeGamification(
     } else {
       const prev = new Date(sortedDates[i - 1]);
       const curr = new Date(sortedDates[i]);
-      const diff = Math.round(
-        (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24)
-      );
+      // Normalize to midnight local time for safe diff
+      prev.setHours(0, 0, 0, 0);
+      curr.setHours(0, 0, 0, 0);
+      const diff = Math.round((curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24));
+      
       if (diff === 1) {
         streak++;
       } else {

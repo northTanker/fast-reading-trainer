@@ -1,7 +1,5 @@
 import { z } from "zod";
 import type { SessionRecord, GamificationData } from "@/types";
-import { getAuth } from "firebase/auth";
-import { saveSessionToCloud, syncGamificationToCloud } from "./db";
 
 const HISTORY_KEY = "reading-history";
 const GAMIFICATION_KEY = "gamification-data";
@@ -56,10 +54,18 @@ export function saveSession(record: SessionRecord): void {
   history.push(record);
   localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
 
-  const auth = getAuth();
-  if (auth.currentUser) {
-    saveSessionToCloud(auth.currentUser.uid, record);
-  }
+  import("firebase/auth").then(({ getAuth }) => {
+    try {
+      const auth = getAuth();
+      if (auth.currentUser) {
+        import("./db").then(({ saveSessionToCloud }) => {
+          saveSessionToCloud(auth.currentUser!.uid, record);
+        });
+      }
+    } catch (e) {
+      // Ignore if Firebase isn't initialized yet
+    }
+  });
 }
 
 export function updateLatestSessionQuizScore(score: number): void {
@@ -73,10 +79,18 @@ export function updateLatestSessionQuizScore(score: number): void {
 
   localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
 
-  const auth = getAuth();
-  if (auth.currentUser) {
-    saveSessionToCloud(auth.currentUser.uid, latestSession);
-  }
+  import("firebase/auth").then(({ getAuth }) => {
+    try {
+      const auth = getAuth();
+      if (auth.currentUser) {
+        import("./db").then(({ saveSessionToCloud }) => {
+          saveSessionToCloud(auth.currentUser!.uid, latestSession);
+        });
+      }
+    } catch (e) {
+      // Ignore
+    }
+  });
 }
 
 export function clearHistory(): void {
@@ -107,8 +121,16 @@ export function saveGamificationData(data: GamificationData): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(GAMIFICATION_KEY, JSON.stringify(data));
 
-  const auth = getAuth();
-  if (auth.currentUser) {
-    syncGamificationToCloud(auth.currentUser.uid, data);
-  }
+  import("firebase/auth").then(({ getAuth }) => {
+    try {
+      const auth = getAuth();
+      if (auth.currentUser) {
+        import("./db").then(({ syncGamificationToCloud }) => {
+          syncGamificationToCloud(auth.currentUser!.uid, data);
+        });
+      }
+    } catch (e) {
+      // Ignore
+    }
+  });
 }

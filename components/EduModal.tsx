@@ -20,13 +20,23 @@ export default function EduModal({ isOpen, onClose }: EduModalProps) {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="edu-title">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0"
         onClick={onClose}
       />
       
@@ -37,7 +47,7 @@ export default function EduModal({ isOpen, onClose }: EduModalProps) {
         <div className="flex justify-between items-center shrink-0">
           <div className="flex items-center gap-3">
             <span className="text-3xl">📚</span>
-            <h2 className="text-2xl font-extrabold font-outfit text-zinc-900 dark:text-zinc-100">
+            <h2 id="edu-title" className="text-2xl font-extrabold font-outfit text-zinc-900 dark:text-zinc-100">
               Pusat Edukasi
             </h2>
           </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { formatTimeShort as formatTime } from "@/lib/formatTime";
 
 interface ProgressPanelProps {
@@ -9,7 +10,7 @@ interface ProgressPanelProps {
   elapsedMs: number;
   sessionState: string;
 }
-export default function ProgressPanel({
+export default memo(function ProgressPanel({
   wpm,
   wordIndex,
   totalWords,
@@ -49,4 +50,4 @@ export default function ProgressPanel({
       </div>
     </div>
   );
-}
+});

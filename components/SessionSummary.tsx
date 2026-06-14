@@ -1,21 +1,22 @@
 "use client";
 
+import { memo } from "react";
 import { formatTimeLong as formatTime } from "@/lib/formatTime";
+import type { SessionRecord } from "@/types";
 
 interface SessionSummaryProps {
-  wordCount: number;
-  actualWpm: number;
-  durationMs: number;
+  session: SessionRecord;
   onNewSession: () => void;
+  onTakeQuiz: (mode: "default" | "custom") => void;
 }
 
-export default function SessionSummary({
-  wordCount,
-  actualWpm,
-  durationMs,
+export default memo(function SessionSummary({
+  session,
   onNewSession,
   onTakeQuiz,
-}: SessionSummaryProps & { onTakeQuiz?: (mode: "default" | "custom") => void }) {
+}: SessionSummaryProps) {
+  const { wordCount, actualWpm, durationMs } = session;
+
   return (
     <div className="glass-panel flex flex-col gap-8 items-center rounded-3xl p-8 sm:p-10 transition-all duration-500 mt-4 relative overflow-hidden w-full max-w-2xl mx-auto">
       <div className="text-center relative z-10">
@@ -87,4 +88,4 @@ export default function SessionSummary({
       </div>
     </div>
   );
-}
+});

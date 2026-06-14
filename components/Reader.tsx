@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { splitAtOrp } from "@/lib/orp";
 
 interface ReaderProps {
@@ -8,7 +9,7 @@ interface ReaderProps {
   isFinished: boolean;
 }
 
-export default function Reader({ word, isPaused, isFinished }: ReaderProps) {
+export default memo(function Reader({ word, isPaused, isFinished }: ReaderProps) {
   const { before, pivot, after } = splitAtOrp(word);
 
   return (
@@ -48,4 +49,4 @@ export default function Reader({ word, isPaused, isFinished }: ReaderProps) {
       </span>
     </div>
   );
-}
+});

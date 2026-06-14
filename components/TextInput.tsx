@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLibrary } from "@/hooks/useLibrary";
 import { saveTextToLibrary, removeTextFromLibrary } from "@/lib/library";
 import { parseFile } from "@/lib/fileParser";
@@ -20,7 +20,7 @@ interface TextInputProps {
   onSourceChange?: (source: "manual" | "catalog" | "ai", title?: string) => void;
 }
 
-export default function TextInput({
+export default memo(function TextInput({
   text,
   onChange,
   onStart,
@@ -35,6 +35,7 @@ export default function TextInput({
   const [isSaving, setIsSaving] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isParsing, setIsParsing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isFormatting, setIsFormatting] = useState(false);
   const [isCopilotOpen, setIsCopilotOpen] = useState(false);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
@@ -59,7 +60,8 @@ export default function TextInput({
       const extractedText = await parseFile(file);
       onChange(extractedText);
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Gagal mengurai berkas.");
+      setErrorMessage(err instanceof Error ? err.message : "Gagal mengurai berkas.");
+      setTimeout(() => setErrorMessage(null), 5000);
     } finally {
       setIsParsing(false);
     }
@@ -93,7 +95,8 @@ export default function TextInput({
         onChange(data.text);
       }
     } catch (error: unknown) {
-      alert(error instanceof Error ? error.message : "Gagal merapikan teks");
+      setErrorMessage(error instanceof Error ? error.message : "Gagal merapikan teks");
+      setTimeout(() => setErrorMessage(null), 5000);
     } finally {
       setIsFormatting(false);
     }
@@ -137,8 +140,13 @@ export default function TextInput({
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
         >
+          {errorMessage && (
+            <div className="absolute top-2 left-2 right-2 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-xs px-3 py-2 rounded-lg shadow-sm z-10 animate-in fade-in slide-in-from-top-2">
+              {errorMessage}
+            </div>
+          )}
           <textarea
-            className={`w-full h-48 p-5 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md border ${isDragging ? 'border-amber-500 ring-2 ring-amber-500/50 bg-amber-50/50 dark:bg-amber-900/10' : 'border-zinc-200/80 dark:border-zinc-700/50'} rounded-t-2xl border-b-0 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-0 resize-none transition-all duration-300 shadow-inner`}
+            className={`w-full h-40 sm:h-48 p-3 sm:p-5 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md border ${isDragging ? 'border-amber-500 ring-2 ring-amber-500/50 bg-amber-50/50 dark:bg-amber-900/10' : 'border-zinc-200/80 dark:border-zinc-700/50'} rounded-t-2xl border-b-0 text-sm sm:text-base text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 resize-none transition-all duration-300 shadow-inner`}
             placeholder="Ketik atau tempel teks di sini..."
             value={text}
             onChange={(e) => {
@@ -356,4 +364,4 @@ export default function TextInput({
       />
     </div>
   );
-}
+});

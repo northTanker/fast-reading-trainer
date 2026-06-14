@@ -25,6 +25,16 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
     }
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen && !isLoading) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, isLoading, onClose]);
+
   const handleSaveKey = (key: string) => {
     setPrivateKey(key);
     localStorage.setItem("deepseek-private-key", key);
@@ -50,15 +60,51 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
     let currentGeneratedText = "";
 
     try {
-      const res = await fetch("/api/copilot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt,
-          apiKey: usePrivateKey ? privateKey : undefined,
-        }),
-        signal: abortController.signal,
-      });
+      let res;
+      if (usePrivateKey) {
+        // Direct call to DeepSeek API
+        const systemPrompt = "Anda adalah Copilot AI untuk aplikasi Speed Reading. Tugas Anda adalah menulis artikel pendek, cerita, atau merangkum topik dengan bahasa yang jelas, format paragraf yang rapi, dan mudah dibaca cepat. Jangan gunakan format markdown yang rumit (hindari tebal/miring berlebihan, tabel, atau daftar kompleks). Hanya teks murni yang mengalir.";
+        res = await fetch("https://api.deepseek.com/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${privateKey}`
+          },
+          body: JSON.stringify({
+            model: "deepseek-chat",
+            stream: true,
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: prompt }
+            ],
+            temperature: 0.7,
+            max_tokens: 1500
+          }),
+          signal: abortController.signal,
+        });
+      } else {
+        // Call our backend
+        const { getAuth } = await import("firebase/auth");
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (!user) {
+          throw new Error("Anda harus masuk (login) untuk menggunakan fitur AI gratis.");
+        }
+        const idToken = await user.getIdToken();
+
+        res = await fetch("/api/copilot", {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${idToken}`
+          },
+          body: JSON.stringify({
+            prompt,
+            mode: "generate"
+          }),
+          signal: abortController.signal,
+        });
+      }
 
       const contentType = res.headers.get("content-type");
       if (!res.ok) {
@@ -135,10 +181,10 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="copilot-title">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="absolute inset-0"
         onClick={onClose}
       />
       
@@ -149,7 +195,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <span className="text-2xl">✨</span>
-            <h2 className="text-xl font-bold font-outfit text-zinc-900 dark:text-zinc-100">Minta AI Buatkan Teks</h2>
+            <h2 id="copilot-title" className="text-xl font-bold font-outfit text-zinc-900 dark:text-zinc-100">Minta AI Buatkan Teks</h2>
           </div>
           <button 
             onClick={() => {
