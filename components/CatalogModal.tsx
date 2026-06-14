@@ -25,7 +25,7 @@ export default function CatalogModal({ isOpen, onClose, onSelect }: CatalogModal
   useEffect(() => {
     if (isOpen && items.length === 0) {
       setIsLoading(true);
-      fetch('/catalog.json')
+      fetch(`/catalog.json?v=${new Date().getTime()}`)
         .then(res => res.json())
         .then(data => {
           setItems(data);
