@@ -47,6 +47,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
 
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
+    let currentGeneratedText = "";
 
     try {
       const res = await fetch("/api/copilot", {
@@ -81,6 +82,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
         if (value) {
           const chunk = decoder.decode(value, { stream: true });
           finalString += chunk;
+          currentGeneratedText = finalString;
           setGeneratedText(finalString);
         }
       }
@@ -113,12 +115,12 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
           if (auth.currentUser) {
             await saveAIText(auth.currentUser.uid, {
               title: prompt,
-              content: generatedText || "Teks belum selesai dibuat."
+              content: currentGeneratedText || "Teks belum selesai dibuat."
             });
           }
         } catch (e) {}
 
-        onApplyText(generatedText || "Teks belum selesai dibuat.");
+        onApplyText(currentGeneratedText || "Teks belum selesai dibuat.");
         onClose();
         setPrompt("");
       } else {
