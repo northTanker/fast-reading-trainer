@@ -116,34 +116,14 @@ export default function TextInput({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2 relative">
+      <div className="flex flex-col gap-3 relative">
         <div className="flex justify-between items-center ml-1 flex-wrap gap-2">
-          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            Masukkan teks atau seret dokumen ke sini
+          <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+            Masukkan teks, atau seret dokumen ke sini
           </label>
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              onClick={() => setIsCopilotOpen(true)}
-              className="text-xs font-bold text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-500/10 px-3 py-1.5 rounded-full hover:bg-amber-100 dark:hover:bg-amber-500/20 transition-colors flex items-center gap-1"
-            >
-              <span>✨</span> Minta AI Buatkan Teks
-            </button>
-            <label className="text-xs font-semibold text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 cursor-pointer transition-colors">
-              Unggah Dokumen (TXT, DOCX, PDF)
-              <input 
-                type="file" 
-                accept=".txt,.md,.csv,.docx,.pdf" 
-                className="hidden" 
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) handleFileUpload(file);
-                  e.target.value = ''; // Reset input
-                }}
-                disabled={disabled || isParsing}
-              />
-            </label>
-          </div>
+          <span className="text-xs font-medium text-zinc-400 dark:text-zinc-500">
+            {wordCount} kata
+          </span>
         </div>
         
         <div 
@@ -153,12 +133,73 @@ export default function TextInput({
           onDragLeave={handleDragLeave}
         >
           <textarea
-            className={`w-full h-48 p-4 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md border ${isDragging ? 'border-amber-500 ring-2 ring-amber-500/50 bg-amber-50/50 dark:bg-amber-900/10' : 'border-zinc-200/80 dark:border-zinc-700/50'} rounded-2xl text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 resize-none transition-all duration-300 shadow-inner`}
+            className={`w-full h-48 p-5 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md border ${isDragging ? 'border-amber-500 ring-2 ring-amber-500/50 bg-amber-50/50 dark:bg-amber-900/10' : 'border-zinc-200/80 dark:border-zinc-700/50'} rounded-t-2xl border-b-0 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-0 resize-none transition-all duration-300 shadow-inner`}
             placeholder="Tempelkan artikel, atau tarik dokumen TXT, PDF, atau Word ke sini..."
             value={text}
             onChange={(e) => onChange(e.target.value)}
             disabled={disabled || isParsing}
           />
+          {/* Action Toolbar */}
+          <div className={`flex flex-wrap items-center justify-between gap-2 p-3 bg-zinc-50 dark:bg-zinc-800/80 backdrop-blur-md border ${isDragging ? 'border-amber-500 border-t-0' : 'border-zinc-200/80 dark:border-zinc-700/50 border-t-0'} rounded-b-2xl transition-all`}>
+            <div className="flex flex-wrap items-center gap-2">
+              <label className="text-xs font-semibold bg-white dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-600 px-3 py-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-600 cursor-pointer transition-colors shadow-sm active:scale-95 flex items-center gap-1.5">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                Unggah Dokumen
+                <input 
+                  type="file" 
+                  accept=".txt,.md,.csv,.docx,.pdf" 
+                  className="hidden" 
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFileUpload(file);
+                    e.target.value = '';
+                  }}
+                  disabled={disabled || isParsing}
+                />
+              </label>
+              <button
+                type="button"
+                onClick={() => setIsCopilotOpen(true)}
+                className="text-xs font-bold text-amber-700 dark:text-amber-400 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-500/20 dark:to-orange-500/10 border border-amber-200 dark:border-amber-500/30 px-3 py-1.5 rounded-lg hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5"
+              >
+                <span>✨</span> AI Buatkan Teks
+              </button>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              {text.trim().length > 0 && !isSaving && (
+                <>
+                  <button
+                    type="button"
+                    className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 px-3 py-1.5 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-colors active:scale-95 flex items-center gap-1.5"
+                    onClick={handleFormatText}
+                    disabled={isFormatting || isParsing}
+                  >
+                    <span>🪄</span> Rapikan
+                  </button>
+                  <button
+                    type="button"
+                    className="text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-2 py-1.5 transition-colors"
+                    onClick={() => setIsSaving(true)}
+                    disabled={isFormatting}
+                  >
+                    💾 Simpan
+                  </button>
+                </>
+              )}
+              {text.trim().length > 0 && (
+                <button
+                  type="button"
+                  className="text-xs font-medium text-red-500 hover:text-red-700 dark:hover:text-red-400 px-2 py-1.5 transition-colors"
+                  onClick={() => onChange("")}
+                  disabled={disabled}
+                >
+                  🗑️ Hapus
+                </button>
+              )}
+            </div>
+          </div>
+
           {isDragging && (
             <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm rounded-2xl border-2 border-dashed border-amber-500 z-10 pointer-events-none">
               <span className="text-amber-600 dark:text-amber-500 font-bold text-lg animate-pulse">
@@ -183,62 +224,26 @@ export default function TextInput({
             </div>
           )}
         </div>
-        
-        <div className="flex justify-between items-center px-1 flex-wrap gap-2">
-          <span className="text-xs text-zinc-500 font-medium">
-            {wordCount} kata
-          </span>
-          <div className="flex items-center gap-3">
-            {text.trim().length > 0 && !isSaving && (
-              <>
-                <button
-                  type="button"
-                  className="text-xs text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 font-medium transition-colors"
-                  onClick={() => setIsSaving(true)}
-                  disabled={isFormatting}
-                >
-                  Simpan ke Pustaka
-                </button>
-                <button
-                  type="button"
-                  className="text-xs text-emerald-600 dark:text-emerald-500 hover:text-emerald-700 dark:hover:text-emerald-400 font-medium transition-colors flex items-center gap-1"
-                  onClick={handleFormatText}
-                  disabled={isFormatting || isParsing}
-                >
-                  <span>✨</span> Rapikan Teks (AI)
-                </button>
-              </>
-            )}
-            <button
-              type="button"
-              className="text-xs text-amber-600 dark:text-amber-500 hover:text-amber-700 dark:hover:text-amber-400 disabled:opacity-50 transition-colors font-medium"
-              onClick={() => onChange("")}
-              disabled={disabled || !text}
-            >
-              Hapus teks
-            </button>
-          </div>
-        </div>
 
         {isSaving && (
-          <div className="flex items-center gap-2 mt-2 px-1">
+          <div className="flex items-center gap-2 mt-1 px-1 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-700 animate-in slide-in-from-top-2">
             <input 
               type="text" 
               placeholder="Judul untuk teks ini..." 
               value={saveTitle}
               onChange={(e) => setSaveTitle(e.target.value)}
-              className="flex-1 text-sm bg-transparent border-b border-zinc-300 dark:border-zinc-700 focus:border-amber-500 focus:outline-none px-1 py-1 text-zinc-900 dark:text-zinc-100"
+              className="flex-1 text-sm bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:border-amber-500 focus:ring-1 focus:ring-amber-500 px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none"
               autoFocus
             />
             <button 
               onClick={handleSave}
-              className="text-xs px-3 py-1.5 bg-zinc-900 dark:bg-zinc-100 text-zinc-100 dark:text-zinc-900 rounded-lg font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
+              className="text-xs px-4 py-2 bg-zinc-900 dark:bg-zinc-100 text-zinc-100 dark:text-zinc-900 rounded-lg font-bold hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors shadow-sm active:scale-95"
             >
               Simpan
             </button>
             <button 
               onClick={() => setIsSaving(false)}
-              className="text-xs px-3 py-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-lg font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+              className="text-xs px-4 py-2 bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg font-bold hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors active:scale-95"
             >
               Batal
             </button>
@@ -314,11 +319,17 @@ export default function TextInput({
 
       <button
         type="button"
-        className="w-full py-4 mt-2 rounded-2xl bg-gradient-to-r from-zinc-900 to-zinc-700 text-white hover:from-zinc-800 hover:to-zinc-600 dark:from-zinc-100 dark:to-zinc-300 dark:text-zinc-900 dark:hover:from-white dark:hover:to-zinc-200 font-bold text-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl active:translate-y-0 active:scale-[0.98] disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none shadow-lg shadow-zinc-900/20 dark:shadow-white/10 active:scale-95"
+        className={`relative w-full py-4 mt-2 rounded-2xl font-bold text-lg transition-all duration-500 hover:-translate-y-1 active:translate-y-0 active:scale-[0.98] overflow-hidden group ${
+          text.trim() && !disabled
+            ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-[0_0_30px_rgba(245,158,11,0.3)] hover:shadow-[0_0_40px_rgba(245,158,11,0.5)] border-b-4 border-orange-600/50'
+            : 'bg-gradient-to-r from-zinc-800 to-zinc-700 dark:from-zinc-200 dark:to-zinc-300 text-zinc-300 dark:text-zinc-600 shadow-lg border-b-4 border-zinc-900 dark:border-zinc-400 opacity-60'
+        }`}
         onClick={onStart}
         disabled={disabled || !text.trim()}
       >
-        Mulai Baca
+        <span className="relative z-10 flex items-center justify-center gap-2 drop-shadow-sm">
+          Mulai Baca {text.trim() && !disabled && <span className="text-2xl group-hover:translate-x-1 transition-transform">🚀</span>}
+        </span>
       </button>
 
       <CopilotModal 

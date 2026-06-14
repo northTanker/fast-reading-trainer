@@ -136,20 +136,23 @@ export default function CatalogModal({ isOpen, onClose, onSelect }: CatalogModal
                     onSelect(item.content);
                     onClose();
                   }}
-                  className="group bg-white dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 p-5 rounded-2xl cursor-pointer hover:border-amber-500/50 hover:shadow-lg hover:shadow-amber-500/5 transition-all duration-300 hover:-translate-y-1"
+                  className="group relative bg-white dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 p-5 rounded-3xl cursor-pointer hover:border-amber-500/50 hover:shadow-[0_8px_30px_rgba(245,158,11,0.12)] transition-all duration-300 hover:-translate-y-1.5 overflow-hidden"
                 >
-                  <div className="flex justify-between items-start mb-3">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2 py-1 rounded-md">
+                  <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-300 text-6xl pointer-events-none transform translate-x-4 -translate-y-4 group-hover:scale-110 group-hover:rotate-12">
+                    📚
+                  </div>
+                  <div className="flex justify-between items-start mb-4 relative z-10">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-500/20 dark:to-orange-500/10 border border-amber-200/50 dark:border-amber-500/20 px-2.5 py-1 rounded-lg">
                       {item.category}
                     </span>
-                    <span className="text-xs font-medium text-zinc-400">
+                    <span className="text-xs font-semibold text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 rounded-lg">
                       {item.wordCount} kata
                     </span>
                   </div>
-                  <h3 className="font-bold text-zinc-900 dark:text-zinc-100 mb-2 line-clamp-2 group-hover:text-amber-500 transition-colors">
+                  <h3 className="text-lg font-black text-zinc-900 dark:text-zinc-100 mb-2 line-clamp-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors relative z-10 leading-tight">
                     {item.title}
                   </h3>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-3 leading-relaxed">
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-3 leading-relaxed relative z-10 font-medium">
                     {item.content}
                   </p>
                 </div>
