@@ -41,6 +41,7 @@ export default function Home() {
   const [unlockedBadges, setUnlockedBadges] = useState<string[]>([]);
   const [textSource, setTextSource] = useState<"manual" | "catalog" | "ai">("manual");
   const [textTitle, setTextTitle] = useState<string | undefined>(undefined);
+  const [scrolled, setScrolled] = useState(false);
 
   const elapsedAccumulatedRef = useRef(0);
   const elapsedStartRef = useRef(0);
@@ -255,6 +256,14 @@ export default function Home() {
   }, [reader.sessionState, handlePause, handleResume, handleStop, reader]);
 
   useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 40);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
     return () => {
       if (elapsedIntervalRef.current !== null) {
         clearInterval(elapsedIntervalRef.current);
@@ -267,20 +276,20 @@ export default function Home() {
 
   return (
     <div className={`flex flex-col flex-1 items-center px-4 min-h-screen relative transition-colors duration-1000 ${isActive ? 'bg-zinc-50 dark:bg-black' : ''}`}>
-      <header className={`sticky top-4 w-full max-w-5xl mx-auto flex justify-between items-center py-3 px-5 sm:px-6 z-50 glass-panel rounded-2xl transition-all duration-500 shadow-sm ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 translate-y-0'}`}>
-        {/* Logo Mobile (Sembunyi di Desktop) */}
-        <div className="flex sm:hidden items-center gap-2 mt-1">
+      <header className={`sticky top-4 w-full max-w-5xl mx-auto flex justify-between items-center py-3 px-5 sm:px-6 z-50 rounded-2xl transition-all duration-500 shadow-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 translate-y-0'}`}>
+        {/* Logo Mobile / Desktop on Scroll */}
+        <div className={`flex items-center gap-2 mt-1 transition-all duration-500 ${scrolled ? 'opacity-100 translate-y-0' : 'sm:opacity-0 sm:-translate-y-2'}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src="/logo.png" 
             alt="BacaKilat Logo" 
-            className="w-8 h-8 object-contain bg-white/90 dark:bg-white p-1.5 rounded-xl shadow-sm dark:shadow-amber-500/20" 
+            className="w-8 h-8 object-contain bg-zinc-100 dark:bg-white p-1.5 rounded-xl shadow-sm dark:shadow-amber-500/20" 
           />
           <h1 className="text-xl font-extrabold tracking-tighter font-outfit bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-transparent pb-1 drop-shadow-sm">
             BacaKilat
           </h1>
         </div>
-        <div className="hidden sm:block"></div>
+        
         <div className="flex items-center gap-2 sm:gap-3 ml-auto">
           <ThemeToggle />
           <AuthButton 
@@ -315,12 +324,12 @@ export default function Home() {
         <div className="flex flex-col gap-6 sm:gap-8 w-full max-w-2xl relative z-10">
           <div className="text-center flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Logo Desktop (Sembunyi di Mobile) */}
-            <div className="hidden sm:inline-flex items-center justify-center space-x-4 mb-2">
+            <div className={`hidden sm:inline-flex items-center justify-center space-x-4 mb-2 transition-all duration-500 ${scrolled ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src="/logo.png" 
                 alt="BacaKilat Logo" 
-                className="w-16 h-16 object-contain bg-white/90 dark:bg-white p-2 rounded-2xl shadow-lg dark:shadow-amber-500/20" 
+                className="w-16 h-16 object-contain bg-zinc-100 dark:bg-white p-2 rounded-2xl shadow-lg dark:shadow-amber-500/20" 
               />
               <h1 className="text-7xl font-extrabold tracking-tighter font-outfit bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-transparent pb-2 drop-shadow-sm">
                 BacaKilat
@@ -425,7 +434,7 @@ export default function Home() {
         </div>
       )}
       </div>
-      <footer className={`sticky bottom-4 w-full max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 py-3 px-5 sm:px-6 mt-auto z-50 glass-panel rounded-2xl transition-all duration-500 shadow-sm ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100 hover:opacity-100'}`}>
+      <footer className={`sticky bottom-4 w-full max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 py-3 px-5 sm:px-6 mt-auto z-50 rounded-2xl transition-all duration-500 shadow-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100 hover:opacity-100'}`}>
         <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium text-center sm:text-left">
           &copy; 2026 <span className="font-bold text-zinc-700 dark:text-zinc-300">Edwigar Annas Akbar</span>
         </p>
