@@ -260,16 +260,18 @@ export default function Home() {
             BacaKilat
           </h1>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-start gap-3">
           <button 
             onClick={() => setShowLibraryModal(true)}
-            className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors shadow-sm text-sm sm:text-base"
+            className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors shadow-sm text-sm sm:text-base mt-1"
             title="Perpustakaan Saya"
           >
             📚
           </button>
-          <AuthButton onCheckProgress={() => setShowProgressModal(true)} />
-          <ThemeToggle />
+          <div className="flex flex-col items-end gap-2">
+            <ThemeToggle />
+            <AuthButton onCheckProgress={() => setShowProgressModal(true)} />
+          </div>
         </div>
       </header>
 
