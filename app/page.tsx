@@ -248,19 +248,21 @@ export default function Home() {
 
   return (
     <div className="flex flex-col flex-1 items-center px-4 min-h-screen relative">
-      <header className={`w-full max-w-5xl flex justify-between items-center py-4 px-2 sm:px-6 z-50 transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 translate-y-0'}`}>
-        <div className="flex items-center gap-2 sm:gap-3">
+      <header className={`w-full max-w-5xl flex justify-between items-start py-4 px-2 sm:px-6 z-50 transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 translate-y-0'}`}>
+        {/* Logo Mobile (Sembunyi di Desktop) */}
+        <div className="flex sm:hidden items-center gap-2 mt-1">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src="/logo.png" 
             alt="BacaKilat Logo" 
-            className="w-8 h-8 sm:w-10 sm:h-10 object-contain bg-white/90 dark:bg-white p-1.5 rounded-xl shadow-sm dark:shadow-amber-500/20" 
+            className="w-8 h-8 object-contain bg-white/90 dark:bg-white p-1.5 rounded-xl shadow-sm dark:shadow-amber-500/20" 
           />
-          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tighter font-outfit bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-transparent pb-1 drop-shadow-sm">
+          <h1 className="text-xl font-extrabold tracking-tighter font-outfit bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-transparent pb-1 drop-shadow-sm">
             BacaKilat
           </h1>
         </div>
-        <div className="flex items-start gap-3">
+        <div className="hidden sm:block"></div>
+        <div className="flex items-start gap-3 ml-auto">
           <button 
             onClick={() => setShowLibraryModal(true)}
             className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors shadow-sm text-sm sm:text-base mt-1"
@@ -297,6 +299,19 @@ export default function Home() {
       {showInput ? (
         <div className="flex flex-col gap-8 w-full max-w-2xl relative z-10">
           <div className="text-center flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Logo Desktop (Sembunyi di Mobile) */}
+            <div className="hidden sm:inline-flex items-center justify-center space-x-4 mb-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src="/logo.png" 
+                alt="BacaKilat Logo" 
+                className="w-16 h-16 object-contain bg-white/90 dark:bg-white p-2 rounded-2xl shadow-lg dark:shadow-amber-500/20" 
+              />
+              <h1 className="text-7xl font-extrabold tracking-tighter font-outfit bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-transparent pb-2 drop-shadow-sm">
+                BacaKilat
+              </h1>
+            </div>
+            
             <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mt-2 max-w-lg mx-auto font-medium mb-6 leading-relaxed">
               Baca lebih cepat tanpa kehilangan makna. Tembus <span className="text-amber-500 font-bold">500+ WPM</span> pakai metode Optimal Recognition Point.
             </p>
