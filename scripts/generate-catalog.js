@@ -1,25 +1,65 @@
 const fs = require('fs');
 const path = require('path');
 
-// To use this script, you would run:
-// node scripts/generate-catalog.js
-
 const CATALOG_PATH = path.join(__dirname, '../public/catalog.json');
+const DEEPSEEK_API_KEY = "sk-74c4057ebd764a6d96e8ca166621e72b";
 
-// Mock structure for demonstration. In a real scenario, this would use fetch() 
-// to call the OpenAI/DeepSeek API and get new articles.
+const CATEGORIES = ["Sains", "Teknologi", "Matematika", "Bisnis", "Sejarah", "Fiksi Ilmiah", "Filsafat", "Psikologi"];
+
 async function generateNewArticle() {
-  // Replace this with actual API call, e.g.:
-  // const response = await fetch('https://api.openai.com/v1/chat/completions', { ... });
+  const randomCategory = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
   
-  const id = 'kat-' + Math.floor(Math.random() * 10000).toString().padStart(3, '0');
+  const prompt = `Tuliskan satu artikel edukatif dan menarik berbahasa Indonesia tentang topik yang spesifik di bidang ${randomCategory}.
+Aturan wajib:
+1. Panjang artikel HARUS lebih dari 300 kata.
+2. Gaya bahasa formal tapi santai, lugas, langsung ke intinya. Gunakan kalimat-kalimat pendek.
+3. DILARANG KERAS menggunakan frasa klise AI seperti "Di era digital yang serba cepat ini", "Penting untuk diingat", "Kesimpulannya", "Tidak dapat dipungkiri".
+4. Kembalikan respons murni dalam format JSON (tanpa tag markdown \`\`\`json) dengan struktur:
+{
+  "title": "Judul Menarik",
+  "content": "Isi artikel lengkap di sini..."
+}`;
+
+  const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: "deepseek-chat",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.7,
+      response_format: { type: "json_object" }
+    })
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`API Error: ${response.status} ${err}`);
+  }
+
+  const data = await response.json();
+  const resultText = data.choices[0].message.content;
+  
+  let resultJson;
+  try {
+    resultJson = JSON.parse(resultText);
+  } catch (e) {
+    // Fallback if AI adds markdown
+    const cleanedText = resultText.replace(/```json\n?|\n?```/g, '').trim();
+    resultJson = JSON.parse(cleanedText);
+  }
+
+  const id = 'kat-' + Math.floor(Math.random() * 100000).toString().padStart(5, '0');
+  const wordCount = resultJson.content.trim().split(/\s+/).length;
   
   return {
     id: id,
-    title: "Contoh Judul Artikel Baru (Hasil AI)",
-    category: "Sains",
-    wordCount: 120,
-    content: "Ini adalah teks contoh otomatisasi. Jika Anda sudah mengonfigurasi API Key di script ini, bagian ini akan diisi oleh teks berkualitas tinggi yang dihasilkan oleh AI tentang topik Sains, Teknologi, atau Matematika."
+    title: resultJson.title,
+    category: randomCategory,
+    wordCount: wordCount,
+    content: resultJson.content
   };
 }
 
@@ -35,19 +75,21 @@ async function run() {
 
   console.log(`Katalog saat ini memiliki ${catalog.length} artikel.`);
   
-  // Example: generate 5 new articles
-  const countToGenerate = 5;
-  console.log(`Sedang membangkitkan ${countToGenerate} artikel baru...`);
+  const countToGenerate = 3; // Generate 3 at a time to avoid rate limits/timeouts
+  console.log(`Sedang membangkitkan ${countToGenerate} artikel baru... (Ini mungkin memakan waktu 1-2 menit)`);
   
   for (let i = 0; i < countToGenerate; i++) {
-    const newArticle = await generateNewArticle();
-    catalog.push(newArticle);
-    console.log(`+ Berhasil menambahkan: ${newArticle.title}`);
+    try {
+      const newArticle = await generateNewArticle();
+      catalog.push(newArticle);
+      console.log(`[${i+1}/${countToGenerate}] + Berhasil: "${newArticle.title}" (${newArticle.wordCount} kata) [${newArticle.category}]`);
+    } catch (err) {
+      console.error(`[${i+1}/${countToGenerate}] - Gagal membangkitkan artikel: ${err.message}`);
+    }
   }
 
   fs.writeFileSync(CATALOG_PATH, JSON.stringify(catalog, null, 2));
   console.log(`\nSelesai! Katalog kini memiliki ${catalog.length} artikel.`);
-  console.log("Buka public/catalog.json untuk melihat hasilnya.");
 }
 
 run();
