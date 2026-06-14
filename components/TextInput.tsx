@@ -244,7 +244,7 @@ export default function TextInput({
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
           <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider ml-1">
             Atau gunakan teks contoh
@@ -253,9 +253,9 @@ export default function TextInput({
             type="button"
             onClick={() => setIsCatalogOpen(true)}
             disabled={disabled}
-            className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl border-2 border-dashed border-amber-500/50 bg-amber-50/30 dark:bg-amber-900/10 text-amber-600 dark:text-amber-500 font-semibold hover:bg-amber-100/50 dark:hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 disabled:opacity-50"
+            className="flex items-center justify-center gap-3 w-full py-4 px-4 rounded-xl border-2 border-dashed border-amber-500/50 bg-amber-50/30 dark:bg-amber-900/10 text-amber-600 dark:text-amber-500 font-semibold hover:bg-amber-100/50 dark:hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 disabled:opacity-50 text-sm sm:text-base group"
           >
-            <span className="text-xl">📚</span>
+            <span className="text-2xl group-hover:scale-110 transition-transform">📚</span>
             Jelajahi Katalog Teks (500+)
           </button>
         </div>
