@@ -24,8 +24,18 @@ export default function AuthButton({ onCheckProgress, onOpenLibrary }: AuthButto
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (loading || !user) {
-    return null; // Don't show anything if loading or logged out
+  if (loading) {
+    return (
+      <div className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 animate-pulse">
+        <div className="w-7 h-7 rounded-full bg-zinc-200 dark:bg-zinc-800"></div>
+        <div className="w-16 h-4 rounded bg-zinc-200 dark:bg-zinc-800"></div>
+        <div className="w-4 h-4 rounded bg-zinc-200 dark:bg-zinc-800"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null; // Don't show anything if logged out
   }
 
   return (
