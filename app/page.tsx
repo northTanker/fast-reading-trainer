@@ -434,11 +434,11 @@ export default function Home() {
         </div>
       )}
       </div>
-      <footer className={`w-full max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 py-6 px-5 sm:px-6 mt-auto z-50 bg-transparent transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100 hover:opacity-100'}`}>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium text-center sm:text-left">
+      <footer className={`w-full max-w-5xl mx-auto flex flex-col-reverse sm:flex-row justify-between items-center gap-3 sm:gap-4 py-4 sm:py-6 px-4 sm:px-6 mt-auto z-50 bg-transparent transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100 hover:opacity-100'}`}>
+        <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 font-medium text-center sm:text-left">
           &copy; 2026 <span className="font-bold text-zinc-700 dark:text-zinc-300">Edwigar Annas Akbar</span>
         </p>
-        <div className="flex flex-wrap justify-center items-center gap-4">
+        <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-4">
           <FeedbackButton />
           <DonationButton />
         </div>
