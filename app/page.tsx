@@ -264,18 +264,16 @@ export default function Home() {
           </h1>
         </div>
         <div className="hidden sm:block"></div>
-        <div className="flex items-start gap-3 ml-auto">
+        <div className="flex items-center gap-2 sm:gap-3 ml-auto">
           <button 
             onClick={() => setShowLibraryModal(true)}
-            className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors shadow-sm text-sm sm:text-base mt-1"
+            className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors shadow-sm text-sm sm:text-base"
             title="Perpustakaan Saya"
           >
             📚
           </button>
-          <div className="flex flex-col items-end gap-2">
-            <ThemeToggle />
-            <AuthButton onCheckProgress={() => setShowProgressModal(true)} />
-          </div>
+          <ThemeToggle />
+          <AuthButton onCheckProgress={() => setShowProgressModal(true)} />
         </div>
       </header>
 
@@ -408,8 +406,10 @@ export default function Home() {
         </div>
       )}
       </div>
-      <FeedbackButton />
-      <DonationButton />
+      <footer className={`w-full max-w-5xl flex flex-wrap justify-center items-center gap-4 py-8 mt-auto mb-4 transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-70 hover:opacity-100'}`}>
+        <FeedbackButton />
+        <DonationButton />
+      </footer>
       <AchievementToast badgeIds={unlockedBadges} onClose={() => setUnlockedBadges([])} />
     </div>
   );
