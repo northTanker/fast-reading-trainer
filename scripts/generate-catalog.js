@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const CATALOG_PATH = path.join(__dirname, '../public/catalog.json');
-const DEEPSEEK_API_KEY = "sk-74c4057ebd764a6d96e8ca166621e72b";
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || "YOUR_OPENROUTER_API_KEY";
 
 const CATEGORIES = ["Sains", "Teknologi", "Matematika", "Bisnis", "Sejarah", "Fiksi Ilmiah", "Filsafat", "Psikologi"];
 
@@ -20,17 +20,18 @@ Aturan wajib:
   "content": "Isi artikel lengkap di sini..."
 }`;
 
-  const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+      'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+      'HTTP-Referer': 'http://localhost:3000', // Required by OpenRouter
+      'X-Title': 'Fast Reading Trainer'
     },
     body: JSON.stringify({
-      model: "deepseek-v4-pro",
+      model: "openai/gpt-oss-120b:free",
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.7,
-      response_format: { type: "json_object" }
+      temperature: 0.7
     })
   });
 
@@ -46,9 +47,13 @@ Aturan wajib:
   try {
     resultJson = JSON.parse(resultText);
   } catch (e) {
-    // Fallback if AI adds markdown
-    const cleanedText = resultText.replace(/```json\n?|\n?```/g, '').trim();
-    resultJson = JSON.parse(cleanedText);
+    // Fallback if AI adds markdown or conversational text
+    const match = resultText.match(/\{[\s\S]*\}/);
+    if (match) {
+      resultJson = JSON.parse(match[0]);
+    } else {
+      throw new Error("Gagal mengurai JSON dari respons AI.");
+    }
   }
 
   const id = 'kat-' + Math.floor(Math.random() * 100000).toString().padStart(5, '0');
