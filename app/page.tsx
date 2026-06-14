@@ -270,7 +270,7 @@ export default function Home() {
 
   return (
     <div className={`flex flex-col flex-1 items-center px-4 min-h-screen relative transition-colors duration-1000 ${isActive ? 'bg-zinc-50 dark:bg-black' : ''}`}>
-      <header className={`w-full max-w-5xl flex justify-between items-start py-4 px-2 sm:px-6 z-50 transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 translate-y-0'}`}>
+      <header className={`sticky top-0 w-full max-w-5xl flex justify-between items-center py-4 px-4 sm:px-6 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50 transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 translate-y-0'}`}>
         {/* Logo Mobile (Sembunyi di Desktop) */}
         <div className="flex sm:hidden items-center gap-2 mt-1">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -430,9 +430,14 @@ export default function Home() {
         </div>
       )}
       </div>
-      <footer className={`w-full max-w-5xl flex flex-wrap justify-center items-center gap-4 py-8 mt-auto mb-4 transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-70 hover:opacity-100'}`}>
-        <FeedbackButton />
-        <DonationButton />
+      <footer className={`sticky bottom-0 w-full max-w-5xl flex flex-col sm:flex-row justify-between items-center gap-4 py-4 px-4 sm:px-6 mt-auto z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-t border-zinc-200/50 dark:border-zinc-800/50 transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100 hover:opacity-100'}`}>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium text-center sm:text-left">
+          Dibuat dengan ❤️ oleh <span className="font-bold text-amber-600 dark:text-amber-500">Edwigar Annas Akbar</span>
+        </p>
+        <div className="flex flex-wrap justify-center items-center gap-4">
+          <FeedbackButton />
+          <DonationButton />
+        </div>
       </footer>
       <AchievementToast badgeIds={unlockedBadges} onClose={() => setUnlockedBadges([])} />
     </div>
