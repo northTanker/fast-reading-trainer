@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import TextInput from "@/components/TextInput";
 import Reader from "@/components/Reader";
@@ -9,16 +10,17 @@ import SessionSummary from "@/components/SessionSummary";
 import Gamification from "@/components/Gamification";
 import History from "@/components/History";
 import AnalyticsChart from "@/components/AnalyticsChart";
-import EduModal from "@/components/EduModal";
 import ThemeToggle from "@/components/ThemeToggle";
 import FeedbackButton from "@/components/FeedbackButton";
 import DonationButton from "@/components/DonationButton";
 import QuizPanel from "@/components/QuizPanel";
 import AuthButton from "@/components/AuthButton";
 import BigAuthButton from "@/components/BigAuthButton";
-import LibraryModal from "@/components/LibraryModal";
-import ProgressModal from "@/components/ProgressModal";
 import AchievementToast from "@/components/AchievementToast";
+
+const EduModal = dynamic(() => import("@/components/EduModal"), { ssr: false });
+const LibraryModal = dynamic(() => import("@/components/LibraryModal"), { ssr: false });
+const ProgressModal = dynamic(() => import("@/components/ProgressModal"), { ssr: false });
 import { useReader } from "@/hooks/useReader";
 import { tokenize } from "@/lib/tokenizer";
 import { createSessionRecord } from "@/lib/session";
@@ -247,7 +249,7 @@ export default function Home() {
   const isActive = reader.sessionState === "reading" || reader.sessionState === "paused";
 
   return (
-    <div className="flex flex-col flex-1 items-center px-4 min-h-screen relative">
+    <div className={`flex flex-col flex-1 items-center px-4 min-h-screen relative transition-colors duration-1000 ${isActive ? 'bg-zinc-50 dark:bg-black' : ''}`}>
       <header className={`w-full max-w-5xl flex justify-between items-start py-4 px-2 sm:px-6 z-50 transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 translate-y-0'}`}>
         {/* Logo Mobile (Sembunyi di Desktop) */}
         <div className="flex sm:hidden items-center gap-2 mt-1">

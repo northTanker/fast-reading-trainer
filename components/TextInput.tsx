@@ -1,11 +1,13 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useLibrary } from "@/hooks/useLibrary";
 import { saveTextToLibrary, removeTextFromLibrary } from "@/lib/library";
 import { parseFile } from "@/lib/fileParser";
-import CopilotModal from "./CopilotModal";
-import CatalogModal from "./CatalogModal";
+
+const CopilotModal = dynamic(() => import("./CopilotModal"), { ssr: false });
+const CatalogModal = dynamic(() => import("./CatalogModal"), { ssr: false });
 
 interface TextInputProps {
   text: string;
@@ -253,7 +255,7 @@ export default function TextInput({
             type="button"
             onClick={() => setIsCatalogOpen(true)}
             disabled={disabled}
-            className="flex items-center justify-center gap-3 w-full py-4 px-4 rounded-xl border-2 border-dashed border-amber-500/50 bg-amber-50/30 dark:bg-amber-900/10 text-amber-600 dark:text-amber-500 font-semibold hover:bg-amber-100/50 dark:hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 disabled:opacity-50 text-sm sm:text-base group"
+            className="flex items-center justify-center gap-3 w-full py-4 px-4 rounded-xl border-2 border-dashed border-amber-500/50 bg-amber-50/30 dark:bg-amber-900/10 text-amber-600 dark:text-amber-500 font-semibold hover:bg-amber-100/50 dark:hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 disabled:opacity-50 text-sm sm:text-base group active:scale-95"
           >
             <span className="text-2xl group-hover:scale-110 transition-transform">📚</span>
             Jelajahi Katalog Teks (500+)
@@ -270,13 +272,13 @@ export default function TextInput({
                 <div key={item.id} className="flex items-center justify-between group rounded-lg border border-zinc-200 dark:border-zinc-700 p-2 bg-zinc-50 dark:bg-zinc-800/50">
                   <button 
                     type="button"
-                    className="text-xs font-medium text-left truncate flex-1 text-zinc-700 dark:text-zinc-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+                    className="text-xs font-medium text-left truncate flex-1 text-zinc-700 dark:text-zinc-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors active:scale-95"
                     onClick={() => handleSampleClick(item.content)}
                   >
                     {item.title}
                   </button>
                   <button 
-                    className="text-[10px] text-red-500 opacity-0 group-hover:opacity-100 transition-opacity ml-2 px-2 py-1"
+                    className="text-[10px] text-red-500 opacity-0 group-hover:opacity-100 transition-opacity ml-2 px-2 py-1 active:scale-95"
                     onClick={() => removeTextFromLibrary(item.id)}
                     aria-label="Delete saved text"
                   >
@@ -312,7 +314,7 @@ export default function TextInput({
 
       <button
         type="button"
-        className="w-full py-4 mt-2 rounded-2xl bg-gradient-to-r from-zinc-900 to-zinc-700 text-white hover:from-zinc-800 hover:to-zinc-600 dark:from-zinc-100 dark:to-zinc-300 dark:text-zinc-900 dark:hover:from-white dark:hover:to-zinc-200 font-bold text-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl active:translate-y-0 active:scale-[0.98] disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none shadow-lg shadow-zinc-900/20 dark:shadow-white/10"
+        className="w-full py-4 mt-2 rounded-2xl bg-gradient-to-r from-zinc-900 to-zinc-700 text-white hover:from-zinc-800 hover:to-zinc-600 dark:from-zinc-100 dark:to-zinc-300 dark:text-zinc-900 dark:hover:from-white dark:hover:to-zinc-200 font-bold text-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl active:translate-y-0 active:scale-[0.98] disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none shadow-lg shadow-zinc-900/20 dark:shadow-white/10 active:scale-95"
         onClick={onStart}
         disabled={disabled || !text.trim()}
       >

@@ -106,9 +106,22 @@ export default function CatalogModal({ isOpen, onClose, onSelect }: CatalogModal
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 pt-4 bg-zinc-50/50 dark:bg-zinc-900/50">
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center h-40 space-y-4">
-              <div className="w-8 h-8 border-4 border-amber-200 border-t-amber-500 rounded-full animate-spin"></div>
-              <p className="text-sm text-zinc-500">Memuat katalog...</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="bg-white dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 p-5 rounded-2xl animate-pulse">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="h-5 w-20 bg-zinc-200 dark:bg-zinc-700 rounded-md"></div>
+                    <div className="h-4 w-12 bg-zinc-200 dark:bg-zinc-700 rounded-md"></div>
+                  </div>
+                  <div className="h-5 w-3/4 bg-zinc-200 dark:bg-zinc-700 rounded-md mb-2"></div>
+                  <div className="h-5 w-1/2 bg-zinc-200 dark:bg-zinc-700 rounded-md mb-4"></div>
+                  <div className="space-y-2">
+                    <div className="h-3 w-full bg-zinc-200 dark:bg-zinc-700 rounded-md"></div>
+                    <div className="h-3 w-full bg-zinc-200 dark:bg-zinc-700 rounded-md"></div>
+                    <div className="h-3 w-2/3 bg-zinc-200 dark:bg-zinc-700 rounded-md"></div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : filteredItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-40">
