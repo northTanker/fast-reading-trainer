@@ -281,6 +281,14 @@ export default function Home() {
 
   return (
     <div className={`flex flex-col flex-1 items-center px-4 min-h-screen relative transition-colors duration-1000 ${isActive ? 'bg-zinc-50 dark:bg-black' : ''}`}>
+      {/* Skip Navigation Link for Accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-amber-500 focus:text-white focus:rounded-lg focus:font-bold focus:outline-none focus:ring-2 focus:ring-amber-300"
+      >
+        Lewati ke konten utama
+      </a>
+
       <header className={`sticky top-0 z-50 w-full max-w-5xl mx-auto flex justify-between items-center py-4 px-4 sm:px-8 transition-all duration-500 bg-transparent backdrop-blur-lg ${isActive ? 'opacity-0 pointer-events-none -translate-y-10' : 'opacity-100 hover:opacity-100'}`}>
         <div className="flex items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -302,7 +310,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex flex-col flex-1 items-center justify-center w-full mt-4 sm:mt-0 pb-12">
+      <main id="main-content" className="flex flex-col flex-1 items-center justify-center w-full mt-4 sm:mt-0 pb-12">
       <EduModal 
         isOpen={showEduModal}
         onClose={() => setShowEduModal(false)}
@@ -434,7 +442,7 @@ export default function Home() {
           )}
         </div>
       )}
-      </div>
+      </main>
       <footer className={`sticky bottom-0 z-50 w-full max-w-5xl mx-auto flex flex-col justify-center items-center gap-4 py-4 sm:py-6 px-4 mt-auto bg-transparent backdrop-blur-lg transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100'}`}>
         <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6">
           <div className="flex flex-col items-center gap-1">

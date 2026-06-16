@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { Activity, Library, LogOut, ChevronDown } from "lucide-react";
 
 interface AuthButtonProps {
   onCheckProgress: () => void;
@@ -42,7 +43,7 @@ export default function AuthButton({ onCheckProgress, onOpenLibrary }: AuthButto
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full border transition-all ${
+        className={`flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full border transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500/50 ${
           isOpen ? 'bg-zinc-100 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-600' : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
         }`}
         title="Menu Profil"
@@ -56,9 +57,7 @@ export default function AuthButton({ onCheckProgress, onOpenLibrary }: AuthButto
         <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 max-w-[100px] truncate">
           {user.displayName?.split(" ")[0] || "User"}
         </span>
-        <svg className={`w-4 h-4 text-zinc-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
+        <ChevronDown className={`w-4 h-4 text-zinc-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
@@ -73,9 +72,9 @@ export default function AuthButton({ onCheckProgress, onOpenLibrary }: AuthButto
                 setIsOpen(false);
                 onCheckProgress();
               }}
-              className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition-colors"
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:bg-zinc-100 dark:focus:bg-zinc-800 focus:outline-none rounded-xl transition-colors cursor-pointer"
             >
-              <span>📊</span> Cek Progress
+              <Activity className="w-4 h-4 text-amber-500" /> Cek Progress
             </button>
             {onOpenLibrary && (
               <button
@@ -83,9 +82,9 @@ export default function AuthButton({ onCheckProgress, onOpenLibrary }: AuthButto
                   setIsOpen(false);
                   onOpenLibrary();
                 }}
-                className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition-colors mt-1"
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:bg-zinc-100 dark:focus:bg-zinc-800 focus:outline-none rounded-xl transition-colors mt-1 cursor-pointer"
               >
-                <span>📚</span> Perpustakaan
+                <Library className="w-4 h-4 text-blue-500" /> Perpustakaan
               </button>
             )}
             <button
@@ -93,9 +92,9 @@ export default function AuthButton({ onCheckProgress, onOpenLibrary }: AuthButto
                 setIsOpen(false);
                 signOut();
               }}
-              className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors mt-1"
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 focus:bg-red-50 dark:focus:bg-red-500/10 focus:outline-none rounded-xl transition-colors mt-1 cursor-pointer"
             >
-              <span>🚪</span> Keluar
+              <LogOut className="w-4 h-4" /> Keluar
             </button>
           </div>
         </div>

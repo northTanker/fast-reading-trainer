@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import Home from "@/app/page";
 
 // Mock matchMedia
@@ -9,8 +9,8 @@ Object.defineProperty(window, 'matchMedia', {
     matches: false,
     media: query,
     onchange: null,
-    addListener: vi.fn(), // Deprecated
-    removeListener: vi.fn(), // Deprecated
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
@@ -18,20 +18,19 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 describe("Home Page", () => {
-  it("should load sample text when clicking the sample button", () => {
+  it("should render the main page with textarea", () => {
     render(<Home />);
     
-    // Find the textarea
-    const textarea = screen.getByPlaceholderText(/Tempelkan artikel/i) as HTMLTextAreaElement;
-    expect(textarea.value).toBe("");
+    // Find the textarea - should not throw
+    const textarea = screen.getByPlaceholderText(/Ketik atau tempel teks di sini/i);
+    expect(textarea).toBeDefined();
 
-    // Find the sample button
-    const sampleButton = screen.getByText("Kebiasaan Membaca");
-    
-    // Click it
-    fireEvent.click(sampleButton);
-    
-    // Check if textarea is updated
-    expect(textarea.value).toContain("Membaca adalah proses kognitif");
+    // Check page title exists (use getAllByText since there are multiple)
+    const titles = screen.getAllByText("BacaKilat");
+    expect(titles.length).toBeGreaterThan(0);
+
+    // Check start button exists
+    const startButton = screen.getByText(/Mulai Baca/i);
+    expect(startButton).toBeDefined();
   });
 });

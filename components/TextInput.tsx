@@ -9,6 +9,9 @@ import { parseFile } from "@/lib/fileParser";
 const CopilotModal = dynamic(() => import("./CopilotModal"), { ssr: false });
 const CatalogModal = dynamic(() => import("./CatalogModal"), { ssr: false });
 
+// Maximum text length limit to prevent localStorage overflow and abuse
+const MAX_TEXT_LENGTH = 50000;
+
 interface TextInputProps {
   text: string;
   onChange: (text: string) => void;
@@ -150,7 +153,13 @@ export default memo(function TextInput({
             placeholder="Ketik atau tempel teks di sini..."
             value={text}
             onChange={(e) => {
-              onChange(e.target.value);
+              const newText = e.target.value;
+              if (newText.length > MAX_TEXT_LENGTH) {
+                setErrorMessage(`Teks terlalu panjang. Maksimum ${MAX_TEXT_LENGTH.toLocaleString('id-ID')} karakter.`);
+                setTimeout(() => setErrorMessage(null), 5000);
+                return;
+              }
+              onChange(newText);
               if (onSourceChange) onSourceChange("manual");
             }}
             disabled={disabled || isParsing}
@@ -158,7 +167,7 @@ export default memo(function TextInput({
           {/* Action Toolbar */}
           <div className={`flex flex-wrap items-center justify-between gap-2 p-3 bg-zinc-50 dark:bg-zinc-800/80 backdrop-blur-md border ${isDragging ? 'border-amber-500 border-t-0' : 'border-zinc-200/80 dark:border-zinc-700/50 border-t-0'} rounded-b-2xl transition-all`}>
             <div className="flex flex-wrap items-center gap-2">
-              <label className="text-xs font-semibold bg-white dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-600 px-3 py-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-600 cursor-pointer transition-colors shadow-sm active:scale-95 flex items-center gap-1.5">
+              <label className="text-xs font-semibold bg-white dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-600 px-3 py-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-600 cursor-pointer transition-colors shadow-sm active:scale-95 flex items-center gap-1.5 focus-within:outline-none focus-within:ring-2 focus-within:ring-amber-500/50">
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 Unggah Dokumen
                 <input 
@@ -176,7 +185,7 @@ export default memo(function TextInput({
               <button
                 type="button"
                 onClick={() => setIsCopilotOpen(true)}
-                className="text-xs font-bold text-amber-700 dark:text-amber-400 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-500/20 dark:to-orange-500/10 border border-amber-200 dark:border-amber-500/30 px-3 py-1.5 rounded-lg hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5"
+                className="text-xs font-bold text-amber-700 dark:text-amber-400 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-500/20 dark:to-orange-500/10 border border-amber-200 dark:border-amber-500/30 px-3 py-1.5 rounded-lg hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
               >
                 <span>✨</span> AI Buatkan Teks
               </button>
@@ -187,7 +196,7 @@ export default memo(function TextInput({
                 <>
                   <button
                     type="button"
-                    className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 px-3 py-1.5 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-colors active:scale-95 flex items-center gap-1.5"
+                    className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 px-3 py-1.5 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-colors active:scale-95 flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
                     onClick={handleFormatText}
                     disabled={isFormatting || isParsing}
                   >
@@ -195,7 +204,7 @@ export default memo(function TextInput({
                   </button>
                   <button
                     type="button"
-                    className="text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-2 py-1.5 transition-colors"
+                    className="text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-2 py-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-500/50 rounded-lg"
                     onClick={() => setIsSaving(true)}
                     disabled={isFormatting}
                   >

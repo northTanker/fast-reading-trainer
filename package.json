@@ -11,6 +11,7 @@
   "dependencies": {
     "firebase": "^12.14.0",
     "firebase-admin": "^14.0.0",
+    "lucide-react": "^1.18.0",
     "mammoth": "^1.12.0",
     "next": "16.2.7",
     "pdfjs-dist": "^6.0.227",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "@humanwhocodes/ico-to-png": "^1.1.0",
+    "@playwright/test": "^1.61.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
@@ -29,6 +31,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.0.2",
+    "@vitest/coverage-v8": "^4.1.8",
     "eslint": "^9",
     "eslint-config-next": "16.2.7",
     "jsdom": "^29.1.1",

@@ -3,13 +3,13 @@ const fs = require('fs');
 const path = require('path');
 
 const CATALOG_PATH = path.join(__dirname, '../public/catalog.json');
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || "YOUR_OPENROUTER_API_KEY";
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || "";
 
 const CATEGORIES = ["Sains", "Teknologi", "Matematika", "Bisnis", "Sejarah", "Fiksi Ilmiah", "Filsafat", "Psikologi"];
 
 async function generateNewArticle() {
   const randomCategory = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
-  
+
   const prompt = `Tuliskan satu artikel berbahasa Indonesia tentang sub-topik yang SANGAT SPESIFIK dan unik (jarang dibahas) di bidang ${randomCategory}. (Jangan bahas topik umum!).
 Aturan gaya penulisan (ANTI-AI SLOP):
 1. Panjang artikel HARUS lebih dari 300 kata.
@@ -45,7 +45,7 @@ Aturan gaya penulisan (ANTI-AI SLOP):
 
   const data = await response.json();
   const resultText = data.choices[0].message.content;
-  
+
   let resultJson;
   try {
     resultJson = JSON.parse(resultText);
@@ -61,7 +61,7 @@ Aturan gaya penulisan (ANTI-AI SLOP):
 
   const id = 'kat-' + Math.floor(Math.random() * 100000).toString().padStart(5, '0');
   const wordCount = resultJson.content.trim().split(/\s+/).length;
-  
+
   return {
     id: id,
     title: resultJson.title,
@@ -84,27 +84,27 @@ async function run() {
   }
 
   console.log(`Katalog saat ini memiliki ${catalog.length} artikel.`);
-  
+
   // Ambil argumen angka dari command line (misal: node scripts/generate-catalog.js 100)
   // Jika tidak ada argumen yang diberikan, default-nya adalah 100 artikel
   const argCount = parseInt(process.argv[2], 10);
   const countToGenerate = isNaN(argCount) ? 100 : argCount;
-  
+
   console.log(`Sedang membangkitkan ${countToGenerate} artikel baru... (Ini mungkin memakan waktu lama)`);
-  
+
   for (let i = 0; i < countToGenerate; i++) {
     try {
       const newArticle = await generateNewArticle();
       catalog.push(newArticle);
-      console.log(`[${i+1}/${countToGenerate}] + Berhasil: "${newArticle.title}" (${newArticle.wordCount} kata) [${newArticle.category}]`);
-      
+      console.log(`[${i + 1}/${countToGenerate}] + Berhasil: "${newArticle.title}" (${newArticle.wordCount} kata) [${newArticle.category}]`);
+
       // Jeda waktu (delay) 3 detik sebelum pemanggilan API berikutnya agar tidak melanggar batas rate limit
       if (i < countToGenerate - 1) {
         console.log(`⏳ Menunggu 3 detik sebelum melanjutkan...`);
         await delay(3000);
       }
     } catch (err) {
-      console.error(`[${i+1}/${countToGenerate}] - Gagal membangkitkan artikel: ${err.message}`);
+      console.error(`[${i + 1}/${countToGenerate}] - Gagal membangkitkan artikel: ${err.message}`);
     }
   }
 

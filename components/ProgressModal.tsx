@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { BarChart2, X } from "lucide-react";
 import Gamification from "./Gamification";
 import AnalyticsChart from "./AnalyticsChart";
 import History from "./History";
@@ -46,16 +47,16 @@ export default function ProgressModal({ isOpen, onClose, gamificationKey, histor
       <div className="relative w-full max-w-4xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col gap-6 animate-in fade-in zoom-in duration-200 max-h-[90vh]">
         <div className="flex justify-between items-center shrink-0">
           <div className="flex items-center gap-3">
-            <span className="text-3xl">📊</span>
+            <BarChart2 className="w-8 h-8 text-amber-500" />
             <h2 id="progress-title" className="text-2xl font-extrabold font-outfit text-zinc-900 dark:text-zinc-100">
               Progress Anda
             </h2>
           </div>
           <button 
             onClick={onClose}
-            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-500 transition-colors"
+            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-500 transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-500/50 cursor-pointer"
           >
-            ✕
+            <X className="w-5 h-5" />
           </button>
         </div>
 

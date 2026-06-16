@@ -24,7 +24,7 @@ export default memo(function Reader({ word, isPaused, isFinished }: ReaderProps)
         }`}
         aria-hidden="true"
       >
-        <span className="font-outfit font-bold text-4xl sm:text-6xl md:text-7xl text-zinc-900 dark:text-zinc-100 tracking-tight break-words max-w-full text-center drop-shadow-sm">
+        <span className="font-outfit font-bold text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-zinc-900 dark:text-zinc-100 tracking-tight break-words max-w-full text-center drop-shadow-sm px-2">
           <span className="text-zinc-400 dark:text-zinc-500 transition-colors duration-75">{before}</span>
           <span className="text-amber-500 drop-shadow-[0_0_15px_rgba(245,158,11,0.5)] transition-colors duration-75 relative">
             {pivot}
@@ -43,10 +43,10 @@ export default memo(function Reader({ word, isPaused, isFinished }: ReaderProps)
         )}
       </div>
       
-      {/* Screen reader only announcement of the current word */}
-      <span className="sr-only" aria-live="off">
-        {word}
-      </span>
+      {/* Screen reader announcement of the current word */}
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        Kata: {word}
+      </div>
     </div>
   );
 });

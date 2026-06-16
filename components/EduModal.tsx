@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { BookOpen, Lock, Timer, Brain, Battery, TrendingUp, X } from "lucide-react";
 
 interface EduModalProps {
   isOpen: boolean;
@@ -46,16 +47,16 @@ export default function EduModal({ isOpen, onClose }: EduModalProps) {
         {/* Header */}
         <div className="flex justify-between items-center shrink-0">
           <div className="flex items-center gap-3">
-            <span className="text-3xl">📚</span>
+            <BookOpen className="w-8 h-8 text-amber-500" />
             <h2 id="edu-title" className="text-2xl font-extrabold font-outfit text-zinc-900 dark:text-zinc-100">
               Pusat Edukasi
             </h2>
           </div>
           <button 
             onClick={onClose}
-            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
+            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-500/50 cursor-pointer"
           >
-            ✕
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -111,9 +112,10 @@ export default function EduModal({ isOpen, onClose }: EduModalProps) {
                   <strong>ORP (Optimal Recognition Point):</strong> Menyorot huruf spesifik pada setiap kata (biasanya agak ke kiri dari tengah) dengan warna berbeda (kuning/emas). Dengan menatap huruf ini, otak Anda dapat mengenali seluruh bentuk kata secara instan tanpa harus mengejanya.
                 </li>
               </ul>
-              <div className="p-4 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/50 rounded-xl">
+              <div className="p-4 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/50 rounded-xl flex gap-3 items-start">
+                <Lock className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                 <p className="text-sm">
-                  <strong>Privasi Terjamin 🔒:</strong> Semua teks yang Anda unggah atau rekatkan di sini 100% diproses secara lokal di peramban (browser) Anda. Tidak ada data yang dikirim ke server.
+                  <strong>Privasi Terjamin:</strong> Semua teks yang Anda unggah atau rekatkan di sini 100% diproses secara lokal di peramban (browser) Anda. Tidak ada data yang dikirim ke server.
                 </p>
               </div>
             </div>
@@ -160,22 +162,22 @@ export default function EduModal({ isOpen, onClose }: EduModalProps) {
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                 <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-                  <span className="text-2xl mb-2 block">⏳</span>
+                  <Timer className="w-8 h-8 text-blue-500 mb-3" />
                   <h4 className="font-bold text-zinc-900 dark:text-zinc-100 mb-1">Efisiensi Waktu</h4>
                   <p className="text-sm">Menyelesaikan tumpukan artikel, email, atau dokumen kerja dua kali lipat lebih cepat. Waktu sisanya bisa digunakan untuk istirahat.</p>
                 </div>
                 <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-                  <span className="text-2xl mb-2 block">🧠</span>
+                  <Brain className="w-8 h-8 text-purple-500 mb-3" />
                   <h4 className="font-bold text-zinc-900 dark:text-zinc-100 mb-1">Stimulasi Otak</h4>
                   <p className="text-sm">Memaksa otak bekerja pada kecepatan optimalnya, yang justru meningkatkan daya konsentrasi dan meminimalisir distraksi pikiran.</p>
                 </div>
                 <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-                  <span className="text-2xl mb-2 block">🔋</span>
+                  <Battery className="w-8 h-8 text-emerald-500 mb-3" />
                   <h4 className="font-bold text-zinc-900 dark:text-zinc-100 mb-1">Hemat Energi Mata</h4>
                   <p className="text-sm">Regresi (mata kembali ke belakang) adalah penyebab utama mata cepat lelah saat membaca konvensional. RSVP mengeliminasi ini.</p>
                 </div>
                 <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-                  <span className="text-2xl mb-2 block">📈</span>
+                  <TrendingUp className="w-8 h-8 text-amber-500 mb-3" />
                   <h4 className="font-bold text-zinc-900 dark:text-zinc-100 mb-1">Peningkatan Karir</h4>
                   <p className="text-sm">Orang yang mampu mencerna data tertulis dengan cepat memiliki keunggulan kompetitif yang sangat besar di dunia profesional modern.</p>
                 </div>

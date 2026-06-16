@@ -42,7 +42,7 @@ export default memo(function Controls({
       <div className="flex items-center gap-4">
         {isIdle && (
           <button
-            className="flex-1 py-3 px-6 rounded-2xl bg-gradient-to-r from-zinc-900 to-zinc-700 text-white hover:from-zinc-800 hover:to-zinc-600 dark:from-zinc-100 dark:to-zinc-300 dark:text-zinc-900 dark:hover:from-white dark:hover:to-zinc-200 font-bold text-base transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-[0.98]"
+            className="flex-1 py-3 px-6 rounded-2xl bg-gradient-to-r from-zinc-900 to-zinc-700 text-white hover:from-zinc-800 hover:to-zinc-600 dark:from-zinc-100 dark:to-zinc-300 dark:text-zinc-900 dark:hover:from-white dark:hover:to-zinc-200 font-bold text-base transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-amber-500/50"
             onClick={onPlay}
           >
             Mulai
@@ -50,7 +50,7 @@ export default memo(function Controls({
         )}
         {isReading && (
           <button
-            className="flex-1 py-3 px-6 rounded-2xl bg-white/50 hover:bg-white border border-zinc-200/50 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 dark:border-zinc-700/50 text-zinc-900 dark:text-white font-bold text-base transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-[0.98]"
+            className="flex-1 py-3 px-6 rounded-2xl bg-white/50 hover:bg-white border border-zinc-200/50 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 dark:border-zinc-700/50 text-zinc-900 dark:text-white font-bold text-base transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-amber-500/50"
             onClick={onPause}
           >
             Jeda
@@ -58,7 +58,7 @@ export default memo(function Controls({
         )}
         {isPaused && (
           <button
-            className="flex-1 py-3 px-6 rounded-2xl bg-gradient-to-r from-zinc-900 to-zinc-700 text-white hover:from-zinc-800 hover:to-zinc-600 dark:from-zinc-100 dark:to-zinc-300 dark:text-zinc-900 dark:hover:from-white dark:hover:to-zinc-200 font-bold text-base transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-[0.98]"
+            className="flex-1 py-3 px-6 rounded-2xl bg-gradient-to-r from-zinc-900 to-zinc-700 text-white hover:from-zinc-800 hover:to-zinc-600 dark:from-zinc-100 dark:to-zinc-300 dark:text-zinc-900 dark:hover:from-white dark:hover:to-zinc-200 font-bold text-base transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-amber-500/50"
             onClick={onResume}
           >
             Lanjutkan
@@ -66,7 +66,7 @@ export default memo(function Controls({
         )}
         {isFinished && (
           <button
-            className="flex-1 py-3 px-6 rounded-2xl bg-gradient-to-r from-zinc-900 to-zinc-700 text-white hover:from-zinc-800 hover:to-zinc-600 dark:from-zinc-100 dark:to-zinc-300 dark:text-zinc-900 dark:hover:from-white dark:hover:to-zinc-200 font-bold text-base transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-[0.98]"
+            className="flex-1 py-3 px-6 rounded-2xl bg-gradient-to-r from-zinc-900 to-zinc-700 text-white hover:from-zinc-800 hover:to-zinc-600 dark:from-zinc-100 dark:to-zinc-300 dark:text-zinc-900 dark:hover:from-white dark:hover:to-zinc-200 font-bold text-base transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-amber-500/50"
             onClick={onPlay}
           >
             Ulangi
@@ -75,7 +75,7 @@ export default memo(function Controls({
 
         {(isReading || isPaused) && (
           <button
-            className="py-3 px-6 rounded-2xl border border-red-200/50 bg-red-50/50 text-red-600 hover:bg-red-100 dark:border-red-900/50 dark:bg-red-500/10 dark:text-red-400 dark:hover:bg-red-500/20 font-bold text-base transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-[0.98]"
+            className="py-3 px-6 rounded-2xl border border-red-200/50 bg-red-50/50 text-red-600 hover:bg-red-100 dark:border-red-900/50 dark:bg-red-500/10 dark:text-red-400 dark:hover:bg-red-500/20 font-bold text-base transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-red-500/50"
             onClick={onStop}
           >
             Akhiri
@@ -85,7 +85,7 @@ export default memo(function Controls({
 
       <div className="flex items-center gap-4">
         <button
-          className="p-3 rounded-full border border-zinc-200/50 dark:border-zinc-700/50 bg-white/50 dark:bg-zinc-800/50 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-95 disabled:opacity-30 disabled:hover:scale-100 disabled:hover:-translate-y-0 disabled:hover:shadow-none"
+          className="p-3 rounded-full border border-zinc-200/50 dark:border-zinc-700/50 bg-white/50 dark:bg-zinc-800/50 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-95 disabled:opacity-30 disabled:hover:scale-100 disabled:hover:-translate-y-0 disabled:hover:shadow-none focus:outline-none focus:ring-2 focus:ring-amber-500/50"
           onClick={onSkipBack}
           disabled={isIdle}
           title="Mundur 1 kata"
@@ -97,7 +97,7 @@ export default memo(function Controls({
         </button>
 
         <button
-          className="p-3 rounded-full border border-zinc-200/50 dark:border-zinc-700/50 bg-white/50 dark:bg-zinc-800/50 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-95 disabled:opacity-30 disabled:hover:scale-100 disabled:hover:-translate-y-0 disabled:hover:shadow-none"
+          className="p-3 rounded-full border border-zinc-200/50 dark:border-zinc-700/50 bg-white/50 dark:bg-zinc-800/50 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-95 disabled:opacity-30 disabled:hover:scale-100 disabled:hover:-translate-y-0 disabled:hover:shadow-none focus:outline-none focus:ring-2 focus:ring-amber-500/50"
           onClick={onSkipForward}
           disabled={isIdle}
           title="Maju 1 kata"
