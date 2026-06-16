@@ -7,7 +7,7 @@ const quizSchema = z.object({
   apiKey: z.string().optional(),
 });
 
-export const maxDuration = 60; // Izinkan hingga 60 detik untuk memproses AI
+ // Izinkan hingga 60 detik untuk memproses AI
 
 export async function POST(req: Request) {
   try {

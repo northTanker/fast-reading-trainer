@@ -8,7 +8,7 @@ const copilotSchema = z.object({
   mode: z.enum(["generate", "format"]).default("generate"),
 });
 
-export const maxDuration = 60;
+
 
 export async function POST(req: Request) {
   try {
