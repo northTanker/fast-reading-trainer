@@ -443,7 +443,7 @@ export default function Home() {
         </div>
       )}
       </main>
-      <footer className={`sticky bottom-0 z-50 w-full max-w-5xl mx-auto flex flex-col justify-center items-center gap-4 py-4 sm:py-6 px-4 mt-auto bg-transparent backdrop-blur-lg transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100'}`}>
+      <footer className={`w-full max-w-5xl mx-auto flex flex-col justify-center items-center gap-4 py-8 sm:py-6 px-4 mt-auto transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100'}`}>
         <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6">
           <div className="flex flex-col items-center gap-1">
             <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">Saran & Kritik</span>
