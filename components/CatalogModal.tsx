@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, BookOpen } from "lucide-react";
+import { X, BookOpen, CheckCircle2 } from "lucide-react";
 
 export interface CatalogItem {
   id: string;
@@ -22,6 +22,24 @@ export default function CatalogModal({ isOpen, onClose, onSelect }: CatalogModal
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("Semua");
+  const [readItemTitles, setReadItemTitles] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    // Ambil history untuk menandai teks yang sudah dibaca
+    try {
+      const { getHistory } = require("@/lib/storage");
+      const history = getHistory();
+      const readTitles = new Set<string>();
+      history.forEach((record: any) => {
+        if (record.completed && record.source === "catalog" && record.title) {
+          readTitles.add(record.title);
+        }
+      });
+      setReadItemTitles(readTitles);
+    } catch (e) {
+      console.error("Gagal memuat history:", e);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     let active = true;
@@ -143,34 +161,51 @@ export default function CatalogModal({ isOpen, onClose, onSelect }: CatalogModal
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredItems.map(item => (
-                <div 
-                  key={item.id}
-                  onClick={() => {
-                    onSelect(item.content, item.title);
-                    onClose();
-                  }}
-                  className="group relative bg-white dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 p-5 rounded-3xl cursor-pointer hover:border-amber-500/50 hover:shadow-[0_8px_30px_rgba(245,158,11,0.12)] transition-all duration-300 hover:-translate-y-1.5 overflow-hidden"
-                >
-                  <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none transform translate-x-4 -translate-y-4 group-hover:scale-110 group-hover:rotate-12 w-32 h-32">
-                    <BookOpen className="w-full h-full text-zinc-900 dark:text-white" />
+              {filteredItems.map(item => {
+                const isRead = readItemTitles.has(item.title);
+                return (
+                  <div 
+                    key={item.id}
+                    onClick={() => {
+                      onSelect(item.content, item.title);
+                      onClose();
+                    }}
+                    className={`group relative bg-white dark:bg-zinc-800/80 border p-5 rounded-3xl cursor-pointer transition-all duration-300 overflow-hidden ${
+                      isRead 
+                        ? 'border-emerald-200 dark:border-emerald-900/50 hover:border-emerald-400 dark:hover:border-emerald-700 opacity-90' 
+                        : 'border-zinc-200 dark:border-zinc-700 hover:border-amber-500/50 hover:shadow-[0_8px_30px_rgba(245,158,11,0.12)] hover:-translate-y-1.5'
+                    }`}
+                  >
+                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none transform translate-x-4 -translate-y-4 group-hover:scale-110 group-hover:rotate-12 w-32 h-32">
+                      <BookOpen className="w-full h-full text-zinc-900 dark:text-white" />
+                    </div>
+                    <div className="flex justify-between items-start mb-4 relative z-10">
+                      <div className="flex gap-2 items-center">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-500/20 dark:to-orange-500/10 border border-amber-200/50 dark:border-amber-500/20 px-2.5 py-1 rounded-lg">
+                          {item.category}
+                        </span>
+                        {isRead && (
+                          <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-200 dark:border-emerald-500/30 px-2.5 py-1 rounded-lg">
+                            <CheckCircle2 className="w-3 h-3" />
+                            Selesai
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xs font-semibold text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 rounded-lg shrink-0">
+                        {item.wordCount} kata
+                      </span>
+                    </div>
+                    <h3 className={`text-lg font-black mb-2 line-clamp-2 transition-colors relative z-10 leading-tight ${
+                      isRead ? 'text-zinc-700 dark:text-zinc-300 group-hover:text-emerald-600 dark:group-hover:text-emerald-400' : 'text-zinc-900 dark:text-zinc-100 group-hover:text-amber-600 dark:group-hover:text-amber-400'
+                    }`}>
+                      {item.title}
+                    </h3>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-3 leading-relaxed relative z-10 font-medium">
+                      {item.content}
+                    </p>
                   </div>
-                  <div className="flex justify-between items-start mb-4 relative z-10">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-500/20 dark:to-orange-500/10 border border-amber-200/50 dark:border-amber-500/20 px-2.5 py-1 rounded-lg">
-                      {item.category}
-                    </span>
-                    <span className="text-xs font-semibold text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 rounded-lg">
-                      {item.wordCount} kata
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-black text-zinc-900 dark:text-zinc-100 mb-2 line-clamp-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors relative z-10 leading-tight">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-3 leading-relaxed relative z-10 font-medium">
-                    {item.content}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
