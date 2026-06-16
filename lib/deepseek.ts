@@ -1,11 +1,12 @@
-import type { QuizQuestion } from "@/types";
+import type { QuizQuestion, QuizDifficulty } from "@/types";
 
 export async function generateQuiz(
   text: string,
-  clientApiKey?: string
+  clientApiKey?: string,
+  difficulty: QuizDifficulty = "sedang"
 ): Promise<QuizQuestion[]> {
   try {
-    const body: Record<string, string> = { text };
+    const body: Record<string, string> = { text, difficulty };
     if (clientApiKey) {
       body.apiKey = clientApiKey;
     }

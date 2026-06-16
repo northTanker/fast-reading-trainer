@@ -51,3 +51,5 @@ export interface QuizQuestion {
   options: string[];
   correctAnswerIndex: number;
 }
+
+export type QuizDifficulty = "mudah" | "sedang" | "sulit";

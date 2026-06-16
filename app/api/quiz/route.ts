@@ -5,20 +5,16 @@ import { z } from "zod";
 const quizSchema = z.object({
   text: z.string().min(1, "Teks tidak boleh kosong").max(50000),
   apiKey: z.string().optional(),
+  difficulty: z.enum(["mudah", "sedang", "sulit"]).optional(),
 });
 
  // Izinkan hingga 60 detik untuk memproses AI
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const parsed = quizSchema.safeParse(body);
-    
-    if (!parsed.success) {
-      return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
-    }
+    const { text, apiKey, difficulty = "sedang" } = quizSchema.parse(await req.json());
 
-    const { text, apiKey } = parsed.data;
+    let token = apiKey;
 
     // Jika tidak menggunakan custom API Key, pastikan user login (verifikasi Firebase Auth)
     if (!apiKey) {
@@ -41,23 +37,39 @@ export async function POST(req: Request) {
       } catch (err) {
         return NextResponse.json({ error: "Invalid token" }, { status: 401 });
       }
+      
+      token = process.env.DEEPSEEK_API_KEY;
+      if (!token) {
+        return NextResponse.json(
+          { error: "Kunci API peladen tidak dikonfigurasi." },
+          { status: 500 }
+        );
+      }
+    } else {
+      // Validasi API Key custom secara sederhana
+      if (!token || token.length < 10) {
+        return NextResponse.json(
+          { error: "Kunci API tidak ditemukan. Silakan gunakan kunci pribadi Anda." },
+          { status: 401 }
+        );
+      }
     }
 
-    const token = apiKey || process.env.DEEPSEEK_API_KEY;
+    let questionCount = 7;
+    let difficultyPrompt = "Fokus pada pertanyaan yang menyeimbangkan fakta eksplisit dan pemahaman tersirat (inferensi), ide pokok, serta tujuan penulis.";
 
-    if (!token) {
-      return NextResponse.json(
-        { error: "Kunci API tidak ditemukan. Silakan gunakan kunci pribadi Anda." },
-        { status: 401 }
-      );
+    if (difficulty === "mudah") {
+      questionCount = 5;
+      difficultyPrompt = "Fokus pada pemahaman dasar, mencari fakta eksplisit, identifikasi tokoh, dan alur cerita yang jelas di dalam teks.";
+    } else if (difficulty === "sulit") {
+      questionCount = 10;
+      difficultyPrompt = "Fokus pada pertanyaan berpikir kritis, sintesis informasi, nada atau gaya bahasa, kesimpulan abstrak, dan penalaran logis tingkat lanjut.";
     }
 
-    const wordCount = text.trim().split(/\s+/).length;
-    let questionCount = 5;
-    if (wordCount > 500) questionCount = 7;
-    if (wordCount > 1000) questionCount = 10;
+    const systemPrompt = `Anda adalah asisten pembuat kuis pemahaman membaca. Buatlah tepat ${questionCount} pertanyaan pilihan ganda berdasarkan teks yang diberikan.
+Tingkat kesulitan kuis ini adalah **${difficulty.toUpperCase()}**.
+Instruksi khusus kesulitan: ${difficultyPrompt}
 
-    const systemPrompt = `Anda adalah asisten pembuat kuis pemahaman membaca. Buatlah ${questionCount} pertanyaan pilihan ganda berdasarkan teks yang diberikan.
 Kembalikan dalam format JSON murni dengan struktur persis seperti berikut:
 {
   "questions": [

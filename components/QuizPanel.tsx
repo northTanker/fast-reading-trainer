@@ -11,10 +11,9 @@ interface QuizPanelProps {
 }
 
 export default function QuizPanel({ text, initialMode, onClose }: QuizPanelProps) {
-  const [step, setStep] = useState<"setup" | "loading" | "playing" | "result">(
-    initialMode === "default" ? "loading" : "setup"
-  );
+  const [step, setStep] = useState<"setup" | "loading" | "playing" | "result">("setup");
   const [apiKeyInput, setApiKeyInput] = useState("");
+  const [difficulty, setDifficulty] = useState<"mudah" | "sedang" | "sulit">("sedang");
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -28,22 +27,6 @@ export default function QuizPanel({ text, initialMode, onClose }: QuizPanelProps
       setTimeout(() => setApiKeyInput(savedKey), 0);
     }
   }, []);
-
-  useEffect(() => {
-    if (initialMode === "default" && step === "loading") {
-      generateQuiz(text, undefined)
-        .then((generatedQuestions) => {
-          setQuestions(generatedQuestions);
-          setStep("playing");
-        })
-        .catch((err: unknown) => {
-          const msg = err instanceof Error ? err.message : "Gagal memuat kuis.";
-          setError(msg);
-          setStep("setup");
-        });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialMode, text]);
 
   const handleStartQuiz = async (useDefault: boolean) => {
     setError("");
@@ -60,7 +43,7 @@ export default function QuizPanel({ text, initialMode, onClose }: QuizPanelProps
 
     setStep("loading");
     try {
-      const generatedQuestions = await generateQuiz(text, keyToUse || undefined);
+      const generatedQuestions = await generateQuiz(text, keyToUse || undefined, difficulty);
       setQuestions(generatedQuestions);
       setStep("playing");
     } catch (err: unknown) {
@@ -95,7 +78,9 @@ export default function QuizPanel({ text, initialMode, onClose }: QuizPanelProps
         <div className="text-center">
           <h2 className="text-3xl font-extrabold font-outfit mb-2">Kuis Pemahaman (AI)</h2>
           <p className="text-zinc-600 dark:text-zinc-400 text-sm">
-            Masukkan API Key Deepseek Anda untuk membuat kuis.
+            {initialMode === "custom" 
+              ? "Masukkan API Key Deepseek Anda dan atur tingkat kesulitan." 
+              : "Pilih tingkat kesulitan untuk membuat kuis yang sesuai."}
           </p>
         </div>
 
@@ -105,19 +90,48 @@ export default function QuizPanel({ text, initialMode, onClose }: QuizPanelProps
           </div>
         )}
 
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
-            Gunakan API Key Pribadi (Deepseek)
-          </label>
-          <input
-            type="password"
-            value={apiKeyInput}
-            onChange={(e) => setApiKeyInput(e.target.value)}
-            placeholder="sk-..."
-            className="w-full p-4 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 focus:border-amber-500 dark:focus:border-amber-500 outline-none transition-colors font-mono text-sm"
-          />
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
+              Tingkat Kesulitan
+            </label>
+            <div className="flex gap-2">
+              {(["mudah", "sedang", "sulit"] as const).map((level) => (
+                <button
+                  key={level}
+                  onClick={() => setDifficulty(level)}
+                  className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm capitalize transition-all border-2 ${
+                    difficulty === level
+                      ? "bg-amber-500 border-amber-500 text-white shadow-md"
+                      : "bg-white/50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-amber-500/50"
+                  }`}
+                >
+                  {level}
+                  <span className="block text-[10px] font-normal mt-1 opacity-80">
+                    {level === "mudah" ? "5 Soal Dasar" : level === "sedang" ? "7 Soal Inferensi" : "10 Soal Analitis"}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {initialMode === "custom" && (
+            <div className="flex flex-col gap-2 mt-2">
+              <label className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
+                Gunakan API Key Pribadi (Deepseek)
+              </label>
+              <input
+                type="password"
+                value={apiKeyInput}
+                onChange={(e) => setApiKeyInput(e.target.value)}
+                placeholder="sk-..."
+                className="w-full p-4 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 focus:border-amber-500 dark:focus:border-amber-500 outline-none transition-colors font-mono text-sm"
+              />
+            </div>
+          )}
+
           <button
-            onClick={() => handleStartQuiz(false)}
+            onClick={() => handleStartQuiz(initialMode === "default")}
             className="w-full py-4 mt-2 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 font-bold transition-all shadow-md active:scale-[0.98]"
           >
             Mulai Kuis
