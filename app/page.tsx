@@ -445,14 +445,8 @@ export default function Home() {
       </main>
       <footer className={`w-full max-w-5xl mx-auto flex flex-col justify-center items-center gap-4 py-8 sm:py-6 px-4 mt-auto transition-all duration-500 ${isActive ? 'opacity-0 pointer-events-none translate-y-10' : 'opacity-100'}`}>
         <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6">
-          <div className="flex flex-col items-center gap-1">
-            <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">Saran & Kritik</span>
-            <FeedbackButton />
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">Dukung Kami</span>
-            <DonationButton />
-          </div>
+          <FeedbackButton />
+          <DonationButton />
         </div>
         <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium text-center">
           &copy; {new Date().getFullYear()} Edwigar Annas Akbar
