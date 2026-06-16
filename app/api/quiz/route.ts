@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAdminAuth } from "@/lib/firebaseAdmin";
+
 import { z } from "zod";
 
 const quizSchema = z.object({
@@ -23,14 +23,21 @@ export async function POST(req: Request) {
     // Jika tidak menggunakan custom API Key, pastikan user login (verifikasi Firebase Auth)
     if (!apiKey) {
       const authHeader = req.headers.get("Authorization");
-      const idToken = authHeader?.startsWith("Bearer ") ? authHeader.split("Bearer ")[1] : null;
-      
+      const idToken = authHeader?.split("Bearer ")[1];
       if (!idToken) {
         return NextResponse.json({ error: "Missing authentication" }, { status: 401 });
       }
       try {
-        const adminAuth = getAdminAuth();
-        await adminAuth.verifyIdToken(idToken);
+        const apiKeyFb = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+        const verifyRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKeyFb}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken })
+        });
+        const verifyData = await verifyRes.json();
+        if (verifyData.error) {
+          throw new Error("Invalid token");
+        }
       } catch (err) {
         return NextResponse.json({ error: "Invalid token" }, { status: 401 });
       }
