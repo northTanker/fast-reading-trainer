@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { adminAuth } from "@/lib/firebaseAdmin";
+import { getAdminAuth } from "@/lib/firebaseAdmin";
 import { z } from "zod";
 
 const copilotSchema = z.object({
@@ -23,11 +23,12 @@ export async function POST(req: Request) {
 
     if (!apiKey) {
       const authHeader = req.headers.get("Authorization");
-      if (!authHeader?.startsWith("Bearer ")) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      const idToken = authHeader?.split("Bearer ")[1];
+      if (!idToken) {
+        return NextResponse.json({ error: "Missing authentication" }, { status: 401 });
       }
-      const idToken = authHeader.split("Bearer ")[1];
       try {
+        const adminAuth = getAdminAuth();
         await adminAuth.verifyIdToken(idToken);
       } catch (err) {
         return NextResponse.json({ error: "Invalid token" }, { status: 401 });
