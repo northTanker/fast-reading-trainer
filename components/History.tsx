@@ -56,8 +56,10 @@ export default function History() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between mb-2">
+    <div className="flex flex-col gap-6">
+      {/* History List */}
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between mb-2">
         <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
           Riwayat Sesi
         </h3>
@@ -136,6 +138,7 @@ export default function History() {
               </div>
             );
           })}
+      </div>
       </div>
     </div>
   );

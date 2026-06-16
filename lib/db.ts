@@ -12,10 +12,19 @@ import {
 import type { SessionRecord, GamificationData, SavedText } from "@/types";
 
 // Function to migrate local data to Firestore on first login
-export async function syncLocalStorageToCloud(userId: string) {
+export async function syncLocalStorageToCloud(user: { uid: string, displayName?: string | null, photoURL?: string | null }) {
   try {
+    const userId = user.uid;
     const userRef = doc(db, "users", userId);
     const userDoc = await getDoc(userRef);
+
+    // Update profile info
+    await setDoc(userRef, {
+      uid: user.uid,
+      displayName: user.displayName || "Pengguna Anonim",
+      photoURL: user.photoURL || "",
+      lastActive: new Date().toISOString()
+    }, { merge: true });
 
     // 1. Sync Gamification Data
     const localGamificationStr = localStorage.getItem("gamification-data");

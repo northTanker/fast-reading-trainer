@@ -1,29 +1,26 @@
 "use client";
 
-import { useSyncExternalStore, useMemo } from "react";
-import type { SessionRecord } from "@/types";
+import { useMemo, useSyncExternalStore } from "react";
 import {
-  LineChart,
-  Line,
+  ScatterChart,
+  Scatter,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  ZAxis
 } from "recharts";
+import type { SessionRecord } from "@/types";
 
 const EMPTY_HISTORY: SessionRecord[] = [];
-let cachedHistoryRaw: string | null = null;
 let cachedHistory: SessionRecord[] = EMPTY_HISTORY;
+let cachedHistoryRaw: string | null = null;
 
 function getSnapshot(): SessionRecord[] {
   const raw = localStorage.getItem("reading-history");
   if (!raw) return EMPTY_HISTORY;
-
-  if (cachedHistoryRaw === raw) {
-    return cachedHistory;
-  }
-
+  if (cachedHistoryRaw === raw) return cachedHistory;
   try {
     const parsed = JSON.parse(raw);
     cachedHistoryRaw = raw;
@@ -50,95 +47,78 @@ function subscribe(callback: () => void) {
 export default function AnalyticsChart() {
   const history = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
+  // Hanya ambil sesi yang punya skor kuis
   const data = useMemo(() => {
-    if (history.length === 0) return [];
-
-    // Mengambil 30 sesi terakhir yang selesai untuk grafik
-    const completedSessions = history
-      .filter((s) => s.completed)
-      .slice(-30);
-
-    return completedSessions.map((session, index) => {
-      const date = new Date(session.date);
-      return {
-        name: `Sesi ${index + 1}`,
-        wpm: session.actualWpm,
-        target: session.wpmSetting,
-        date: date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-      };
-    });
+    return history
+      .filter((session) => session.quizScore !== undefined)
+      .map((session) => ({
+        wpm: Math.round(session.actualWpm),
+        score: Math.round(session.quizScore!),
+        date: new Date(session.date).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      }));
   }, [history]);
 
   if (data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-48 text-zinc-500 text-sm">
-        <p>Belum ada data sesi yang diselesaikan.</p>
-        <p className="text-xs mt-1 opacity-70">Selesaikan satu bacaan untuk melihat analitik WPM Anda.</p>
+      <div className="flex flex-col items-center justify-center p-6 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-xl">
+        <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center">
+          Belum ada data kuis untuk menampilkan analitik.<br/>
+          Selesaikan beberapa sesi dengan kuis untuk melihat grafik Anda.
+        </p>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
-          Perkembangan WPM
-        </h3>
+      <div className="flex justify-between items-end">
+        <div>
+          <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-lg">Kecepatan vs Pemahaman</h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">Hubungan antara WPM dan skor kuis Anda</p>
+        </div>
       </div>
-      <div className="h-48 w-full">
+      
+      <div className="h-64 w-full bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={data}
-            margin={{
-              top: 5,
-              right: 10,
-              left: -20,
-              bottom: 0,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
+          <ScatterChart margin={{ top: 10, right: 10, bottom: 20, left: -20 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#888888" opacity={0.2} />
             <XAxis 
-              dataKey="date" 
-              tick={{ fontSize: 10, fill: '#71717a' }}
-              tickLine={false}
-              axisLine={false}
-              minTickGap={20}
+              type="number" 
+              dataKey="wpm" 
+              name="Kecepatan" 
+              unit=" WPM" 
+              tick={{ fontSize: 12, fill: '#888888' }}
+              domain={['auto', 'auto']}
+              label={{ value: "Kecepatan (WPM)", position: "insideBottom", offset: -10, fontSize: 12, fill: '#888888' }}
             />
             <YAxis 
-              tick={{ fontSize: 10, fill: '#71717a' }}
-              tickLine={false}
-              axisLine={false}
-              domain={['dataMin - 50', 'dataMax + 50']}
+              type="number" 
+              dataKey="score" 
+              name="Skor" 
+              unit="%" 
+              tick={{ fontSize: 12, fill: '#888888' }}
+              domain={[0, 100]}
+              label={{ value: "Skor Kuis (%)", angle: -90, position: "insideLeft", fontSize: 12, fill: '#888888' }}
             />
+            <ZAxis type="category" dataKey="date" name="Waktu" />
             <Tooltip 
+              cursor={{ strokeDasharray: '3 3' }}
               contentStyle={{ 
                 borderRadius: '12px', 
-                border: 'none',
+                border: '1px solid #e4e4e7',
                 boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                 fontSize: '12px',
-                fontWeight: '500'
+                color: '#18181b',
+                backgroundColor: '#ffffff'
               }}
-              itemStyle={{ fontWeight: '700' }}
             />
-            <Line
-              type="monotone"
-              dataKey="wpm"
-              name="WPM Aktual"
-              stroke="#f59e0b"
-              strokeWidth={3}
-              dot={{ r: 3, fill: '#f59e0b', strokeWidth: 0 }}
-              activeDot={{ r: 5 }}
-            />
-            <Line
-              type="monotone"
-              dataKey="target"
-              name="Target WPM"
-              stroke="#a1a1aa"
-              strokeWidth={2}
-              strokeDasharray="4 4"
-              dot={false}
-            />
-          </LineChart>
+            <Scatter name="Sesi" data={data} fill="#f59e0b" />
+          </ScatterChart>
         </ResponsiveContainer>
       </div>
     </div>

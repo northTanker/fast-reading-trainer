@@ -21,7 +21,11 @@ export function useAuth() {
       
       // If user logs in, trigger migration of local data to cloud
       if (currentUser) {
-        await syncLocalStorageToCloud(currentUser.uid);
+        await syncLocalStorageToCloud({
+          uid: currentUser.uid,
+          displayName: currentUser.displayName,
+          photoURL: currentUser.photoURL
+        });
       }
       
       setLoading(false);

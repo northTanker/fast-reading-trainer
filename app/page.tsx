@@ -18,6 +18,7 @@ const BigAuthButton = dynamic(() => import("@/components/BigAuthButton"), { ssr:
 const EduModal = dynamic(() => import("@/components/EduModal"), { ssr: false });
 const LibraryModal = dynamic(() => import("@/components/LibraryModal"), { ssr: false });
 const ProgressModal = dynamic(() => import("@/components/ProgressModal"), { ssr: false });
+const LeaderboardModal = dynamic(() => import("@/components/LeaderboardModal"), { ssr: false });
 import { useReader } from "@/hooks/useReader";
 import { tokenize } from "@/lib/tokenizer";
 import { createSessionRecord } from "@/lib/session";
@@ -37,6 +38,7 @@ export default function Home() {
   const [quizMode, setQuizMode] = useState<"default" | "custom" | false>(false);
   const [showEduModal, setShowEduModal] = useState(false);
   const [showLibraryModal, setShowLibraryModal] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [unlockedBadges, setUnlockedBadges] = useState<string[]>([]);
   const [textSource, setTextSource] = useState<"manual" | "catalog" | "ai">("manual");
@@ -321,6 +323,10 @@ export default function Home() {
         gamificationKey={gamificationKey}
         historyKey={historyKey}
       />
+      <LeaderboardModal 
+        isOpen={showLeaderboard}
+        onClose={() => setShowLeaderboard(false)}
+      />
       <LibraryModal 
         isOpen={showLibraryModal}
         onClose={() => setShowLibraryModal(false)}
@@ -351,13 +357,23 @@ export default function Home() {
               Baca lebih cepat tanpa kehilangan makna. Tembus <span className="text-amber-500 font-bold">500+ WPM</span> pakai metode Optimal Recognition Point.
             </p>
             
-            <button
-              onClick={() => setShowEduModal(true)}
-              className="px-5 py-2 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 rounded-full font-bold text-sm transition-all shadow-sm flex items-center gap-2 mb-4"
-            >
-              <span>📚</span>
-              <span>Pelajari Caranya</span>
-            </button>
+            <div className="flex flex-wrap justify-center items-center gap-3 mb-4">
+              <button
+                onClick={() => setShowEduModal(true)}
+                className="px-5 py-2 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 rounded-full font-bold text-sm transition-all shadow-sm flex items-center gap-2"
+              >
+                <span>📚</span>
+                <span>Pelajari Caranya</span>
+              </button>
+              
+              <button
+                onClick={() => setShowLeaderboard(true)}
+                className="px-5 py-2 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 rounded-full font-bold text-sm transition-all shadow-sm flex items-center gap-2"
+              >
+                <span>🏆</span>
+                <span>Papan Peringkat</span>
+              </button>
+            </div>
             <BigAuthButton />
           </div>
 
