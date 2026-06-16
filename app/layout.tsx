@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import Script from "next/script";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const inter = Inter({
@@ -89,6 +90,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full font-sans selection:bg-amber-500/30 selection:text-amber-900 dark:selection:text-amber-100 text-foreground overflow-x-hidden transition-colors duration-300">
         {children}
+        <SpeedInsights />
         <Script src="https://tally.so/widgets/embed.js" strategy="lazyOnload" />
       </body>
     </html>
