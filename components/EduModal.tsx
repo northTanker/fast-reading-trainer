@@ -129,7 +129,7 @@ export default function EduModal({ isOpen, onClose }: EduModalProps) {
               <ol className="list-decimal pl-5 space-y-3 font-medium">
                 <li>
                   <span className="text-amber-600 dark:text-amber-400">Pilih Teks & Sumber:</span>
-                  <p className="font-normal text-sm mt-1">Gunakan fitur <b>✨ AI Buatkan Teks</b> untuk membuat artikel sesuai minat Anda, jelajahi <b>Katalog Teks</b>, atau cukup tempelkan teks yang ingin Anda baca dengan cepat.</p>
+                  <p className="font-normal text-sm mt-1">Gunakan fitur <b>✨ AI Buatkan Teks</b> untuk membuat artikel baru, jelajahi <b>Katalog Teks</b> (artikel yang sudah pernah dibaca akan ditandai secara visual agar Anda tahu progres Anda), atau cukup tempelkan teks sendiri.</p>
                 </li>
                 <li>
                   <span className="text-amber-600 dark:text-amber-400">Atur Kecepatan (WPM):</span>
@@ -144,8 +144,8 @@ export default function EduModal({ isOpen, onClose }: EduModalProps) {
                   <p className="font-normal text-sm mt-1">Tekan <kbd className="bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded">Spasi</kbd> untuk Jeda/Lanjut, <kbd className="bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded">Panah Kanan/Kiri</kbd> untuk melompati kata, dan <kbd className="bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded">Esc</kbd> untuk mengakhiri sesi lebih awal.</p>
                 </li>
                 <li>
-                  <span className="text-amber-600 dark:text-amber-400">Uji Pemahaman & Dapatkan Badge:</span>
-                  <p className="font-normal text-sm mt-1">Setiap selesai membaca, Anda bisa menguji pemahaman Anda. Selesaikan kuis untuk mendapatkan skor dan membuka berbagai Badge (Pencapaian) menarik!</p>
+                  <span className="text-amber-600 dark:text-amber-400">Uji Pemahaman & Pilih Tingkat Kesulitan:</span>
+                  <p className="font-normal text-sm mt-1">Setiap selesai membaca, manfaatkan fitur <b>Kuis Pemahaman (AI)</b>. Anda kini bisa memilih tingkat kesulitan kuis (Mudah, Sedang, Sulit) untuk menguji seberapa dalam Anda memahami inti maupun detail teks tersebut.</p>
                 </li>
                 <li>
                   <span className="text-amber-600 dark:text-amber-400">Simpan Progres di Profil:</span>
