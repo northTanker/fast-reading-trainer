@@ -26,19 +26,22 @@ export default function CatalogModal({ isOpen, onClose, onSelect }: CatalogModal
 
   useEffect(() => {
     // Ambil history untuk menandai teks yang sudah dibaca
-    try {
-      const { getHistory } = require("@/lib/storage");
-      const history = getHistory();
-      const readTitles = new Set<string>();
-      history.forEach((record: any) => {
-        if (record.completed && record.source === "catalog" && record.title) {
-          readTitles.add(record.title);
-        }
-      });
-      setReadItemTitles(readTitles);
-    } catch (e) {
-      console.error("Gagal memuat history:", e);
-    }
+    import("@/lib/storage").then(({ getHistory }) => {
+      try {
+        const history = getHistory();
+        const readTitles = new Set<string>();
+        history.forEach((record) => {
+          if (record.completed && record.source === "catalog" && record.title) {
+            readTitles.add(record.title);
+          }
+        });
+        setReadItemTitles(readTitles);
+      } catch (e) {
+        console.error("Gagal memuat history:", e);
+      }
+    }).catch(e => {
+      console.error("Gagal memuat modul storage:", e);
+    });
   }, [isOpen]);
 
   useEffect(() => {
