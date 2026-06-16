@@ -44,13 +44,28 @@ Pastikan hanya mengembalikan JSON yang valid tanpa markdown block (\`\`\`json).`
         }),
       });
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        throw new Error(`Gagal memanggil API (respons bukan JSON). Status: ${response.status}`);
+      }
+
       if (!response.ok) {
         throw new Error(data.error?.message || `Gagal memanggil API: ${response.status}`);
       }
       
       const content = data.choices?.[0]?.message?.content || "";
-      const parsed = JSON.parse(content);
+      
+      // Membersihkan markdown wrapper (```json ... ```) jika AI tetap mengembalikannya
+      const cleanContent = content.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
+      
+      let parsed;
+      try {
+        parsed = JSON.parse(cleanContent);
+      } catch (e) {
+        throw new Error("AI mengembalikan format yang tidak valid (bukan JSON).");
+      }
       
       if (!parsed.questions || !Array.isArray(parsed.questions)) {
         throw new Error("Format respons tidak valid dari peladen");
@@ -76,7 +91,12 @@ Pastikan hanya mengembalikan JSON yang valid tanpa markdown block (\`\`\`json).`
         body: JSON.stringify({ text }),
       });
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        throw new Error(`Gagal memanggil API (respons bukan JSON). Status: ${response.status}`);
+      }
 
       if (!response.ok) {
         throw new Error(data.error || `Gagal memanggil API: ${response.status}`);

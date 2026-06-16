@@ -85,7 +85,16 @@ Pastikan hanya mengembalikan JSON yang valid tanpa markdown block (\`\`\`json).`
     const data = await response.json();
     const content = data.choices[0]?.message?.content || "";
     
-    const quizData = JSON.parse(content);
+    // Bersihkan markdown wrapper jika ada
+    const cleanContent = content.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
+    
+    let quizData;
+    try {
+      quizData = JSON.parse(cleanContent);
+    } catch (e) {
+      throw new Error("Format JSON dari AI tidak valid");
+    }
+    
     if (!quizData.questions || !Array.isArray(quizData.questions)) {
       throw new Error("Format JSON tidak valid");
     }
