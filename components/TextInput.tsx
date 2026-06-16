@@ -5,6 +5,7 @@ import { useState, memo } from "react";
 import { useLibrary } from "@/hooks/useLibrary";
 import { saveTextToLibrary, removeTextFromLibrary } from "@/lib/library";
 import { parseFile } from "@/lib/fileParser";
+import { Sparkles, Wand2, Save, Trash2, BookOpen, Rocket } from "lucide-react";
 
 const CopilotModal = dynamic(() => import("./CopilotModal"), { ssr: false });
 const CatalogModal = dynamic(() => import("./CatalogModal"), { ssr: false });
@@ -187,7 +188,7 @@ export default memo(function TextInput({
                 onClick={() => setIsCopilotOpen(true)}
                 className="text-xs font-bold text-amber-700 dark:text-amber-400 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-500/20 dark:to-orange-500/10 border border-amber-200 dark:border-amber-500/30 px-3 py-1.5 rounded-lg hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
               >
-                <span>✨</span> AI Buatkan Teks
+                <Sparkles className="w-4 h-4" /> AI Buatkan Teks
               </button>
             </div>
 
@@ -200,7 +201,7 @@ export default memo(function TextInput({
                     onClick={handleFormatText}
                     disabled={isFormatting || isParsing}
                   >
-                    <span>🪄</span> Rapikan
+                    <Wand2 className="w-4 h-4" /> Rapikan
                   </button>
                   <button
                     type="button"
@@ -208,7 +209,7 @@ export default memo(function TextInput({
                     onClick={() => setIsSaving(true)}
                     disabled={isFormatting}
                   >
-                    💾 Simpan
+                    <Save className="w-4 h-4 inline mr-1" /> Simpan
                   </button>
                 </>
               )}
@@ -219,7 +220,7 @@ export default memo(function TextInput({
                   onClick={() => onChange("")}
                   disabled={disabled}
                 >
-                  🗑️ Hapus
+                  <Trash2 className="w-4 h-4 inline mr-1" /> Hapus
                 </button>
               )}
             </div>
@@ -287,7 +288,7 @@ export default memo(function TextInput({
             disabled={disabled}
             className="flex items-center justify-center gap-3 w-full py-4 px-4 rounded-xl border-2 border-dashed border-amber-500/50 bg-amber-50/30 dark:bg-amber-900/10 text-amber-600 dark:text-amber-500 font-semibold hover:bg-amber-100/50 dark:hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 disabled:opacity-50 text-sm sm:text-base group active:scale-95"
           >
-            <span className="text-2xl group-hover:scale-110 transition-transform">📚</span>
+            <BookOpen className="w-6 h-6 group-hover:scale-110 transition-transform" />
             Jelajahi Katalog Teks (500+)
           </button>
         </div>
@@ -353,7 +354,7 @@ export default memo(function TextInput({
         disabled={disabled || !text.trim()}
       >
         <span className="relative z-10 flex items-center justify-center gap-2 drop-shadow-sm">
-          Mulai Baca {text.trim() && !disabled && <span className="text-2xl group-hover:translate-x-1 transition-transform">🚀</span>}
+          Mulai Baca {text.trim() && !disabled && <Rocket className="w-6 h-6 group-hover:translate-x-1 transition-transform" />}
         </span>
       </button>
 

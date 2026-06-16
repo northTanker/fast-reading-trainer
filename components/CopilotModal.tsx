@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { Sparkles, X } from "lucide-react";
 
 interface CopilotModalProps {
   isOpen: boolean;
@@ -194,7 +195,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
         {/* Header */}
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">✨</span>
+            <Sparkles className="w-6 h-6 text-amber-500" />
             <h2 id="copilot-title" className="text-xl font-bold font-outfit text-zinc-900 dark:text-zinc-100">Minta AI Buatkan Teks</h2>
           </div>
           <button 
@@ -205,7 +206,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
             disabled={isLoading}
             className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-500 transition-colors disabled:opacity-50"
           >
-            ✕
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -286,7 +287,7 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
             className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             <span>Minta AI Tuliskan</span>
-            <span>✨</span>
+            <Sparkles className="w-5 h-5" />
           </button>
         )}
         

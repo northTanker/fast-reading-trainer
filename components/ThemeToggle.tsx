@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Sun, Moon } from "lucide-react";
 
 type Theme = "light" | "dark";
 
@@ -41,8 +42,8 @@ export default function ThemeToggle() {
       aria-label="Toggle theme"
       title={`Tema saat ini: ${theme === "light" ? "Terang" : "Gelap"}`}
     >
-      {theme === "light" && <><span className="text-base">☀️</span> <span className="hidden sm:inline">Terang</span></>}
-      {theme === "dark" && <><span className="text-base">🌙</span> <span className="hidden sm:inline">Gelap</span></>}
+      {theme === "light" && <><Sun className="w-4 h-4 text-amber-500" /> <span className="hidden sm:inline">Terang</span></>}
+      {theme === "dark" && <><Moon className="w-4 h-4 text-blue-400" /> <span className="hidden sm:inline">Gelap</span></>}
     </button>
   );
 }

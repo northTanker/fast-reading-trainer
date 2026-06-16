@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { getUserLibrary } from "@/lib/db";
 import type { SavedText } from "@/types";
+import { X, BookOpen, Sparkles } from "lucide-react";
 
 export default function LibraryModal({ 
   isOpen, 
@@ -55,14 +56,14 @@ export default function LibraryModal({
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">📚</span>
+            <BookOpen className="w-6 h-6 text-amber-500" />
             <h2 id="library-title" className="text-xl font-bold font-outfit text-zinc-900 dark:text-zinc-100">Perpustakaan Saya</h2>
           </div>
           <button 
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 transition-colors"
           >
-            ✕
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -79,7 +80,7 @@ export default function LibraryModal({
           ) : library.length === 0 ? (
             <div className="text-center py-12 text-zinc-500">
               <p>Perpustakaan Anda masih kosong.</p>
-              <p className="text-sm mt-2">Gunakan fitur <b>✨ Buat Teks dengan AI</b> dan simpan teksnya ke sini.</p>
+              <p className="text-sm mt-2 flex items-center justify-center">Gunakan fitur <b><Sparkles className="w-4 h-4 inline-block text-amber-500 mr-1 ml-1" /> Buat Teks dengan AI</b> dan simpan teksnya ke sini.</p>
             </div>
           ) : (
             <div className="grid gap-4">

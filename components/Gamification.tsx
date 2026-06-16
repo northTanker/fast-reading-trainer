@@ -4,6 +4,7 @@ import { useSyncExternalStore, useEffect } from "react";
 import type { GamificationData } from "@/types";
 import { getHistory, saveGamificationData } from "@/lib/storage";
 import { computeGamification, BADGES } from "@/lib/gamification";
+import { Trophy, Flame, Timer, BookOpen, Star, Lock } from "lucide-react";
 
 let cachedGamData: GamificationData | null = null;
 let cachedGamRaw: string | null = null;
@@ -55,11 +56,11 @@ export default function Gamification() {
   return (
     <div className="flex flex-col gap-8">
       <div className="relative flex flex-col gap-4 p-6 rounded-3xl bg-gradient-to-br from-amber-500/10 to-orange-600/10 dark:from-amber-500/20 dark:to-rose-600/10 border border-amber-500/30 dark:border-amber-500/20 shadow-[0_0_40px_rgba(245,158,11,0.1)] overflow-hidden">
-        <div className="absolute -top-10 -right-10 text-8xl opacity-10 blur-sm pointer-events-none">🏆</div>
+        <Trophy className="absolute -top-10 -right-10 w-48 h-48 text-amber-500 opacity-10 blur-sm pointer-events-none" />
         <div className="flex justify-between items-end relative z-10">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xl drop-shadow-md">🏆</span>
+              <Trophy className="w-6 h-6 text-amber-500 drop-shadow-md" />
               <div className="text-xs font-extrabold text-amber-700 dark:text-amber-400 uppercase tracking-widest">
                 Level Pembaca
               </div>
@@ -89,7 +90,7 @@ export default function Gamification() {
 
       <div className="grid grid-cols-3 gap-3 sm:gap-6 w-full">
         <div className="group flex flex-col items-center justify-center bg-gradient-to-b from-amber-500/10 to-orange-500/5 dark:from-amber-500/20 dark:to-orange-500/5 backdrop-blur-sm border border-amber-500/20 rounded-2xl p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-amber-500/40">
-          <div className="text-2xl mb-1 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm">🔥</div>
+          <Flame className="w-6 h-6 mb-1 text-amber-500 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
           <div className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-500 tabular-nums leading-none">
             {data.currentStreak}
           </div>
@@ -99,7 +100,7 @@ export default function Gamification() {
         </div>
 
         <div className="group flex flex-col items-center justify-center bg-white/60 dark:bg-zinc-800/60 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 rounded-2xl p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-600">
-          <div className="text-2xl mb-1 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm">⏱️</div>
+          <Timer className="w-6 h-6 mb-1 text-zinc-600 dark:text-zinc-400 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
           <div className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-zinc-100 tabular-nums leading-none">
             {data.totalSessions}
           </div>
@@ -109,7 +110,7 @@ export default function Gamification() {
         </div>
 
         <div className="group flex flex-col items-center justify-center bg-white/60 dark:bg-zinc-800/60 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 rounded-2xl p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-600">
-          <div className="text-2xl mb-1 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm">📖</div>
+          <BookOpen className="w-6 h-6 mb-1 text-zinc-600 dark:text-zinc-400 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
           <div className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-zinc-100 tabular-nums leading-none">
             {data.totalWordsRead.toLocaleString()}
           </div>
@@ -142,9 +143,11 @@ export default function Gamification() {
               >
                 <div className={`relative flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full transition-transform duration-500 ${unlocked ? 'bg-gradient-to-br from-amber-200 to-amber-100 dark:from-amber-500/30 dark:to-orange-500/20 shadow-inner group-hover:scale-110 group-hover:rotate-12' : 'bg-zinc-100 dark:bg-zinc-800/50'}`}>
                   {unlocked && <div className="absolute inset-0 rounded-full bg-amber-400/30 animate-pulse" />}
-                  <span className={`text-2xl drop-shadow-sm ${unlocked ? "text-amber-500" : "grayscale opacity-50"}`}>
-                    {unlocked ? "🌟" : "🔒"}
-                  </span>
+                  {unlocked ? (
+                    <Star className="w-6 h-6 text-amber-500 fill-amber-500 drop-shadow-sm" />
+                  ) : (
+                    <Lock className="w-5 h-5 text-zinc-400 dark:text-zinc-500 drop-shadow-sm opacity-50" />
+                  )}
                 </div>
                 <div className="flex flex-col relative z-10">
                   <span className="text-sm font-extrabold leading-tight mb-0.5 tracking-tight">

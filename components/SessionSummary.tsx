@@ -3,6 +3,7 @@
 import { memo } from "react";
 import { formatTimeLong as formatTime } from "@/lib/formatTime";
 import type { SessionRecord } from "@/types";
+import { PartyPopper, BookOpen, Zap, Timer } from "lucide-react";
 
 interface SessionSummaryProps {
   session: SessionRecord;
@@ -20,8 +21,8 @@ export default memo(function SessionSummary({
   return (
     <div className="glass-panel flex flex-col gap-8 items-center rounded-3xl p-8 sm:p-10 transition-all duration-500 mt-4 relative overflow-hidden w-full max-w-2xl mx-auto">
       <div className="text-center relative z-10">
-        <h2 className="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500 tracking-tight font-outfit drop-shadow-sm mb-1">
-          Sesi Selesai! 🎉
+        <h2 className="flex items-center justify-center gap-2 text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500 tracking-tight font-outfit drop-shadow-sm mb-1">
+          Sesi Selesai! <PartyPopper className="w-8 h-8 text-orange-500 inline-block drop-shadow-sm" />
         </h2>
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 font-medium">
           Kerja bagus mempertahankan kecepatan.
@@ -30,7 +31,7 @@ export default memo(function SessionSummary({
 
       <div className="grid grid-cols-3 gap-3 sm:gap-6 w-full relative z-10">
         <div className="group flex flex-col items-center justify-center p-4 rounded-2xl bg-white/60 dark:bg-zinc-800/60 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-600">
-          <div className="text-2xl mb-1 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm">📖</div>
+          <BookOpen className="w-6 h-6 mb-1 text-zinc-600 dark:text-zinc-400 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
           <div className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-zinc-100 tabular-nums leading-none">
             {wordCount}
           </div>
@@ -40,7 +41,7 @@ export default memo(function SessionSummary({
         </div>
 
         <div className="group flex flex-col items-center justify-center p-4 rounded-2xl bg-gradient-to-b from-amber-500/10 to-orange-500/5 dark:from-amber-500/20 dark:to-orange-500/5 backdrop-blur-sm border border-amber-500/20 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-amber-500/40">
-          <div className="text-2xl mb-1 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm">⚡</div>
+          <Zap className="w-6 h-6 mb-1 text-amber-500 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
           <div className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-500 tabular-nums leading-none">
             {actualWpm}
           </div>
@@ -50,7 +51,7 @@ export default memo(function SessionSummary({
         </div>
 
         <div className="group flex flex-col items-center justify-center p-4 rounded-2xl bg-white/60 dark:bg-zinc-800/60 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-600">
-          <div className="text-2xl mb-1 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm">⏱️</div>
+          <Timer className="w-6 h-6 mb-1 text-zinc-600 dark:text-zinc-400 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
           <div className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-zinc-100 tabular-nums leading-none">
             {formatTime(durationMs)}
           </div>

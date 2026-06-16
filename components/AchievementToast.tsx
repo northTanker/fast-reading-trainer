@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { Star } from "lucide-react";
 import { BADGES } from "@/lib/gamification";
 
 interface AchievementToastProps {
@@ -31,12 +32,12 @@ export default function AchievementToast({ badgeIds, onClose }: AchievementToast
         {badges.map((badge, idx) => (
           <div 
             key={badge?.id || idx}
-            className="w-full bg-white dark:bg-zinc-900 border-2 border-amber-400 dark:border-amber-500 rounded-2xl p-5 shadow-2xl animate-in zoom-in-90 slide-in-from-bottom-10 fade-in duration-500 flex items-center gap-4 cursor-pointer hover:scale-105 transition-transform"
+            className="w-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-2 border-amber-400/50 dark:border-amber-500/50 rounded-2xl p-5 shadow-2xl animate-in zoom-in-90 slide-in-from-bottom-10 fade-in duration-500 flex items-center gap-4 cursor-pointer hover:scale-105 hover:border-amber-400 dark:hover:border-amber-500 transition-all"
             onClick={onClose}
             style={{ animationDelay: `${idx * 200}ms`, animationFillMode: 'both' }}
           >
-            <div className="flex-shrink-0 w-14 h-14 bg-amber-100 dark:bg-amber-500/20 rounded-full flex items-center justify-center shadow-inner">
-              <span className="text-3xl animate-bounce">🌟</span>
+            <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-amber-200 to-amber-100 dark:from-amber-500/30 dark:to-orange-500/20 rounded-full flex items-center justify-center shadow-inner">
+              <Star className="w-8 h-8 text-amber-500 fill-amber-500 animate-bounce" />
             </div>
             <div className="flex flex-col">
               <span className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-0.5">

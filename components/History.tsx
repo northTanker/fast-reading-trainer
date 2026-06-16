@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 import type { SessionRecord } from "@/types";
 import { clearHistory } from "@/lib/storage";
+import { Bot, BookOpen, Edit2 } from "lucide-react";
 
 const EMPTY_HISTORY: SessionRecord[] = [];
 let cachedHistory: SessionRecord[] = EMPTY_HISTORY;
@@ -74,9 +75,9 @@ export default function History() {
           .reverse()
           .map((s) => {
             const getSourceIcon = () => {
-              if (s.source === "ai") return "🤖";
-              if (s.source === "catalog") return "📚";
-              return "✏️";
+              if (s.source === "ai") return <Bot className="w-5 h-5 text-purple-500" />;
+              if (s.source === "catalog") return <BookOpen className="w-5 h-5 text-blue-500" />;
+              return <Edit2 className="w-5 h-5 text-amber-500" />;
             };
 
             const getSourceLabel = () => {
@@ -93,7 +94,7 @@ export default function History() {
                 <div className="flex justify-between items-start gap-2">
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
-                      <span title={getSourceLabel()} className="text-lg">{getSourceIcon()}</span>
+                      <span title={getSourceLabel()} className="flex-shrink-0">{getSourceIcon()}</span>
                       <span className="font-bold text-zinc-900 dark:text-zinc-100 line-clamp-1">
                         {s.title || "Teks Kustom"}
                       </span>

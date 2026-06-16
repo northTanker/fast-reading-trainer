@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { X, BookOpen } from "lucide-react";
 
 export interface CatalogItem {
   id: string;
@@ -85,7 +86,7 @@ export default function CatalogModal({ isOpen, onClose, onSelect }: CatalogModal
             onClick={onClose}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
           >
-            ✕
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -151,8 +152,8 @@ export default function CatalogModal({ isOpen, onClose, onSelect }: CatalogModal
                   }}
                   className="group relative bg-white dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 p-5 rounded-3xl cursor-pointer hover:border-amber-500/50 hover:shadow-[0_8px_30px_rgba(245,158,11,0.12)] transition-all duration-300 hover:-translate-y-1.5 overflow-hidden"
                 >
-                  <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-300 text-6xl pointer-events-none transform translate-x-4 -translate-y-4 group-hover:scale-110 group-hover:rotate-12">
-                    📚
+                  <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none transform translate-x-4 -translate-y-4 group-hover:scale-110 group-hover:rotate-12 w-32 h-32">
+                    <BookOpen className="w-full h-full text-zinc-900 dark:text-white" />
                   </div>
                   <div className="flex justify-between items-start mb-4 relative z-10">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-500/20 dark:to-orange-500/10 border border-amber-200/50 dark:border-amber-500/20 px-2.5 py-1 rounded-lg">
