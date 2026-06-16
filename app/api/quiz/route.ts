@@ -7,19 +7,10 @@ const quizSchema = z.object({
   apiKey: z.string().optional(),
 });
 
+export const maxDuration = 60; // Izinkan hingga 60 detik untuk memproses AI
+
 export async function POST(req: Request) {
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-    const idToken = authHeader.split("Bearer ")[1];
-    try {
-      await adminAuth.verifyIdToken(idToken);
-    } catch (err) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-    }
-
     const body = await req.json();
     const parsed = quizSchema.safeParse(body);
     
@@ -28,6 +19,20 @@ export async function POST(req: Request) {
     }
 
     const { text, apiKey } = parsed.data;
+
+    // Jika tidak menggunakan custom API Key, pastikan user login (verifikasi Firebase Auth)
+    if (!apiKey) {
+      const authHeader = req.headers.get("Authorization");
+      if (!authHeader?.startsWith("Bearer ")) {
+        return NextResponse.json({ error: "Harap login untuk menggunakan AI gratis, atau gunakan API Key pribadi." }, { status: 401 });
+      }
+      const idToken = authHeader.split("Bearer ")[1];
+      try {
+        await adminAuth.verifyIdToken(idToken);
+      } catch (err) {
+        return NextResponse.json({ error: "Sesi tidak valid, silakan masuk kembali." }, { status: 401 });
+      }
+    }
 
     const token = apiKey || process.env.DEEPSEEK_API_KEY;
 

@@ -61,30 +61,20 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
     let currentGeneratedText = "";
 
     try {
-      let res;
+      const body: Record<string, string> = {
+        prompt,
+        mode: "generate"
+      };
+
       if (usePrivateKey) {
-        // Direct call to DeepSeek API
-        const systemPrompt = "Anda adalah Copilot AI untuk aplikasi Speed Reading. Tugas Anda adalah menulis artikel pendek, cerita, atau merangkum topik dengan bahasa yang jelas, format paragraf yang rapi, dan mudah dibaca cepat. Jangan gunakan format markdown yang rumit (hindari tebal/miring berlebihan, tabel, atau daftar kompleks). Hanya teks murni yang mengalir.";
-        res = await fetch("https://api.deepseek.com/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${privateKey}`
-          },
-          body: JSON.stringify({
-            model: "deepseek-chat",
-            stream: true,
-            messages: [
-              { role: "system", content: systemPrompt },
-              { role: "user", content: prompt }
-            ],
-            temperature: 0.7,
-            max_tokens: 1500
-          }),
-          signal: abortController.signal,
-        });
-      } else {
-        // Call our backend
+        body.apiKey = privateKey;
+      }
+
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+
+      if (!usePrivateKey) {
         const { getAuth } = await import("firebase/auth");
         const auth = getAuth();
         const user = auth.currentUser;
@@ -92,20 +82,15 @@ export default function CopilotModal({ isOpen, onClose, onApplyText }: CopilotMo
           throw new Error("Anda harus masuk (login) untuk menggunakan fitur AI gratis.");
         }
         const idToken = await user.getIdToken();
-
-        res = await fetch("/api/copilot", {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${idToken}`
-          },
-          body: JSON.stringify({
-            prompt,
-            mode: "generate"
-          }),
-          signal: abortController.signal,
-        });
+        headers["Authorization"] = `Bearer ${idToken}`;
       }
+
+      const res = await fetch("/api/copilot", {
+        method: "POST",
+        headers,
+        body: JSON.stringify(body),
+        signal: abortController.signal,
+      });
 
       const contentType = res.headers.get("content-type");
       if (!res.ok) {

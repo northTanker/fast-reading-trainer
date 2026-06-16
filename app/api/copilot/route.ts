@@ -8,19 +8,10 @@ const copilotSchema = z.object({
   mode: z.enum(["generate", "format"]).default("generate"),
 });
 
+export const maxDuration = 60;
+
 export async function POST(req: Request) {
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-    const idToken = authHeader.split("Bearer ")[1];
-    try {
-      await adminAuth.verifyIdToken(idToken);
-    } catch (err) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-    }
-
     const body = await req.json();
     const parsed = copilotSchema.safeParse(body);
     
@@ -29,6 +20,19 @@ export async function POST(req: Request) {
     }
 
     const { prompt, apiKey, mode } = parsed.data;
+
+    if (!apiKey) {
+      const authHeader = req.headers.get("Authorization");
+      if (!authHeader?.startsWith("Bearer ")) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+      const idToken = authHeader.split("Bearer ")[1];
+      try {
+        await adminAuth.verifyIdToken(idToken);
+      } catch (err) {
+        return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+      }
+    }
 
     // Gunakan Kunci Pribadi (Option B) atau Kunci Server (Option C)
     const token = apiKey || process.env.DEEPSEEK_API_KEY;
